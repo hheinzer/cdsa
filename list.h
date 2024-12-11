@@ -23,7 +23,7 @@ static void list_insert(List *list, long i, void *data,
     assert(-list->size <= i && i <= list->size);
     ListItem *item = calloc(1, sizeof(*item));
     assert(item);
-    if (data_copy) {
+    if (data && data_copy) {
         item->data = malloc(data_size);
         assert(item->data);
         data_copy(item->data, data, data_size);

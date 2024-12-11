@@ -1,4 +1,4 @@
-# Common Data Structures
+# Common Data Structures for C
 
 This repository provides general purpose data structures that are often needed when programming in
 C. Each data structure is implemented as a single header that only depends on the C standard

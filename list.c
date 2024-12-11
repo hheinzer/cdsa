@@ -36,10 +36,7 @@ int main(void)
     free(list_remove(&b, (int[]){33}));
 
     // sort items of list a
-    list_sort(&a);
-
-    // sort items of list b with inverse compare function
-    list_sort_inverse(&b);
+    list_sort(&a, 0);
 
     // reverse the order of list b
     list_reverse(&b);

@@ -266,22 +266,11 @@ static ListItem *x__list_merge_sort(ListItem *first, int data_cmp(const void *, 
 }
 
 // sort the items of the list in place
-static void list_sort(List *list)
+static void list_sort(List *list, int reverse)
 {
     assert(list);
     assert(list->data_cmp);
-    list->head = x__list_merge_sort(list->head, list->data_cmp, 1);
-    ListItem *item = list->head;
-    while (item && item->next) item = item->next;
-    list->tail = item;
-}
-
-// sort the items of the list in place, with inverse compare function
-static void list_sort_inverse(List *list)
-{
-    assert(list);
-    assert(list->data_cmp);
-    list->head = x__list_merge_sort(list->head, list->data_cmp, -1);
+    list->head = x__list_merge_sort(list->head, list->data_cmp, (reverse ? -1 : 1));
     ListItem *item = list->head;
     while (item && item->next) item = item->next;
     list->tail = item;

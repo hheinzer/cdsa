@@ -61,8 +61,9 @@ static void list_insert(List *list, long i, void *data)
     assert(list);
     assert(-list->size <= i && i <= list->size);
 
-    // insert item
     ListItem *item = x__list_item_create(list, data);
+
+    // insert item
     if (list->size == 0) {  // empty list
         list->head = item;
         list->tail = item;
@@ -164,6 +165,7 @@ static void *list_pop(List *list, long i)
 static void *list_remove(List *list, const void *data)
 {
     assert(list);
+    if (list->size == 0) return 0;  // empty list
     assert(list->data_cmp);
 
     // remove item
@@ -171,7 +173,7 @@ static void *list_remove(List *list, const void *data)
         if (!list->data_cmp(item->data, data)) {
             if (item == list->head) {  // item is first item
                 list->head = item->next;
-                list->head->prev = 0;
+                if (list->head) list->head->prev = 0;
             }
             else if (item == list->tail) {  // item is last item
                 list->tail = item->prev;
@@ -308,4 +310,6 @@ static void list_clear(List *list)
         if (list->data_free) list->data_free(item->data);
         free(item);
     }
+    list->head = 0;
+    list->tail = 0;
 }

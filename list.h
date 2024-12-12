@@ -11,12 +11,12 @@ typedef int ListDataCompare(const void *, const void *);
 typedef void ListDataFree(void *);
 
 struct List {
+    long size;                  // number of items in list
+    ListItem *head, *tail;      // pointers to first and last item
     size_t data_size;           // size of item data in bytes
     ListDataCopy *data_copy;    // pointer to a function for copying data
     ListDataCompare *data_cmp;  // pointer to a function for comparing data
     ListDataFree *data_free;    // pointer to a function for freeing data
-    long size;                  // number of items in list
-    ListItem *head, *tail;      // pointers to first and last item
 };
 
 struct ListItem {
@@ -25,8 +25,8 @@ struct ListItem {
 };
 
 // create an empty list
-static List list_create(size_t data_size, ListDataCopy data_copy, ListDataCompare data_cmp,
-                        ListDataFree data_free)
+static List list_create(size_t data_size, ListDataCopy *data_copy, ListDataCompare *data_cmp,
+                        ListDataFree *data_free)
 {
     return (List){.data_size = data_size,
                   .data_copy = data_copy,
@@ -62,7 +62,7 @@ static void list_insert(List *list, long i, void *data)
         list->head->prev = item;
         list->head = item;
     }
-    else if (i == list->size) {  // insert is last item
+    else if (i == list->size) {  // item is last item
         item->prev = list->tail;
         list->tail->next = item;
         list->tail = item;
@@ -94,6 +94,15 @@ static void list_append(List *list, void *data)
     list_insert(list, list->size, data);
 }
 
+// return a copy of the list
+static List list_copy(const List *list)
+{
+    assert(list);
+    List copy = list_create(list->data_size, list->data_copy, list->data_cmp, list->data_free);
+    for (const ListItem *item = list->head; item; item = item->next) list_append(&copy, item->data);
+    return copy;
+}
+
 // remove the item at the given position in the list, and return its data
 static void *list_pop(List *list, long i)
 {
@@ -113,7 +122,7 @@ static void *list_pop(List *list, long i)
         list->head = item->next;
         list->head->prev = 0;
     }
-    else if (i == list->size - 1) {  // item is last item
+    else if (i == list->size - 1 || i == -1) {  // item is last item
         item = list->tail;
         list->tail = item->prev;
         list->tail->next = 0;
@@ -175,17 +184,6 @@ static void *list_remove(List *list, const void *data)
 
     // no matching item
     return 0;
-}
-
-// remove all items from the list
-static void list_clear(List *list)
-{
-    assert(list);
-    for (ListItem *item = list->head, *next; item; item = next) {
-        next = item->next;
-        if (list->data_free) list->data_free(item->data);
-        free(item);
-    }
 }
 
 // return zero-based index in the list of the first item whose value is equal to data
@@ -292,11 +290,13 @@ static void list_reverse(List *list)
     list->tail = swap;
 }
 
-// return a copy of the list
-static List list_copy(const List *list)
+// remove all items from the list
+static void list_clear(List *list)
 {
     assert(list);
-    List copy = list_create(list->data_size, list->data_copy, list->data_cmp, list->data_free);
-    for (const ListItem *item = list->head; item; item = item->next) list_append(&copy, item->data);
-    return copy;
+    for (ListItem *item = list->head, *next; item; item = next) {
+        next = item->next;
+        if (list->data_free) list->data_free(item->data);
+        free(item);
+    }
 }

@@ -29,7 +29,7 @@ static void *stack_pop(Stack *stack)
 }
 
 // return the item at the end of the stack
-static void *stack_peek(Stack *stack)
+static void *stack_peek(const Stack *stack)
 {
     return stack->tail->data;
 }

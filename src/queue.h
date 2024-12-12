@@ -29,7 +29,7 @@ static void *queue_dequeue(Queue *queue)
 }
 
 // return the item at the front of the queue
-static void *queue_peek(Queue *queue)
+static void *queue_peek(const Queue *queue)
 {
     return queue->head->data;
 }

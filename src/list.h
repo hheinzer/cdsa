@@ -24,6 +24,9 @@ struct ListItem {
     ListItem *next, *prev;  // pointers to next and previous item
 };
 
+#define ListForEach(item, list) for (ListItem *item = (list)->head; item; item = item->next)
+#define ListForEachReverse(item, list) for (ListItem *item = (list)->tail; item; item = item->prev)
+
 // create an empty list
 static List list_create(size_t data_size, ListDataCopy *data_copy, ListDataCompare *data_cmp,
                         ListDataFree *data_free)
@@ -34,14 +37,10 @@ static List list_create(size_t data_size, ListDataCopy *data_copy, ListDataCompa
                   .data_free = data_free};
 }
 
-// insert an item at a given position
-static void list_insert(List *list, long i, void *data)
+// create a list item
+static ListItem *x__list_item_create(const List *list, void *data)
 {
-    assert(list);
-    assert(-list->size <= i && i <= list->size);
-
-    // create item
-    ListItem *item = calloc(1, sizeof(*item));
+    ListItem *item = malloc(sizeof(*item));
     assert(item);
     if (data && list->data_copy) {
         item->data = malloc(list->data_size);
@@ -51,8 +50,19 @@ static void list_insert(List *list, long i, void *data)
     else {
         item->data = data;
     }
+    item->next = 0;
+    item->prev = 0;
+    return item;
+}
+
+// insert an item at a given position
+static void list_insert(List *list, long i, void *data)
+{
+    assert(list);
+    assert(-list->size <= i && i <= list->size);
 
     // insert item
+    ListItem *item = x__list_item_create(list, data);
     if (list->size == 0) {  // empty list
         list->head = item;
         list->tail = item;
@@ -150,7 +160,7 @@ static void *list_pop(List *list, long i)
     return data;
 }
 
-// remove the first item from the list whose value is equal to data
+// remove the first item from the list whose value is equal to data, and return its data
 static void *list_remove(List *list, const void *data)
 {
     assert(list);
@@ -176,9 +186,9 @@ static void *list_remove(List *list, const void *data)
             list->size -= 1;
 
             // return item
-            void *data = item->data;
+            void *item_data = item->data;
             free(item);
-            return data;
+            return item_data;
         }
     }
 
@@ -187,7 +197,7 @@ static void *list_remove(List *list, const void *data)
 }
 
 // return zero-based index in the list of the first item whose value is equal to data
-static long list_index(List *list, const void *data)
+static long list_index(const List *list, const void *data)
 {
     assert(list);
     assert(list->data_cmp);
@@ -198,7 +208,7 @@ static long list_index(List *list, const void *data)
 }
 
 // return the first item from the list whose value is equal to data
-static void *list_find(List *list, const void *data)
+static void *list_find(const List *list, const void *data)
 {
     assert(list);
     assert(list->data_cmp);
@@ -208,7 +218,7 @@ static void *list_find(List *list, const void *data)
 }
 
 // return the number of times data appears in the list
-static long list_count(List *list, const void *data)
+static long list_count(const List *list, const void *data)
 {
     assert(list);
     assert(list->data_cmp);
@@ -234,7 +244,7 @@ static ListItem *x__list_merge_sort_split(ListItem *first)
 
 // merge two sorted list into one sorted list
 static ListItem *x__list_merge_sort_merge(ListItem *first, ListItem *second,
-                                          int data_cmp(const void *, const void *), int order)
+                                          ListDataCompare data_cmp, int order)
 {
     if (!first) return second;
     if (!second) return first;
@@ -253,8 +263,7 @@ static ListItem *x__list_merge_sort_merge(ListItem *first, ListItem *second,
 }
 
 // perform merge sort on list
-static ListItem *x__list_merge_sort(ListItem *first, int data_cmp(const void *, const void *),
-                                    int order)
+static ListItem *x__list_merge_sort(ListItem *first, ListDataCompare data_cmp, int order)
 {
     if (!first || !first->next) return first;
     ListItem *second = x__list_merge_sort_split(first);

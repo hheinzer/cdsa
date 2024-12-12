@@ -7,9 +7,7 @@
 int intcmp(const void *a, const void *b)
 {
     const int *ia = a, *ib = b;
-    if (*ia < *ib) return -1;
-    if (*ia > *ib) return 1;
-    return 0;
+    return (*ia > *ib) - (*ia < *ib);
 }
 
 int main(void)
@@ -43,13 +41,11 @@ int main(void)
 
     // print items of list a
     printf("a: ");
-    for (const ListItem *item = a.head; item; item = item->next)
-        printf("%d%s", *(int *)item->data, (item->next ? ", " : "\n"));
+    ListForEach(item, &a) printf("%d%s", *(int *)item->data, (item->next ? ", " : "\n"));
 
-    // print items of list b
-    printf("b: ");
-    for (const ListItem *item = b.head; item; item = item->next)
-        printf("%d%s", *(int *)item->data, (item->next ? ", " : "\n"));
+    // print items of list b in reverse
+    printf("reverse(b): ");
+    ListForEachReverse(item, &b) printf("%d%s", *(int *)item->data, (item->prev ? ", " : "\n"));
 
     // print index of item with a value of 33
     printf("a.index(33) = %ld\n", list_index(&a, (int[]){33}));

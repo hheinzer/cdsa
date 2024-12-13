@@ -3,10 +3,11 @@
 This repository provides general purpose data structures that are often needed when programming in
 C. Each data structure is implemented as a single header that only depends on the C standard library
 (and possibly a base data structure). Most data structures are semantically identical to their
-Python counterparts with the same name.
+Python counterparts with the same name. Example usage is provided in the source files with the same
+names.
 
-Example usage is provided in the source files with the same names. Any C99 (or above) compliant C
-compiler should be able to handle the data structures without any special flags.
+Any C99 (or above) compliant C compiler should be able to handle the data structures without any
+special flags.
 
 The employed “error handling strategy” is heavy usage of `assert`. This might not be compatible with
 your project if you want to be able to recover from errors.
@@ -34,7 +35,8 @@ data and appropriate copy and deallocation function. If you are not storing anyt
 - [ ] `set.h`
 - [ ] `heap.h`
 - [ ] `tree.h`
-    - [ ] `kdtree.h`
+- [ ] `graph.h`
+- [ ] `sparse.h`
 
 ## Contributing
 

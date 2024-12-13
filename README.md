@@ -1,13 +1,14 @@
-# Common Data Structures for C
+# Common Data Structures and Algorithms for C
 
-This repository provides general purpose data structures that are often needed when programming in
-C. Each data structure is implemented as a single header that only depends on the C standard library
-(and possibly a base data structure). Most data structures are semantically identical to their
-Python counterparts with the same name. Example usage is provided in the source files with the same
-names.
+This repository provides general purpose data structures and algorithms that are often needed when
+programming in C. Each data structure is implemented as a single header that only depends on the C
+standard library (and possibly a base data structure). Most data structures are semantically
+identical to their Python counterparts with the same name. Example usage is provided in the source
+files with the same names.
 
-Any C99 (or above) compliant C compiler should be able to handle the data structures without any
-special flags.
+Any C23 compliant C compiler should be able to handle the data structures without any special flags.
+Most of the code should also compile under C99, but for anything lower, you might need to get your
+hands dirty.
 
 The employed “error handling strategy” is heavy usage of `assert`. This might not be compatible with
 your project if you want to be able to recover from errors.
@@ -37,6 +38,7 @@ data and appropriate copy and deallocation function. If you are not storing anyt
 - [ ] `tree.h`
 - [ ] `graph.h`
 - [ ] `sparse.h`
+- [ ] `iter.h`: iterator building blocks
 
 ## Contributing
 

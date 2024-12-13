@@ -17,25 +17,25 @@ static Queue queue_create(size_t data_size, QueueDataCopy data_copy, QueueDataCo
 }
 
 // add an item to the end of the queue
-static void queue_enqueue(Queue *queue, void *data)
+[[maybe_unused]] static void queue_enqueue(Queue *queue, void *data)
 {
     list_append(queue, data);
 }
 
 // remove the item at the front of the queue, and return its data
-static void *queue_dequeue(Queue *queue)
+[[maybe_unused]] static void *queue_dequeue(Queue *queue)
 {
     return list_pop(queue, 0);
 }
 
 // return the item at the front of the queue
-static void *queue_peek(const Queue *queue)
+[[maybe_unused]] static void *queue_peek(const Queue *queue)
 {
     return queue->head->data;
 }
 
 // remove all items from the queue
-static void queue_clear(Queue *queue)
+[[maybe_unused]] static void queue_clear(Queue *queue)
 {
     list_clear(queue);
 }

@@ -17,25 +17,25 @@ static Stack stack_create(size_t data_size, StackDataCopy data_copy, StackDataCo
 }
 
 // add an item to the end of the stack
-static void stack_push(Stack *stack, void *data)
+[[maybe_unused]] static void stack_push(Stack *stack, void *data)
 {
     list_append(stack, data);
 }
 
 // remove the item at the end of the stack, and return its data
-static void *stack_pop(Stack *stack)
+[[maybe_unused]] static void *stack_pop(Stack *stack)
 {
     return list_pop(stack, -1);
 }
 
 // return the item at the end of the stack
-static void *stack_peek(const Stack *stack)
+[[maybe_unused]] static void *stack_peek(const Stack *stack)
 {
     return stack->tail->data;
 }
 
 // remove all items from the stack
-static void stack_clear(Stack *stack)
+[[maybe_unused]] static void stack_clear(Stack *stack)
 {
     list_clear(stack);
 }

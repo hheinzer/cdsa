@@ -30,7 +30,7 @@ data and appropriate copy and deallocation function. If you are not storing anyt
 - [x] `list.h`: doubly linked list
     - [x] `stack.h`: last in first out linked list
     - [x] `queue.h`: first in first out linked list
-- [ ] `hash.h`: string hashing functions
+- [x] `hash.h`: string hashing functions
 - [ ] `dict.h`: associative array using open chaining
 - [ ] `hmap.h`: associative array using open addressing
 - [ ] `set.h`

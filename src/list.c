@@ -16,7 +16,7 @@ int main(void)
     List a = list_create(sizeof(int), memcpy, intcmp, free);
 
     // append integers 0 through 9
-    for (long i = 0; i < 10; ++i) list_append(&a, &i);
+    for (int i = 0; i < 10; ++i) list_append(&a, &i);
 
     // insert integer 33 at position 3
     list_insert(&a, 3, (int[]){33});
@@ -48,8 +48,8 @@ int main(void)
     ListForEachReverse(item, &b) printf("%d%s", *(int *)item->data, (item->prev ? ", " : "\n"));
 
     // print index of item with a value of 33
-    printf("a.index(33) = %ld\n", list_index(&a, (int[]){33}));
-    printf("b.index(33) = %ld\n", list_index(&b, (int[]){33}));
+    printf("a.index(33) = %zu\n", list_index(&a, (int[]){33}));
+    printf("b.index(33) = %zu\n", list_index(&b, (int[]){33}));
 
     // print address of item with a value of 33
     printf("a.find(33) = %p\n", list_find(&a, (int[]){33}));

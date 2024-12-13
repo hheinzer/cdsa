@@ -199,7 +199,7 @@ static void *list_remove(List *list, const void *data)
 }
 
 // return zero-based index in the list of the first item whose value is equal to data
-static long list_index(const List *list, const void *data)
+static size_t list_index(const List *list, const void *data)
 {
     assert(list);
     assert(list->data_cmp);

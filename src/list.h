@@ -256,12 +256,10 @@ static ListItem *x__list_merge_sort_merge(ListItem *first, ListItem *second,
         first->prev = 0;
         return first;
     }
-    else {
-        second->next = x__list_merge_sort_merge(first, second->next, data_cmp, order);
-        if (second->next) second->next->prev = second;
-        second->prev = 0;
-        return second;
-    }
+    second->next = x__list_merge_sort_merge(first, second->next, data_cmp, order);
+    if (second->next) second->next->prev = second;
+    second->prev = 0;
+    return second;
 }
 
 // perform merge sort on list

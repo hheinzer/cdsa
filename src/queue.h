@@ -9,6 +9,9 @@ typedef ListDataCopy QueueDataCopy;
 typedef ListDataCompare QueueDataCompare;
 typedef ListDataFree QueueDataFree;
 
+#define QueueForEach(item, stack) ListForEach(item, stack)
+#define QueueForEachReverse(item, stack) ListForEachReverse(item, stack)
+
 // create an empty queue
 static Queue queue_create(size_t data_size, QueueDataCopy data_copy, QueueDataCompare data_cmp,
                           QueueDataFree data_free)

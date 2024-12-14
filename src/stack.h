@@ -9,6 +9,9 @@ typedef ListDataCopy StackDataCopy;
 typedef ListDataCompare StackDataCompare;
 typedef ListDataFree StackDataFree;
 
+#define StackForEach(item, stack) ListForEach(item, stack)
+#define StackForEachReverse(item, stack) ListForEachReverse(item, stack)
+
 // create an empty stack
 static Stack stack_create(size_t data_size, StackDataCopy data_copy, StackDataCompare data_cmp,
                           StackDataFree data_free)

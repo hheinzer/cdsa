@@ -155,6 +155,7 @@ static void x__dict_item_create(const Dict *dict, DictItem *item, const char *ke
         assert(item);
         x__dict_item_create(dict, item, key, data, hash);
         item->next = 0;
+        assert(prev);  // first item of bucket cannot be 0; there must be a previous item
         prev->next = item;
     }
     else if (!item->key) {  // empty bucket: add item

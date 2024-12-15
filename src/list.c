@@ -41,12 +41,12 @@ int main(void)
 
     // print items of list a
     printf("a = [");
-    ListForEach(item, &a) printf("%s%d", (item == a.head ? "" : ", "), *(int *)item->data);
+    ListForEach(item, &a) printf("%d, ", *(int *)item->data);
     printf("]\n");
 
     // print items of list b in reverse
     printf("reverse(b) = [");
-    ListForEachReverse(item, &b) printf("%s%d", (item == b.tail ? "" : ", "), *(int *)item->data);
+    ListForEachReverse(item, &b) printf("%d, ", *(int *)item->data);
     printf("]\n");
 
     // print index of item with a value of 33

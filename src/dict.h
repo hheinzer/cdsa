@@ -96,7 +96,6 @@ static void x__dict_resize_buckets(Dict *dict)
                 _prev->next = _item;
             }
             else {  // empty bucket: add item (same key cannot occur)
-                assert(!_item->key);
                 _item->key = item->key;
                 _item->data = item->data;
                 _item->hash = item->hash;
@@ -128,7 +127,7 @@ static void x__dict_item_create(const Dict *dict, DictItem *item, const char *ke
     item->hash = hash;
 }
 
-// insert an item with a given key
+// insert an item with a given key, swap data and return old data on collision
 [[maybe_unused]] static void *dict_insert(Dict *dict, const char *key, void *data)
 {
     assert(dict);
@@ -226,7 +225,7 @@ static void x__dict_item_create(const Dict *dict, DictItem *item, const char *ke
     return data;
 }
 
-// return an item with a given key
+// return the data of an item with a given key
 [[maybe_unused]] static void *dict_find(const Dict *dict, const char *key)
 {
     assert(dict);
@@ -236,7 +235,7 @@ static void x__dict_item_create(const Dict *dict, DictItem *item, const char *ke
     while (item && item->key && item->hash != hash) item = item->next;
     if (!item || !item->key) return 0;
     assert(!strcmp(item->key, key));
-    return item;
+    return item->data;
 }
 
 // remove all items from the dict

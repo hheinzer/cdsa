@@ -22,14 +22,12 @@ int main(void)
 
     // print items of dict a
     printf("a = {");
-    DictForEach(item, &a)
-        printf("%s%s: %d", (item == a.bucket ? "" : ", "), item->key, *(int *)item->data);
+    DictForEach(item, &a) printf("%s: %d, ", item->key, *(int *)item->data);
     printf("}\n");
 
     // print items of dict b
     printf("b = {");
-    DictForEach(item, &b)
-        printf("%s%s: %d", (item == b.bucket ? "" : ", "), item->key, *(int *)item->data);
+    DictForEach(item, &b) printf("%s: %d, ", item->key, *(int *)item->data);
     printf("}\n");
 
     // print address of item with key "six"

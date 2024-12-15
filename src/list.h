@@ -209,7 +209,7 @@ static ListItem *x__list_item_create(const List *list, void *data)
     return -1;
 }
 
-// return the first item from the list whose value is equal to data
+// return the data of the first item from the list whose value is equal to data
 [[maybe_unused]] static void *list_find(const List *list, const void *data)
 {
     assert(list);

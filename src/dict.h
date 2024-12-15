@@ -24,7 +24,7 @@ struct Dict {
 struct DictItem {
     char *key;       // pointer to key
     void *data;      // pointer to stored data
-    size_t hash;     // raw hash value of key
+    size_t hash;     // hash value of key
     DictItem *next;  // point to next item in bucket
 };
 
@@ -75,10 +75,11 @@ static void x__dict_resize_buckets(Dict *dict)
             const size_t hash = item->hash;  // no need to recompute the hash
             DictItem *_item = &_bucket[hash % _capacity];
             DictItem *_prev = 0;
-            while (_item && _item->key && _item->hash != hash && strcmp(_item->key, item->key)) {
+            while (_item && _item->key && _item->hash != hash) {
                 _prev = _item;
                 _item = _item->next;
             }
+            if (_item && _item->key) assert(!strcmp(_item->key, item->key));
 
             // insert item
             if (!_item) {  // collision: append item
@@ -95,14 +96,12 @@ static void x__dict_resize_buckets(Dict *dict)
                 _item->next = 0;
                 _prev->next = _item;
             }
-            else if (!_item->key) {  // empty bucket: add item
+            else {  // empty bucket: add item (same key cannot occur)
+                assert(!_item->key);
                 _item->key = item->key;
                 _item->data = item->data;
                 _item->hash = item->hash;
                 if (item != bucket) free(item);
-            }
-            else {  // same key: cannot occur
-                assert(0);
             }
         }
     }
@@ -144,10 +143,11 @@ static void x__dict_item_create(const Dict *dict, DictItem *item, const char *ke
     const size_t hash = dict->key_hash(key);
     DictItem *item = &dict->bucket[hash % dict->capacity];
     DictItem *prev = 0;
-    while (item && item->key && item->hash != hash && strcmp(item->key, key)) {
+    while (item && item->key && item->hash != hash) {
         prev = item;
         item = item->next;
     }
+    if (item && item->key) assert(!strcmp(item->key, key));
 
     // insert item
     if (!item) {  // collision: append item
@@ -195,10 +195,11 @@ static void x__dict_item_create(const Dict *dict, DictItem *item, const char *ke
     const size_t hash = dict->key_hash(key);
     DictItem *item = &dict->bucket[hash % dict->capacity];
     DictItem *prev = 0;
-    while (item && item->key && item->hash != hash && strcmp(item->key, key)) {
+    while (item && item->key && item->hash != hash) {
         prev = item;
         item = item->next;
     }
+    if (item && item->key) assert(!strcmp(item->key, key));
 
     // remove item
     if (!item || !item->key) return 0;  // item not in dict
@@ -233,7 +234,8 @@ static void x__dict_item_create(const Dict *dict, DictItem *item, const char *ke
     assert(key);
     const size_t hash = dict->key_hash(key);
     DictItem *item = &dict->bucket[hash % dict->capacity];
-    while (item && item->key && item->hash != hash && strcmp(item->key, key)) item = item->next;
+    while (item && item->key && item->hash != hash) item = item->next;
+    if (item && item->key) assert(!strcmp(item->key, key));
     return (!item || !item->key ? 0 : item);
 }
 

@@ -28,8 +28,6 @@ data and appropriate copy and deallocation function. If you are not storing anyt
 ## Features
 
 - [x] `list.h`: doubly linked list
-    - [x] `stack.h`: last in first out linked list
-    - [x] `queue.h`: first in first out linked list
 - [x] `hash.h`: string hashing functions
 - [x] `dict.h`: associative array using open chaining
 - [ ] `hmap.h`: associative array using open addressing
@@ -38,7 +36,6 @@ data and appropriate copy and deallocation function. If you are not storing anyt
 - [ ] `tree.h`
 - [ ] `graph.h`
 - [ ] `sparse.h`
-- [ ] `iter.h`: iterator building blocks
 
 ## Contributing
 

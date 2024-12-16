@@ -37,7 +37,7 @@ struct DictItem {
 static Dict dict_create(long capacity, float load_factor, DictKeyHash *key_hash, size_t data_size,
                         DictDataCopy *data_copy, DictDataFree *data_free)
 {
-    assert(capacity >= 0);
+    assert(capacity > 0);
     assert(0 < load_factor && load_factor < 1);
     assert(key_hash);
     return (Dict){.capacity = capacity,

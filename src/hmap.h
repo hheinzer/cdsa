@@ -36,7 +36,7 @@ struct HmapItem {
 static Hmap hmap_create(long capacity, float load_factor, HmapKeyHash *key_hash, size_t data_size,
                         HmapDataCopy *data_copy, HmapDataFree *data_free)
 {
-    assert(capacity >= 0);
+    assert(capacity > 0);
     assert(0 < load_factor && load_factor < 1);
     assert(key_hash);
     return (Hmap){.capacity = capacity,

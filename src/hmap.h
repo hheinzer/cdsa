@@ -12,11 +12,11 @@ typedef void *HmapDataCopy(void *, const void *, size_t);
 typedef void HmapDataFree(void *);
 
 struct Hmap {
-    long size, capacity;      // number of items and items in hmap
+    long size, capacity;      // number and maximum number of items
     float load_factor;        // load factor for resizing
     long max_dist;            // maximum probing distance
     HmapItem *item;           // array of items
-    HmapKeyHash *key_hash;    // pointer to a function for hasing keys
+    HmapKeyHash *key_hash;    // pointer to a function for hashing keys
     size_t data_size;         // size of item data in bytes
     HmapDataCopy *data_copy;  // pointer to a function for copying data
     HmapDataFree *data_free;  // pointer to a function for freeing data
@@ -149,6 +149,7 @@ static void x__hmap_item_create(const Hmap *hmap, HmapItem *item, const char *ke
     assert(hmap);
     Hmap copy = hmap_create(hmap->capacity, hmap->load_factor, hmap->key_hash, hmap->data_size,
                             hmap->data_copy, hmap->data_free);
+    if (hmap->size == 0) return copy;  // empty hmap
     for (const HmapItem *item = hmap->item; item < hmap->item + hmap->capacity; ++item)
         if (item->key) hmap_insert(&copy, item->key, item->data);
     return copy;
@@ -158,6 +159,7 @@ static void x__hmap_item_create(const Hmap *hmap, HmapItem *item, const char *ke
 [[maybe_unused]] static void *hmap_remove(Hmap *hmap, const char *key)
 {
     assert(hmap);
+    if (hmap->size == 0) return 0;  // empty hmap
     assert(key);
     const size_t hash = hmap->key_hash(key);
     long i = hash % hmap->capacity;
@@ -180,6 +182,7 @@ static void x__hmap_item_create(const Hmap *hmap, HmapItem *item, const char *ke
 [[maybe_unused]] static void *hmap_find(const Hmap *hmap, const char *key)
 {
     assert(hmap);
+    if (hmap->size == 0) return 0;  // empty hmap
     assert(key);
     const size_t hash = hmap->key_hash(key);
     long i = hash % hmap->capacity;
@@ -196,12 +199,13 @@ static void x__hmap_item_create(const Hmap *hmap, HmapItem *item, const char *ke
 [[maybe_unused]] static void hmap_clear(Hmap *hmap)
 {
     assert(hmap);
-    if (!hmap->item) return;
+    if (hmap->size == 0) return;  // empty hmap
     for (HmapItem *item = hmap->item; item < hmap->item + hmap->capacity; ++item) {
         if (!item->key) continue;
         free(item->key);
         if (hmap->data_free) hmap->data_free(item->data);
     }
+    hmap->size = 0;
     free(hmap->item);
     hmap->item = 0;
 }

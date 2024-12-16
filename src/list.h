@@ -11,7 +11,7 @@ typedef int ListDataCompare(const void *, const void *);
 typedef void ListDataFree(void *);
 
 struct List {
-    long size;                  // number of items in list
+    long size;                  // number of items
     ListItem *head, *tail;      // pointers to first and last item
     size_t data_size;           // size of item data in bytes
     ListDataCopy *data_copy;    // pointer to a function for copying data
@@ -110,6 +110,7 @@ static ListItem *x__list_item_create(const List *list, void *data)
 {
     assert(list);
     List copy = list_create(list->data_size, list->data_copy, list->data_cmp, list->data_free);
+    if (list->size == 0) return copy;  // empty list
     for (const ListItem *item = list->head; item; item = item->next) list_append(&copy, item->data);
     return copy;
 }
@@ -202,6 +203,7 @@ static ListItem *x__list_item_create(const List *list, void *data)
 [[maybe_unused]] static size_t list_index(const List *list, const void *data)
 {
     assert(list);
+    if (list->size == 0) return -1;  // empty list
     assert(list->data_cmp);
     long i = 0;
     for (const ListItem *item = list->head; item; item = item->next, ++i)
@@ -213,6 +215,7 @@ static ListItem *x__list_item_create(const List *list, void *data)
 [[maybe_unused]] static void *list_find(const List *list, const void *data)
 {
     assert(list);
+    if (list->size == 0) return 0;  // empty list
     assert(list->data_cmp);
     for (const ListItem *item = list->head; item; item = item->next)
         if (!list->data_cmp(item->data, data)) return item->data;
@@ -223,6 +226,7 @@ static ListItem *x__list_item_create(const List *list, void *data)
 [[maybe_unused]] static long list_count(const List *list, const void *data)
 {
     assert(list);
+    if (list->size == 0) return 0;  // empty list
     assert(list->data_cmp);
     long n = 0;
     for (const ListItem *item = list->head; item; item = item->next)
@@ -276,6 +280,7 @@ static ListItem *x__list_merge_sort(ListItem *first, ListDataCompare data_cmp, i
 [[maybe_unused]] static void list_sort(List *list, int reverse)
 {
     assert(list);
+    if (list->size == 0) return;  // empty list
     assert(list->data_cmp);
     list->head = x__list_merge_sort(list->head, list->data_cmp, (reverse ? -1 : 1));
     ListItem *item = list->head;
@@ -287,6 +292,7 @@ static ListItem *x__list_merge_sort(ListItem *first, ListDataCompare data_cmp, i
 [[maybe_unused]] static void list_reverse(List *list)
 {
     assert(list);
+    if (list->size == 0) return;  // empty list
     ListItem *item = list->head;
     while (item) {
         ListItem *swap = item->prev;
@@ -303,11 +309,13 @@ static ListItem *x__list_merge_sort(ListItem *first, ListDataCompare data_cmp, i
 [[maybe_unused]] static void list_clear(List *list)
 {
     assert(list);
+    if (list->size == 0) return;  // empty list
     for (ListItem *item = list->head, *next; item; item = next) {
         next = item->next;
         if (list->data_free) list->data_free(item->data);
         free(item);
     }
+    list->size = 0;
     list->head = 0;
     list->tail = 0;
 }

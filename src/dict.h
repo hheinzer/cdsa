@@ -12,10 +12,10 @@ typedef void *DictDataCopy(void *, const void *, size_t);
 typedef void DictDataFree(void *);
 
 struct Dict {
-    long size, capacity;      // number of items and buckets in dict
+    long size, capacity;      // number of items and buckets
     float load_factor;        // load factor for resizing
     DictItem *bucket;         // array of buckets
-    DictKeyHash *key_hash;    // pointer to a function for hasing keys
+    DictKeyHash *key_hash;    // pointer to a function for hashing keys
     size_t data_size;         // size of item data in bytes
     DictDataCopy *data_copy;  // pointer to a function for copying data
     DictDataFree *data_free;  // pointer to a function for freeing data
@@ -174,6 +174,7 @@ static void x__dict_item_create(const Dict *dict, DictItem *item, const char *ke
     assert(dict);
     Dict copy = dict_create(dict->capacity, dict->load_factor, dict->key_hash, dict->data_size,
                             dict->data_copy, dict->data_free);
+    if (dict->size == 0) return copy;  // empty dict
     for (const DictItem *bucket = dict->bucket; bucket < dict->bucket + dict->capacity; ++bucket)
         if (bucket->key)
             for (const DictItem *item = bucket; item; item = item->next)
@@ -185,6 +186,7 @@ static void x__dict_item_create(const Dict *dict, DictItem *item, const char *ke
 [[maybe_unused]] static void *dict_remove(Dict *dict, const char *key)
 {
     assert(dict);
+    if (dict->size == 0) return 0;  // empty dict
     assert(key);
 
     // find position
@@ -226,6 +228,7 @@ static void x__dict_item_create(const Dict *dict, DictItem *item, const char *ke
 [[maybe_unused]] static void *dict_find(const Dict *dict, const char *key)
 {
     assert(dict);
+    if (dict->size == 0) return 0;  // empty dict
     assert(key);
     const size_t hash = dict->key_hash(key);
     DictItem *item = &dict->bucket[hash % dict->capacity];
@@ -237,7 +240,7 @@ static void x__dict_item_create(const Dict *dict, DictItem *item, const char *ke
 [[maybe_unused]] static void dict_clear(Dict *dict)
 {
     assert(dict);
-    if (!dict->bucket) return;
+    if (dict->size == 0) return;  // empty dict
     for (DictItem *bucket = dict->bucket; bucket < dict->bucket + dict->capacity; ++bucket) {
         if (!bucket->key) continue;
         free(bucket->key);
@@ -249,6 +252,7 @@ static void x__dict_item_create(const Dict *dict, DictItem *item, const char *ke
             free(item);
         }
     }
+    dict->size = 0;
     free(dict->bucket);
     dict->bucket = 0;
 }

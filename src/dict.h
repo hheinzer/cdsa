@@ -82,6 +82,7 @@ static void x__dict_resize_buckets(Dict *dict)
                     _item = item;
                 }
                 _item->next = 0;
+                assert(_prev);
                 _prev->next = _item;
             }
             else {

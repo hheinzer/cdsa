@@ -223,8 +223,8 @@ static void x__array_quick_sort(ArrayItem *item, long low, long high, ArrayDataC
 {
     assert(array);
     if (array->size == 0) return;
-    for (long i = 0; i < array->size; ++i)
-        if (array->data_free) array->data_free(array->item[i].data);
+    if (array->data_free)
+        for (long i = 0; i < array->size; ++i) array->data_free(array->item[i].data);
     free(array->item);
     array->item = 0;
     array->size = 0;

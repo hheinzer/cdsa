@@ -61,7 +61,7 @@ static void x__dict_resize_buckets(Dict *dict)
     assert(dict);
 
     // create new buckets
-    const size_t _capacity = dict->capacity / dict->load_factor + 1;
+    const long _capacity = dict->capacity / dict->load_factor;
     DictItem *_bucket = calloc(_capacity, sizeof(*_bucket));
     assert(_bucket);
 
@@ -141,7 +141,7 @@ static void x__dict_item_create(const Dict *dict, DictItem *item, const char *ke
     const size_t hash = dict->key_hash(key);
     DictItem *item = &dict->bucket[hash % dict->capacity];
     DictItem *prev = 0;
-    while (item && item->key && item->hash != hash) {
+    while (item && item->key && item->hash != hash && strcmp(item->key, key)) {
         prev = item;
         item = item->next;
     }
@@ -159,7 +159,6 @@ static void x__dict_item_create(const Dict *dict, DictItem *item, const char *ke
         x__dict_item_create(dict, item, key, data, hash);
     }
     else {  // same key: swap data
-        assert(!strcmp(item->key, key));
         void *item_data = item->data;
         item->data = data;
         return item_data;
@@ -193,14 +192,13 @@ static void x__dict_item_create(const Dict *dict, DictItem *item, const char *ke
     const size_t hash = dict->key_hash(key);
     DictItem *item = &dict->bucket[hash % dict->capacity];
     DictItem *prev = 0;
-    while (item && item->key && item->hash != hash) {
+    while (item && item->key && item->hash != hash && strcmp(item->key, key)) {
         prev = item;
         item = item->next;
     }
 
     // remove item
     if (!item || !item->key) return 0;  // item not in dict
-    assert(!strcmp(item->key, key));
     void *data = item->data;
     DictItem *next = item->next;
     free(item->key);
@@ -232,10 +230,8 @@ static void x__dict_item_create(const Dict *dict, DictItem *item, const char *ke
     assert(key);
     const size_t hash = dict->key_hash(key);
     DictItem *item = &dict->bucket[hash % dict->capacity];
-    while (item && item->key && item->hash != hash) item = item->next;
-    if (!item || !item->key) return 0;
-    assert(!strcmp(item->key, key));
-    return item->data;
+    while (item && item->key && item->hash != hash && strcmp(item->key, key)) item = item->next;
+    return (!item || !item->key ? 0 : item->data);
 }
 
 // remove all items from the dict

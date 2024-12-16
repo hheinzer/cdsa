@@ -141,7 +141,7 @@ static void x__dict_item_create(const Dict *dict, DictItem *item, const char *ke
     const size_t hash = dict->key_hash(key);
     DictItem *item = &dict->bucket[hash % dict->capacity];
     DictItem *prev = 0;
-    while (item && item->key && item->hash != hash && strcmp(item->key, key)) {
+    while (item && item->key && !(item->hash == hash && !strcmp(item->key, key))) {
         prev = item;
         item = item->next;
     }
@@ -192,7 +192,7 @@ static void x__dict_item_create(const Dict *dict, DictItem *item, const char *ke
     const size_t hash = dict->key_hash(key);
     DictItem *item = &dict->bucket[hash % dict->capacity];
     DictItem *prev = 0;
-    while (item && item->key && item->hash != hash && strcmp(item->key, key)) {
+    while (item && item->key && !(item->hash == hash && !strcmp(item->key, key))) {
         prev = item;
         item = item->next;
     }
@@ -230,7 +230,7 @@ static void x__dict_item_create(const Dict *dict, DictItem *item, const char *ke
     assert(key);
     const size_t hash = dict->key_hash(key);
     DictItem *item = &dict->bucket[hash % dict->capacity];
-    while (item && item->key && item->hash != hash && strcmp(item->key, key)) item = item->next;
+    while (item && item->key && !(item->hash == hash && !strcmp(item->key, key))) item = item->next;
     return (!item || !item->key ? 0 : item->data);
 }
 

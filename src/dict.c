@@ -7,7 +7,7 @@
 int main(void)
 {
     // create a dict that stores integers
-    Dict a = dict_create(20, 0.5, strhash_fnv1a, sizeof(int), memcpy, free);
+    Dict a = dict_create(10, 0.5, strhash_fnv1a, sizeof(int), memcpy, free);
 
     // insert key-integer pairs 0 through 9
     const char *key[] = {"zero", "one", "two",   "three", "four",

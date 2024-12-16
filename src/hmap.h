@@ -35,7 +35,7 @@ struct HmapItem {
 static Hmap hmap_create(long capacity, float load_factor, HmapKeyHash *key_hash, size_t data_size,
                         HmapDataCopy *data_copy, HmapDataFree *data_free)
 {
-    assert(capacity > 0);
+    assert(capacity >= 0);
     assert(0 < load_factor && load_factor < 1);
     assert(key_hash);
     return (Hmap){.capacity = capacity,
@@ -55,7 +55,7 @@ static void x__hmap_create_items(Hmap *hmap)
 static void x__hmap_resize_items(Hmap *hmap)
 {
     assert(hmap);
-    const long _capacity = hmap->capacity / hmap->load_factor;
+    const long _capacity = hmap->capacity / hmap->load_factor + 1;
     HmapItem *_item = calloc(_capacity, sizeof(*_item));
     assert(_item);
     long _max_dist = 0;

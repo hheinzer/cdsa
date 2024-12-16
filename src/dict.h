@@ -37,7 +37,7 @@ struct DictItem {
 static Dict dict_create(long capacity, float load_factor, DictKeyHash *key_hash, size_t data_size,
                         DictDataCopy *data_copy, DictDataFree *data_free)
 {
-    assert(capacity > 0);
+    assert(capacity >= 0);
     assert(0 < load_factor && load_factor < 1);
     assert(key_hash);
     return (Dict){.capacity = capacity,
@@ -57,7 +57,7 @@ static void x__dict_create_buckets(Dict *dict)
 static void x__dict_resize_buckets(Dict *dict)
 {
     assert(dict);
-    const long _capacity = dict->capacity / dict->load_factor;
+    const long _capacity = dict->capacity / dict->load_factor + 1;
     DictItem *_bucket = calloc(_capacity, sizeof(*_bucket));
     assert(_bucket);
     for (DictItem *bucket = dict->bucket; bucket < dict->bucket + dict->capacity; ++bucket) {

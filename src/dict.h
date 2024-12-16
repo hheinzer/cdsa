@@ -12,20 +12,20 @@ typedef void *DictDataCopy(void *, const void *, size_t);
 typedef void DictDataFree(void *);
 
 struct Dict {
-    long size, capacity;      // number of items and buckets
-    float load_factor;        // load factor for resizing
-    DictItem *bucket;         // array of buckets
-    DictKeyHash *key_hash;    // pointer to a function for hashing keys
-    size_t data_size;         // size of item data in bytes
-    DictDataCopy *data_copy;  // pointer to a function for copying data
-    DictDataFree *data_free;  // pointer to a function for freeing data
+    long size, capacity;
+    float load_factor;
+    DictItem *bucket;
+    DictKeyHash *key_hash;
+    size_t data_size;
+    DictDataCopy *data_copy;
+    DictDataFree *data_free;
 };
 
 struct DictItem {
-    char *key;       // pointer to key
-    void *data;      // pointer to stored data
-    size_t hash;     // hash value of key
-    DictItem *next;  // point to next item in bucket
+    char *key;
+    void *data;
+    size_t hash;
+    DictItem *next;
 };
 
 #define DictForEach(item, dict)                                                                   \
@@ -48,39 +48,29 @@ static Dict dict_create(long capacity, float load_factor, DictKeyHash *key_hash,
                   .data_free = data_free};
 }
 
-// create dict buckets
 static void x__dict_create_buckets(Dict *dict)
 {
     dict->bucket = calloc(dict->capacity, sizeof(*dict->bucket));
     assert(dict->bucket);
 }
 
-// resize dict buckets
 static void x__dict_resize_buckets(Dict *dict)
 {
     assert(dict);
-
-    // create new buckets
     const long _capacity = dict->capacity / dict->load_factor;
     DictItem *_bucket = calloc(_capacity, sizeof(*_bucket));
     assert(_bucket);
-
-    // insert old items
     for (DictItem *bucket = dict->bucket; bucket < dict->bucket + dict->capacity; ++bucket) {
         if (!bucket->key) continue;
         for (DictItem *item = bucket, *next; item; item = next) {
-            next = item->next;  // for the event that item is free'd
-
-            // find position
+            next = item->next;
             DictItem *_item = &_bucket[item->hash % _capacity];
             DictItem *_prev = 0;
             while (_item && _item->key) {
                 _prev = _item;
                 _item = _item->next;
             }
-
-            // insert item
-            if (!_item) {  // collision: append item
+            if (!_item) {
                 if (item == bucket) {
                     _item = malloc(sizeof(*_item));
                     assert(_item);
@@ -94,7 +84,7 @@ static void x__dict_resize_buckets(Dict *dict)
                 _item->next = 0;
                 _prev->next = _item;
             }
-            else {  // empty bucket: add item (same key cannot occur)
+            else {
                 _item->key = item->key;
                 _item->data = item->data;
                 _item->hash = item->hash;
@@ -102,14 +92,11 @@ static void x__dict_resize_buckets(Dict *dict)
             }
         }
     }
-
-    // housekeeping
     free(dict->bucket);
     dict->bucket = _bucket;
     dict->capacity = _capacity;
 }
 
-// create a dict item
 static void x__dict_item_create(const Dict *dict, DictItem *item, const char *key, void *data,
                                 size_t hash)
 {
@@ -131,12 +118,8 @@ static void x__dict_item_create(const Dict *dict, DictItem *item, const char *ke
 {
     assert(dict);
     assert(key);
-
-    // housekeeping
     if (!dict->bucket) x__dict_create_buckets(dict);
     if (dict->size + 1 > dict->capacity * dict->load_factor) x__dict_resize_buckets(dict);
-
-    // find position
     const size_t hash = dict->key_hash(key);
     DictItem *item = &dict->bucket[hash % dict->capacity];
     DictItem *prev = 0;
@@ -144,26 +127,22 @@ static void x__dict_item_create(const Dict *dict, DictItem *item, const char *ke
         prev = item;
         item = item->next;
     }
-
-    // insert item
-    if (!item) {  // collision: append item
+    if (!item) {
         item = malloc(sizeof(*item));
         assert(item);
         x__dict_item_create(dict, item, key, data, hash);
         item->next = 0;
-        assert(prev);  // first item of bucket cannot be 0; there must be a previous item
+        assert(prev);
         prev->next = item;
     }
-    else if (!item->key) {  // empty bucket: add item
+    else if (!item->key) {
         x__dict_item_create(dict, item, key, data, hash);
     }
-    else {  // same key: swap data
+    else {
         void *item_data = item->data;
         item->data = data;
         return item_data;
     }
-
-    // housekeeping
     dict->size += 1;
     return 0;
 }
@@ -174,7 +153,7 @@ static void x__dict_item_create(const Dict *dict, DictItem *item, const char *ke
     assert(dict);
     Dict copy = dict_create(dict->capacity, dict->load_factor, dict->key_hash, dict->data_size,
                             dict->data_copy, dict->data_free);
-    if (dict->size == 0) return copy;  // empty dict
+    if (dict->size == 0) return copy;
     for (const DictItem *bucket = dict->bucket; bucket < dict->bucket + dict->capacity; ++bucket)
         if (bucket->key)
             for (const DictItem *item = bucket; item; item = item->next)
@@ -186,10 +165,8 @@ static void x__dict_item_create(const Dict *dict, DictItem *item, const char *ke
 [[maybe_unused]] static void *dict_remove(Dict *dict, const char *key)
 {
     assert(dict);
-    if (dict->size == 0) return 0;  // empty dict
     assert(key);
-
-    // find position
+    if (dict->size == 0) return 0;
     const size_t hash = dict->key_hash(key);
     DictItem *item = &dict->bucket[hash % dict->capacity];
     DictItem *prev = 0;
@@ -197,29 +174,23 @@ static void x__dict_item_create(const Dict *dict, DictItem *item, const char *ke
         prev = item;
         item = item->next;
     }
-
-    // remove item
-    if (!item || !item->key) return 0;  // item not in dict
+    if (!item || !item->key) return 0;
     void *data = item->data;
     DictItem *next = item->next;
     free(item->key);
-
-    // update bucket
-    if (!prev) {  // head item
+    if (!prev) {
         if (next) {
-            *item = *next;  // move next item up to head
+            *item = *next;
             free(next);
         }
         else {
-            memset(item, 0, sizeof(*item));  // clear head
+            memset(item, 0, sizeof(*item));
         }
     }
-    else {  // chained item
+    else {
         free(item);
         prev->next = next;
     }
-
-    // housekeeping
     dict->size -= 1;
     return data;
 }
@@ -228,8 +199,8 @@ static void x__dict_item_create(const Dict *dict, DictItem *item, const char *ke
 [[maybe_unused]] static void *dict_find(const Dict *dict, const char *key)
 {
     assert(dict);
-    if (dict->size == 0) return 0;  // empty dict
     assert(key);
+    if (dict->size == 0) return 0;
     const size_t hash = dict->key_hash(key);
     DictItem *item = &dict->bucket[hash % dict->capacity];
     while (item && item->key && (item->hash != hash || strcmp(item->key, key))) item = item->next;
@@ -240,7 +211,7 @@ static void x__dict_item_create(const Dict *dict, DictItem *item, const char *ke
 [[maybe_unused]] static void dict_clear(Dict *dict)
 {
     assert(dict);
-    if (dict->size == 0) return;  // empty dict
+    if (dict->size == 0) return;
     for (DictItem *bucket = dict->bucket; bucket < dict->bucket + dict->capacity; ++bucket) {
         if (!bucket->key) continue;
         free(bucket->key);
@@ -252,7 +223,7 @@ static void x__dict_item_create(const Dict *dict, DictItem *item, const char *ke
             free(item);
         }
     }
-    dict->size = 0;
     free(dict->bucket);
     dict->bucket = 0;
+    dict->size = 0;
 }

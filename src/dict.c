@@ -31,8 +31,8 @@ int main(void)
     printf("}\n");
 
     // print address of item with key "six"
-    printf("a.find(33) = %p\n", dict_find(&a, "six"));
-    printf("b.find(33) = %p\n", dict_find(&b, "six"));
+    printf("a.find(six) = %p\n", dict_find(&a, "six"));
+    printf("b.find(six) = %p\n", dict_find(&b, "six"));
 
     // clear items
     dict_clear(&a);

@@ -72,8 +72,7 @@ static void x__dict_resize_buckets(Dict *dict)
             next = item->next;  // for the event that item is free'd
 
             // find position
-            const size_t hash = item->hash;  // no need to recompute the hash
-            DictItem *_item = &_bucket[hash % _capacity];
+            DictItem *_item = &_bucket[item->hash % _capacity];
             DictItem *_prev = 0;
             while (_item && _item->key) {
                 _prev = _item;
@@ -141,7 +140,7 @@ static void x__dict_item_create(const Dict *dict, DictItem *item, const char *ke
     const size_t hash = dict->key_hash(key);
     DictItem *item = &dict->bucket[hash % dict->capacity];
     DictItem *prev = 0;
-    while (item && item->key && !(item->hash == hash && !strcmp(item->key, key))) {
+    while (item && item->key && (item->hash != hash || strcmp(item->key, key))) {
         prev = item;
         item = item->next;
     }
@@ -192,7 +191,7 @@ static void x__dict_item_create(const Dict *dict, DictItem *item, const char *ke
     const size_t hash = dict->key_hash(key);
     DictItem *item = &dict->bucket[hash % dict->capacity];
     DictItem *prev = 0;
-    while (item && item->key && !(item->hash == hash && !strcmp(item->key, key))) {
+    while (item && item->key && (item->hash != hash || strcmp(item->key, key))) {
         prev = item;
         item = item->next;
     }
@@ -210,7 +209,7 @@ static void x__dict_item_create(const Dict *dict, DictItem *item, const char *ke
             free(next);
         }
         else {
-            *item = (DictItem){0};  // clear head
+            memset(item, 0, sizeof(*item));  // clear head
         }
     }
     else {  // chained item
@@ -230,7 +229,7 @@ static void x__dict_item_create(const Dict *dict, DictItem *item, const char *ke
     assert(key);
     const size_t hash = dict->key_hash(key);
     DictItem *item = &dict->bucket[hash % dict->capacity];
-    while (item && item->key && !(item->hash == hash && !strcmp(item->key, key))) item = item->next;
+    while (item && item->key && (item->hash != hash || strcmp(item->key, key))) item = item->next;
     return (!item || !item->key ? 0 : item->data);
 }
 

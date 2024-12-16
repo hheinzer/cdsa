@@ -212,7 +212,7 @@ static void x__dict_item_create(const Dict *dict, DictItem *item, const char *ke
 [[maybe_unused]] static void dict_clear(Dict *dict)
 {
     assert(dict);
-    if (dict->size == 0) return;
+    if (!dict->bucket) return;
     for (DictItem *bucket = dict->bucket; bucket < dict->bucket + dict->capacity; ++bucket) {
         if (!bucket->key) continue;
         free(bucket->key);

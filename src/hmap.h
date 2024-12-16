@@ -177,7 +177,7 @@ static void x__hmap_item_create(const Hmap *hmap, HmapItem *item, const char *ke
 [[maybe_unused]] static void hmap_clear(Hmap *hmap)
 {
     assert(hmap);
-    if (hmap->size == 0) return;
+    if (!hmap->item) return;
     for (HmapItem *item = hmap->item; item < hmap->item + hmap->capacity; ++item) {
         if (!item->key) continue;
         free(item->key);

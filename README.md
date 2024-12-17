@@ -30,9 +30,9 @@ data and appropriate copy and deallocation function. If you are not storing anyt
 - [x] `array.h`: dynamic array
 - [x] `list.h`: linked list
 - [x] `hash.h`: hash functions
-- [x] `hmap.h`: associative array using open addressing
 - [x] `dict.h`: associative array using open chaining
-- [ ] `set.h`
+- [x] `hmap.h`: associative array using open addressing
+- [x] `set.h`: set using hashing and open addressing
 - [ ] `heap.h`
 - [ ] `tree.h`
 - [ ] `graph.h`

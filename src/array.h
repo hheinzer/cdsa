@@ -2,7 +2,6 @@
 
 #include <assert.h>
 #include <stdlib.h>
-#include <string.h>
 
 // general purpose dynamic array
 typedef struct Array Array;
@@ -13,11 +12,11 @@ typedef void ArrayDataFree(void *);
 
 struct Array {
     long size, capacity;
-    ArrayItem *item;
     size_t data_size;
     ArrayDataCopy *data_copy;
     ArrayDataCompare *data_cmp;
     ArrayDataFree *data_free;
+    ArrayItem *item;
 };
 
 struct ArrayItem {

@@ -12,11 +12,11 @@ typedef void ListDataFree(void *);
 
 struct List {
     long size;
-    ListItem *head, *tail;
     size_t data_size;
     ListDataCopy *data_copy;
     ListDataCompare *data_cmp;
     ListDataFree *data_free;
+    ListItem *head, *tail;
 };
 
 struct ListItem {

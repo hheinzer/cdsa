@@ -14,11 +14,11 @@ typedef void DictDataFree(void *);
 struct Dict {
     long size, capacity;
     float load_factor;
-    DictItem *bucket;
-    DictKeyHash *key_hash;
     size_t data_size;
+    DictKeyHash *key_hash;
     DictDataCopy *data_copy;
     DictDataFree *data_free;
+    DictItem *bucket;
 };
 
 struct DictItem {
@@ -34,7 +34,7 @@ struct DictItem {
             for (DictItem *item = bucket; item; item = item->next)
 
 // create an empty dict
-static Dict dict_create(long capacity, float load_factor, DictKeyHash *key_hash, size_t data_size,
+static Dict dict_create(long capacity, float load_factor, size_t data_size, DictKeyHash *key_hash,
                         DictDataCopy *data_copy, DictDataFree *data_free)
 {
     assert(capacity >= 0);
@@ -42,8 +42,8 @@ static Dict dict_create(long capacity, float load_factor, DictKeyHash *key_hash,
     assert(key_hash);
     return (Dict){.capacity = capacity,
                   .load_factor = load_factor,
-                  .key_hash = key_hash,
                   .data_size = data_size,
+                  .key_hash = key_hash,
                   .data_copy = data_copy,
                   .data_free = data_free};
 }
@@ -152,7 +152,7 @@ static void x__dict_item_create(const Dict *dict, DictItem *item, const char *ke
 [[maybe_unused]] static Dict dict_copy(const Dict *dict)
 {
     assert(dict);
-    Dict copy = dict_create(dict->capacity, dict->load_factor, dict->key_hash, dict->data_size,
+    Dict copy = dict_create(dict->capacity, dict->load_factor, dict->data_size, dict->key_hash,
                             dict->data_copy, dict->data_free);
     if (dict->size == 0) return copy;
     for (const DictItem *bucket = dict->bucket; bucket < dict->bucket + dict->capacity; ++bucket)

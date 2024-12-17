@@ -4,7 +4,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-// general purpose associative array using open chaining
+// general purpose associative array using open addressing
 typedef struct Hmap Hmap;
 typedef struct HmapItem HmapItem;
 typedef size_t HmapKeyHash(const char *);
@@ -14,11 +14,11 @@ typedef void HmapDataFree(void *);
 struct Hmap {
     long size, capacity, max_dist;
     float load_factor;
-    HmapItem *item;
-    HmapKeyHash *key_hash;
     size_t data_size;
+    HmapKeyHash *key_hash;
     HmapDataCopy *data_copy;
     HmapDataFree *data_free;
+    HmapItem *item;
 };
 
 struct HmapItem {
@@ -32,7 +32,7 @@ struct HmapItem {
         if (item->key)
 
 // create an empty hmap
-static Hmap hmap_create(long capacity, float load_factor, HmapKeyHash *key_hash, size_t data_size,
+static Hmap hmap_create(long capacity, float load_factor, size_t data_size, HmapKeyHash *key_hash,
                         HmapDataCopy *data_copy, HmapDataFree *data_free)
 {
     assert(capacity >= 0);
@@ -40,8 +40,8 @@ static Hmap hmap_create(long capacity, float load_factor, HmapKeyHash *key_hash,
     assert(key_hash);
     return (Hmap){.capacity = capacity,
                   .load_factor = load_factor,
-                  .key_hash = key_hash,
                   .data_size = data_size,
+                  .key_hash = key_hash,
                   .data_copy = data_copy,
                   .data_free = data_free};
 }
@@ -125,7 +125,7 @@ static void x__hmap_item_create(const Hmap *hmap, HmapItem *item, const char *ke
 [[maybe_unused]] static Hmap hmap_copy(const Hmap *hmap)
 {
     assert(hmap);
-    Hmap copy = hmap_create(hmap->capacity, hmap->load_factor, hmap->key_hash, hmap->data_size,
+    Hmap copy = hmap_create(hmap->capacity, hmap->load_factor, hmap->data_size, hmap->key_hash,
                             hmap->data_copy, hmap->data_free);
     if (hmap->size == 0) return copy;
     for (const HmapItem *item = hmap->item; item < hmap->item + hmap->capacity; ++item)

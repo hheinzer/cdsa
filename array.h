@@ -34,11 +34,13 @@ static Array array_create(long capacity, size_t data_size, ArrayDataCopy *data_c
                           ArrayDataCompare *data_cmp, ArrayDataFree *data_free)
 {
     assert(capacity >= 0);
-    return (Array){.capacity = capacity,
-                   .data_size = data_size,
-                   .data_copy = data_copy,
-                   .data_cmp = data_cmp,
-                   .data_free = data_free};
+    return (Array){
+        .capacity = capacity,
+        .data_size = data_size,
+        .data_copy = data_copy,
+        .data_cmp = data_cmp,
+        .data_free = data_free,
+    };
 }
 
 static void x__array_create_items(Array *array)

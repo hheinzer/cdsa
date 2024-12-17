@@ -32,10 +32,12 @@ struct ListItem {
 static List list_create(size_t data_size, ListDataCopy *data_copy, ListDataCompare *data_cmp,
                         ListDataFree *data_free)
 {
-    return (List){.data_size = data_size,
-                  .data_copy = data_copy,
-                  .data_cmp = data_cmp,
-                  .data_free = data_free};
+    return (List){
+        .data_size = data_size,
+        .data_copy = data_copy,
+        .data_cmp = data_cmp,
+        .data_free = data_free,
+    };
 }
 
 static ListItem *x__list_item_create(const List *list, void *data)

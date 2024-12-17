@@ -40,12 +40,14 @@ static Dict dict_create(long capacity, float load_factor, size_t data_size, Dict
     assert(capacity >= 0);
     assert(0 < load_factor && load_factor < 1);
     assert(key_hash);
-    return (Dict){.capacity = capacity,
-                  .load_factor = load_factor,
-                  .data_size = data_size,
-                  .key_hash = key_hash,
-                  .data_copy = data_copy,
-                  .data_free = data_free};
+    return (Dict){
+        .capacity = capacity,
+        .load_factor = load_factor,
+        .data_size = data_size,
+        .key_hash = key_hash,
+        .data_copy = data_copy,
+        .data_free = data_free,
+    };
 }
 
 static void x__dict_create_buckets(Dict *dict)

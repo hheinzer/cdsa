@@ -37,12 +37,14 @@ static Set set_create(long capacity, float load_factor, size_t data_size, SetDat
     assert(capacity >= 0);
     assert(0 < load_factor && load_factor < 1);
     assert(data_hash);
-    return (Set){.capacity = capacity,
-                 .load_factor = load_factor,
-                 .data_size = data_size,
-                 .data_hash = data_hash,
-                 .data_copy = data_copy,
-                 .data_free = data_free};
+    return (Set){
+        .capacity = capacity,
+        .load_factor = load_factor,
+        .data_size = data_size,
+        .data_hash = data_hash,
+        .data_copy = data_copy,
+        .data_free = data_free,
+    };
 }
 
 static void x__set_create_items(Set *set)

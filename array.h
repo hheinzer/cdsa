@@ -33,7 +33,7 @@ struct ArrayItem {
 static Array array_create(long capacity, size_t data_size, ArrayDataCopy *data_copy,
                           ArrayDataCompare *data_cmp, ArrayDataFree *data_free)
 {
-    assert(capacity > 0);
+    assert(capacity >= 0);
     return (Array){.capacity = capacity,
                    .data_size = data_size,
                    .data_copy = data_copy,
@@ -50,7 +50,7 @@ static void x__array_create_items(Array *array)
 static void x__array_resize_items(Array *array)
 {
     assert(array);
-    array->capacity *= 2;
+    array->capacity = 2 * array->capacity + 1;
     array->item = realloc(array->item, array->capacity * sizeof(*array->item));
     assert(array->item);
 }

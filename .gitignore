@@ -1,5 +1,0 @@
-src/*
-!src/*.[ch]
-
-test/*
-!test/*.[ch]

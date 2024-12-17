@@ -1,0 +1,25 @@
+---
+Checks:
+  - -*
+  - clang-analyzer-*
+  - -clang-analyzer-security.insecureAPI.*
+  - -clang-analyzer-deadcode.DeadStores
+  - -clang-analyzer-valist.Uninitialized
+  - misc-*
+  - -misc-include-cleaner
+  - -misc-no-recursion
+  - modernize-*
+  - -modernize-macro-to-enum
+  - mpi-*
+  - openmp-*
+  - performance-*
+  - portability-*
+  - readability-*
+  - -readability-braces-around-statements
+  - -readability-identifier-length
+  - -readability-named-parameter
+  - -readability-magic-numbers
+  - -readability-isolate-declaration
+  - -readability-function-cognitive-complexity
+...
+

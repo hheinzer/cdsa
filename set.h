@@ -139,10 +139,10 @@ static void x__set_item_create(const Set *set, SetItem *item, void *data, size_t
     SetItem *item = &set->item[i];
     for (long dist = 0; dist <= set->max_dist; ++dist) {
         if (item->data && item->hash == hash && !memcmp(item->data, data, set->data_size)) {
-            void *data = item->data;
+            void *item_data = item->data;
             memset(item, 0, sizeof(*item));
             set->size -= 1;
-            return data;
+            return item_data;
         }
         i = (i + 1) % set->capacity;
         item = &set->item[i];

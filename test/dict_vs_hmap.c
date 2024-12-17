@@ -1,15 +1,15 @@
 #include <stdio.h>
 #include <time.h>
 
-#include "../src/dict.h"
-#include "../src/hash.h"
-#include "../src/hmap.h"
+#include "../dict.h"
+#include "../hash.h"
+#include "../hmap.h"
 
 void stress_dict(long n, long capacity, float load_factor, DictKeyHash hash);
 void stress_hmap(long n, long capacity, float load_factor, HmapKeyHash hash);
 char *number(char *str, long num);
 
-/* Compiled with 'clang -std=c23 -march=native -Ofast -DNDEBUG' I get:
+/* Compiled with release flags I get:
  * - for m = 0 (maximum amount of resizing):
  *   0.05:     1.5534,     1.3444,     0.1345
  *   0.10:     2.0774,     1.7301,     0.1672
@@ -51,7 +51,7 @@ char *number(char *str, long num);
  *   0.90:     0.8881,     0.7278,     0.1805
  *   0.95:     0.8933,     0.7742,     0.1333
  *
- * This show that hmap is consistently faster than dict, except for very  high low load factors,
+ * This show that hmap is consistently faster than dict, except for very high low load factors,
  * where both data structures perform badly. I get similar results if compiled with gcc.
  */
 int main(void)

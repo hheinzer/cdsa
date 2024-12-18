@@ -116,8 +116,8 @@ static void x__dict_item_create(const Dict *dict, DictItem *item, const char *ke
     item->hash = hash;
 }
 
-// insert an item with a given key, swap data and return old data on collision
-[[maybe_unused]] static void *dict_insert(Dict *dict, const char *key, void *data)
+// insert an item with a given key; on collision, keep or replace data and return old data
+[[maybe_unused]] static void *dict_insert(Dict *dict, const char *key, void *data, int keep)
 {
     assert(dict);
     assert(key);
@@ -143,7 +143,7 @@ static void x__dict_item_create(const Dict *dict, DictItem *item, const char *ke
     }
     else {
         void *item_data = item->data;
-        item->data = data;
+        if (!keep) item->data = data;
         return item_data;
     }
     dict->size += 1;
@@ -160,7 +160,7 @@ static void x__dict_item_create(const Dict *dict, DictItem *item, const char *ke
     for (const DictItem *bucket = dict->bucket; bucket < dict->bucket + dict->capacity; ++bucket)
         if (bucket->key)
             for (const DictItem *item = bucket; item; item = item->next)
-                dict_insert(&copy, item->key, item->data);
+                dict_insert(&copy, item->key, item->data, 0);
     return copy;
 }
 

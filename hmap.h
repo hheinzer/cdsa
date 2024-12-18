@@ -95,8 +95,8 @@ static void x__hmap_item_create(const Hmap *hmap, HmapItem *item, const char *ke
     item->hash = hash;
 }
 
-// insert an item with a given key, swap data and return old data on collision
-[[maybe_unused]] static void *hmap_insert(Hmap *hmap, const char *key, void *data)
+// insert an item with a given key; on collision, keep or replace data and return old data
+[[maybe_unused]] static void *hmap_insert(Hmap *hmap, const char *key, void *data, int keep)
 {
     assert(hmap);
     assert(key);
@@ -116,7 +116,7 @@ static void x__hmap_item_create(const Hmap *hmap, HmapItem *item, const char *ke
     }
     else {
         void *item_data = item->data;
-        item->data = data;
+        if (!keep) item->data = data;
         return item_data;
     }
     hmap->size += 1;
@@ -131,7 +131,7 @@ static void x__hmap_item_create(const Hmap *hmap, HmapItem *item, const char *ke
                             hmap->data_copy, hmap->data_free);
     if (hmap->size == 0) return copy;
     for (const HmapItem *item = hmap->item; item < hmap->item + hmap->capacity; ++item)
-        if (item->key) hmap_insert(&copy, item->key, item->data);
+        if (item->key) hmap_insert(&copy, item->key, item->data, 0);
     return copy;
 }
 

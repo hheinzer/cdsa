@@ -90,8 +90,8 @@ static void x__set_item_create(const Set *set, SetItem *item, void *data, size_t
     item->hash = hash;
 }
 
-// insert an item, swap data and return old data on collision
-[[maybe_unused]] static void *set_insert(Set *set, void *data)
+// insert an item; on collision, keep or replace data and return old data
+[[maybe_unused]] static void *set_insert(Set *set, void *data, int keep)
 {
     assert(set);
     assert(data);
@@ -111,7 +111,7 @@ static void x__set_item_create(const Set *set, SetItem *item, void *data, size_t
     }
     else {
         void *item_data = item->data;
-        item->data = data;
+        if (!keep) item->data = data;
         return item_data;
     }
     set->size += 1;
@@ -126,7 +126,7 @@ static void x__set_item_create(const Set *set, SetItem *item, void *data, size_t
                           set->data_copy, set->data_free);
     if (set->size == 0) return copy;
     for (const SetItem *item = set->item; item < set->item + set->capacity; ++item)
-        if (item->data) set_insert(&copy, item->data);
+        if (item->data) set_insert(&copy, item->data, 0);
     return copy;
 }
 

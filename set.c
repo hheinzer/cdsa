@@ -10,7 +10,7 @@ int main(void)
     Set a = set_create(10, sizeof(int), 0.75, memhash_fnv1a, memcpy, free);
 
     // insert key-integer pairs 0 through 9
-    for (long i = 0; i < 10; ++i) set_insert(&a, &i);
+    for (long i = 0; i < 10; ++i) set_insert(&a, &i, 0);
 
     // create a copy of the set
     Set b = set_copy(&a);

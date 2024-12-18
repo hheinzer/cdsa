@@ -12,7 +12,7 @@ int main(void)
     // insert key-integer pairs 0 through 9
     const char *key[] = {"zero", "one", "two",   "three", "four",
                          "five", "six", "seven", "eight", "nine"};
-    for (long i = 0; i < 10; ++i) dict_insert(&a, key[i], &i);
+    for (long i = 0; i < 10; ++i) dict_insert(&a, key[i], &i, 0);
 
     // create a copy of the dict
     Dict b = dict_copy(&a);

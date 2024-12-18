@@ -56,18 +56,18 @@ char *number(char *str, long num);
  */
 int main(void)
 {
-    const long n = 2'000'000, m = n;
+    const long n = 2'000'000, capacity = n;
     for (long i = 0; i < 19; ++i) {
         double load_factor = 0.05 + i * 0.05;
 
-        stress_dict(n, m / load_factor + 1, load_factor, strhash_fnv1a);
+        stress_dict(n, capacity, load_factor, strhash_fnv1a);
         const clock_t t0 = clock();
-        stress_dict(n, m / load_factor + 1, load_factor, strhash_fnv1a);
+        stress_dict(n, capacity, load_factor, strhash_fnv1a);
         const clock_t t1 = clock();
 
-        stress_hmap(n, m / load_factor + 1, load_factor, strhash_fnv1a);
+        stress_hmap(n, capacity, load_factor, strhash_fnv1a);
         const clock_t t2 = clock();
-        stress_hmap(n, m / load_factor + 1, load_factor, strhash_fnv1a);
+        stress_hmap(n, capacity, load_factor, strhash_fnv1a);
         const clock_t t3 = clock();
 
         printf("%.2f: %10.4f, %10.4f, %10.4f\n", load_factor, (t1 - t0) / (double)CLOCKS_PER_SEC,

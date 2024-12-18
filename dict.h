@@ -41,7 +41,7 @@ static Dict dict_create(long capacity, double load_factor, size_t data_size, Dic
     assert(0 < load_factor && load_factor < 1);
     assert(key_hash);
     return (Dict){
-        .capacity = capacity,
+        .capacity = capacity / load_factor + 1,
         .load_factor = load_factor,
         .data_size = data_size,
         .key_hash = key_hash,
@@ -154,7 +154,7 @@ static void x__dict_item_create(const Dict *dict, DictItem *item, const char *ke
 [[maybe_unused]] static Dict dict_copy(const Dict *dict)
 {
     assert(dict);
-    Dict copy = dict_create(dict->capacity, dict->load_factor, dict->data_size, dict->key_hash,
+    Dict copy = dict_create(dict->size, dict->load_factor, dict->data_size, dict->key_hash,
                             dict->data_copy, dict->data_free);
     if (dict->size == 0) return copy;
     for (const DictItem *bucket = dict->bucket; bucket < dict->bucket + dict->capacity; ++bucket)

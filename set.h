@@ -38,7 +38,7 @@ static Set set_create(long capacity, double load_factor, size_t data_size, SetDa
     assert(0 < load_factor && load_factor < 1);
     assert(data_hash);
     return (Set){
-        .capacity = capacity,
+        .capacity = capacity / load_factor + 1,
         .load_factor = load_factor,
         .data_size = data_size,
         .data_hash = data_hash,
@@ -122,7 +122,7 @@ static void x__set_item_create(const Set *set, SetItem *item, void *data, size_t
 [[maybe_unused]] static Set set_copy(const Set *set)
 {
     assert(set);
-    Set copy = set_create(set->capacity, set->load_factor, set->data_size, set->data_hash,
+    Set copy = set_create(set->size, set->load_factor, set->data_size, set->data_hash,
                           set->data_copy, set->data_free);
     if (set->size == 0) return copy;
     for (const SetItem *item = set->item; item < set->item + set->capacity; ++item)

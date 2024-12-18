@@ -13,8 +13,8 @@ typedef void SetDataFree(void *);
 
 struct Set {
     long size, capacity, max_dist;
-    double load_factor;
     size_t data_size;
+    double load_factor;
     SetDataHash *data_hash;
     SetDataCopy *data_copy;
     SetDataFree *data_free;
@@ -31,7 +31,7 @@ struct SetItem {
         if (item->data)
 
 // create an empty set
-static Set set_create(long capacity, double load_factor, size_t data_size, SetDataHash *data_hash,
+static Set set_create(long capacity, size_t data_size, double load_factor, SetDataHash *data_hash,
                       SetDataCopy *data_copy, SetDataFree *data_free)
 {
     assert(capacity >= 0);
@@ -39,8 +39,8 @@ static Set set_create(long capacity, double load_factor, size_t data_size, SetDa
     assert(data_hash);
     return (Set){
         .capacity = capacity / load_factor + 1,
-        .load_factor = load_factor,
         .data_size = data_size,
+        .load_factor = load_factor,
         .data_hash = data_hash,
         .data_copy = data_copy,
         .data_free = data_free,
@@ -122,7 +122,7 @@ static void x__set_item_create(const Set *set, SetItem *item, void *data, size_t
 [[maybe_unused]] static Set set_copy(const Set *set)
 {
     assert(set);
-    Set copy = set_create(set->size, set->load_factor, set->data_size, set->data_hash,
+    Set copy = set_create(set->size, set->data_size, set->load_factor, set->data_hash,
                           set->data_copy, set->data_free);
     if (set->size == 0) return copy;
     for (const SetItem *item = set->item; item < set->item + set->capacity; ++item)

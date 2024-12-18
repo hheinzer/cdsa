@@ -13,8 +13,8 @@ typedef void HmapDataFree(void *);
 
 struct Hmap {
     long size, capacity, max_dist;
-    double load_factor;
     size_t data_size;
+    double load_factor;
     HmapKeyHash *key_hash;
     HmapDataCopy *data_copy;
     HmapDataFree *data_free;
@@ -32,7 +32,7 @@ struct HmapItem {
         if (item->key)
 
 // create an empty hmap
-static Hmap hmap_create(long capacity, double load_factor, size_t data_size, HmapKeyHash *key_hash,
+static Hmap hmap_create(long capacity, size_t data_size, double load_factor, HmapKeyHash *key_hash,
                         HmapDataCopy *data_copy, HmapDataFree *data_free)
 {
     assert(capacity >= 0);
@@ -40,8 +40,8 @@ static Hmap hmap_create(long capacity, double load_factor, size_t data_size, Hma
     assert(key_hash);
     return (Hmap){
         .capacity = capacity / load_factor + 1,
-        .load_factor = load_factor,
         .data_size = data_size,
+        .load_factor = load_factor,
         .key_hash = key_hash,
         .data_copy = data_copy,
         .data_free = data_free,
@@ -127,7 +127,7 @@ static void x__hmap_item_create(const Hmap *hmap, HmapItem *item, const char *ke
 [[maybe_unused]] static Hmap hmap_copy(const Hmap *hmap)
 {
     assert(hmap);
-    Hmap copy = hmap_create(hmap->size, hmap->load_factor, hmap->data_size, hmap->key_hash,
+    Hmap copy = hmap_create(hmap->size, hmap->data_size, hmap->load_factor, hmap->key_hash,
                             hmap->data_copy, hmap->data_free);
     if (hmap->size == 0) return copy;
     for (const HmapItem *item = hmap->item; item < hmap->item + hmap->capacity; ++item)

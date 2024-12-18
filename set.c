@@ -7,7 +7,7 @@
 int main(void)
 {
     // create a set that stores integers
-    Set a = set_create(10, 0.5, sizeof(int), memhash_fnv1a, memcpy, free);
+    Set a = set_create(10, sizeof(int), 0.75, memhash_fnv1a, memcpy, free);
 
     // insert key-integer pairs 0 through 9
     for (long i = 0; i < 10; ++i) set_insert(&a, &i);

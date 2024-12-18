@@ -13,7 +13,7 @@ int intcmp(const void *a, const void *b)
 int main(void)
 {
     // create an array that stores integers
-    Array a = array_create(10, sizeof(int), memcpy, intcmp, free);
+    Array a = array_create(10, sizeof(int), intcmp, memcpy, free);
 
     // append integers 0 through 9
     for (int i = 0; i < 10; ++i) array_append(&a, &i);

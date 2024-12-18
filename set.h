@@ -79,7 +79,7 @@ static void x__set_resize_items(Set *set)
 
 static void x__set_item_create(const Set *set, SetItem *item, void *data, size_t hash)
 {
-    if (data && set->data_copy) {
+    if (set->data_copy) {
         item->data = malloc(set->data_size);
         assert(item->data);
         set->data_copy(item->data, data, set->data_size);

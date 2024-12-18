@@ -13,7 +13,7 @@ typedef void SetDataFree(void *);
 
 struct Set {
     long size, capacity, max_dist;
-    float load_factor;
+    double load_factor;
     size_t data_size;
     SetDataHash *data_hash;
     SetDataCopy *data_copy;
@@ -31,7 +31,7 @@ struct SetItem {
         if (item->data)
 
 // create an empty set
-static Set set_create(long capacity, float load_factor, size_t data_size, SetDataHash *data_hash,
+static Set set_create(long capacity, double load_factor, size_t data_size, SetDataHash *data_hash,
                       SetDataCopy *data_copy, SetDataFree *data_free)
 {
     assert(capacity >= 0);

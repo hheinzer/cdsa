@@ -13,7 +13,7 @@ typedef void HmapDataFree(void *);
 
 struct Hmap {
     long size, capacity, max_dist;
-    float load_factor;
+    double load_factor;
     size_t data_size;
     HmapKeyHash *key_hash;
     HmapDataCopy *data_copy;
@@ -32,7 +32,7 @@ struct HmapItem {
         if (item->key)
 
 // create an empty hmap
-static Hmap hmap_create(long capacity, float load_factor, size_t data_size, HmapKeyHash *key_hash,
+static Hmap hmap_create(long capacity, double load_factor, size_t data_size, HmapKeyHash *key_hash,
                         HmapDataCopy *data_copy, HmapDataFree *data_free)
 {
     assert(capacity >= 0);

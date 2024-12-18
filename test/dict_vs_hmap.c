@@ -5,8 +5,8 @@
 #include "../hash.h"
 #include "../hmap.h"
 
-void stress_dict(long n, long capacity, float load_factor, DictKeyHash hash);
-void stress_hmap(long n, long capacity, float load_factor, HmapKeyHash hash);
+void stress_dict(long n, long capacity, double load_factor, DictKeyHash hash);
+void stress_hmap(long n, long capacity, double load_factor, HmapKeyHash hash);
 char *number(char *str, long num);
 
 /* Compiled with release flags I get:
@@ -57,7 +57,9 @@ char *number(char *str, long num);
 int main(void)
 {
     const long n = 2'000'000, m = n;
-    for (float load_factor = 0.05; load_factor < 1.0; load_factor += 0.05) {
+    for (long i = 0; i < 19; ++i) {
+        double load_factor = 0.05 + i * 0.05;
+
         stress_dict(n, m / load_factor + 1, load_factor, strhash_fnv1a);
         const clock_t t0 = clock();
         stress_dict(n, m / load_factor + 1, load_factor, strhash_fnv1a);
@@ -73,7 +75,7 @@ int main(void)
     }
 }
 
-void stress_dict(long n, long capacity, float load_factor, DictKeyHash hash)
+void stress_dict(long n, long capacity, double load_factor, DictKeyHash hash)
 {
     char key[1024];
     Dict dict = dict_create(capacity, load_factor, sizeof(long), hash, memcpy, free);
@@ -85,7 +87,7 @@ void stress_dict(long n, long capacity, float load_factor, DictKeyHash hash)
     dict_clear(&dict);
 }
 
-void stress_hmap(long n, long capacity, float load_factor, HmapKeyHash hash)
+void stress_hmap(long n, long capacity, double load_factor, HmapKeyHash hash)
 {
     char key[1024];
     Hmap hmap = hmap_create(capacity, load_factor, sizeof(long), hash, memcpy, free);

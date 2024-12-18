@@ -13,7 +13,7 @@ typedef void DictDataFree(void *);
 
 struct Dict {
     long size, capacity;
-    float load_factor;
+    double load_factor;
     size_t data_size;
     DictKeyHash *key_hash;
     DictDataCopy *data_copy;
@@ -34,7 +34,7 @@ struct DictItem {
             for (DictItem *item = bucket; item; item = item->next)
 
 // create an empty dict
-static Dict dict_create(long capacity, float load_factor, size_t data_size, DictKeyHash *key_hash,
+static Dict dict_create(long capacity, double load_factor, size_t data_size, DictKeyHash *key_hash,
                         DictDataCopy *data_copy, DictDataFree *data_free)
 {
     assert(capacity >= 0);

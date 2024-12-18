@@ -52,8 +52,8 @@ contribute code:
 
 ## Usage
 
-- [Me](https://github.com/hheinzer/advent-of-code-c) (not yet, but soon) for [Advent of
-  Code](https://adventofcode.com/)
+- [Me](https://github.com/hheinzer/advent-of-code-c) for [Advent of Code](https://adventofcode.com/)
+  in 2024 (and beyond)
 
 
 ## License

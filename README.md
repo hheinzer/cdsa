@@ -27,7 +27,7 @@ data and appropriate copy and deallocation function. If you are not storing anyt
 
 ## Features
 
-- Linear Data Structures
+- Linear
     - [x] `array.h`: dynamic array
     - [x] `list.h`: linked list
 - Hashing

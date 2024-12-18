@@ -27,16 +27,18 @@ data and appropriate copy and deallocation function. If you are not storing anyt
 
 ## Features
 
-- [x] `array.h`: dynamic array
-- [x] `list.h`: linked list
-- [x] `heap.h`: priority queue
-- [x] `hash.h`: hash functions
-- [x] `dict.h`: associative array using open chaining
-- [x] `hmap.h`: associative array using open addressing
-- [x] `set.h`: set using hashing and open addressing
-- [ ] `tree.h`
-- [ ] `graph.h`
-- [ ] `sparse.h`
+- Linear Data Structures
+    - [x] `array.h`: dynamic array
+    - [x] `list.h`: linked list
+- Hashing
+    - [x] `hash.h`: hash functions
+    - [x] `dict.h`: associative array using open chaining
+    - [x] `hmap.h`: associative array using open addressing
+    - [x] `set.h`: set using hashing and open addressing
+- Trees
+    - [x] `heap.h`: priority queue
+- Graphs
+    - [ ] `graph.h`
 
 ## Contributing
 

@@ -30,8 +30,8 @@ struct ListItem {
 #define ListForEachReverse(item, list) for (ListItem *item = (list)->tail; item; item = item->prev)
 
 // create an empty list
-[[maybe_unused]] static List list_create_full(size_t data_size, ListDataCompare *data_cmp,
-                                              ListDataCopy *data_copy, ListDataFree *data_free)
+static List list_create_full(size_t data_size, ListDataCompare *data_cmp, ListDataCopy *data_copy,
+                             ListDataFree *data_free)
 {
     return (List){
         .data_size = data_size,
@@ -40,7 +40,7 @@ struct ListItem {
         .data_free = data_free,
     };
 }
-[[maybe_unused]] static List list_create(size_t data_size, ListDataCompare *data_cmp)
+static List list_create(size_t data_size, ListDataCompare *data_cmp)
 {
     return list_create_full(data_size, data_cmp, memcpy, free);
 }
@@ -63,7 +63,7 @@ static ListItem *x__list_item_create(const List *list, void *data)
 }
 
 // insert an item at a given position
-[[maybe_unused]] static void list_insert(List *list, long i, void *data)
+static void list_insert(List *list, long i, void *data)
 {
     assert(list);
     assert(-list->size <= i && i <= list->size);
@@ -102,13 +102,13 @@ static ListItem *x__list_item_create(const List *list, void *data)
 }
 
 // add an item to the end of the list
-[[maybe_unused]] static void list_append(List *list, void *data)
+static void list_append(List *list, void *data)
 {
     list_insert(list, list->size, data);
 }
 
 // return a copy of the list
-[[maybe_unused]] static List list_copy(const List *list)
+static List list_copy(const List *list)
 {
     assert(list);
     List copy = list_create_full(list->data_size, list->data_cmp, list->data_copy, list->data_free);
@@ -118,7 +118,7 @@ static ListItem *x__list_item_create(const List *list, void *data)
 }
 
 // remove the item at the given position in the list, and return its data
-[[maybe_unused]] static void *list_pop(List *list, long i)
+static void *list_pop(List *list, long i)
 {
     assert(list);
     assert(-list->size <= i && i < list->size);
@@ -159,7 +159,7 @@ static ListItem *x__list_item_create(const List *list, void *data)
 }
 
 // remove the first item from the list whose value is equal to data, and return its data
-[[maybe_unused]] static void *list_remove(List *list, const void *data)
+static void *list_remove(List *list, const void *data)
 {
     assert(list);
     assert(list->data_cmp);
@@ -188,7 +188,7 @@ static ListItem *x__list_item_create(const List *list, void *data)
 }
 
 // return zero-based index in the list of the first item whose value is equal to data
-[[maybe_unused]] static size_t list_index(const List *list, const void *data)
+static size_t list_index(const List *list, const void *data)
 {
     assert(list);
     assert(list->data_cmp);
@@ -200,7 +200,7 @@ static ListItem *x__list_item_create(const List *list, void *data)
 }
 
 // return the data of the first item from the list whose value is equal to data
-[[maybe_unused]] static void *list_find(const List *list, const void *data)
+static void *list_find(const List *list, const void *data)
 {
     assert(list);
     assert(list->data_cmp);
@@ -211,7 +211,7 @@ static ListItem *x__list_item_create(const List *list, void *data)
 }
 
 // return the number of times data appears in the list
-[[maybe_unused]] static long list_count(const List *list, const void *data)
+static long list_count(const List *list, const void *data)
 {
     assert(list);
     assert(list->data_cmp);
@@ -262,7 +262,7 @@ static ListItem *x__list_merge_sort(ListItem *first, ListDataCompare cmp, int or
 }
 
 // sort the items of the list in place
-[[maybe_unused]] static void list_sort(List *list, int reverse)
+static void list_sort(List *list, int reverse)
 {
     assert(list);
     assert(list->data_cmp);
@@ -274,7 +274,7 @@ static ListItem *x__list_merge_sort(ListItem *first, ListDataCompare cmp, int or
 }
 
 // reverse the elements of the list in place
-[[maybe_unused]] static void list_reverse(List *list)
+static void list_reverse(List *list)
 {
     assert(list);
     if (list->size == 0) return;
@@ -291,7 +291,7 @@ static ListItem *x__list_merge_sort(ListItem *first, ListDataCompare cmp, int or
 }
 
 // remove all items from the list
-[[maybe_unused]] static void list_clear(List *list)
+static void list_clear(List *list)
 {
     assert(list);
     if (list->size == 0) return;

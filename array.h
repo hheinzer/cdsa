@@ -31,9 +31,8 @@ struct ArrayItem {
     for (ArrayItem *item = (array)->item + (array)->size - 1; item >= (array)->item; --item)
 
 // create an empty array
-[[maybe_unused]] static Array array_create_full(long capacity, size_t data_size,
-                                                ArrayDataCompare *data_cmp,
-                                                ArrayDataCopy *data_copy, ArrayDataFree *data_free)
+static Array array_create_full(long capacity, size_t data_size, ArrayDataCompare *data_cmp,
+                               ArrayDataCopy *data_copy, ArrayDataFree *data_free)
 {
     assert(capacity >= 0);
     return (Array){
@@ -44,8 +43,7 @@ struct ArrayItem {
         .data_free = data_free,
     };
 }
-[[maybe_unused]] static Array array_create(long capacity, size_t data_size,
-                                           ArrayDataCompare *data_cmp)
+static Array array_create(long capacity, size_t data_size, ArrayDataCompare *data_cmp)
 {
     return array_create_full(capacity, data_size, data_cmp, memcpy, free);
 }
@@ -77,7 +75,7 @@ static void x__array_item_create(const Array *array, ArrayItem *item, void *data
 }
 
 // insert an item at a given position
-[[maybe_unused]] static void array_insert(Array *array, long i, void *data)
+static void array_insert(Array *array, long i, void *data)
 {
     assert(array);
     assert(-array->size <= i && i <= array->size);
@@ -92,13 +90,13 @@ static void x__array_item_create(const Array *array, ArrayItem *item, void *data
 }
 
 // add an item to the end of the array
-[[maybe_unused]] static void array_append(Array *array, void *data)
+static void array_append(Array *array, void *data)
 {
     array_insert(array, array->size, data);
 }
 
 // return a copy of the array
-[[maybe_unused]] static Array array_copy(const Array *array)
+static Array array_copy(const Array *array)
 {
     assert(array);
     Array copy = array_create_full(array->capacity, array->data_size, array->data_cmp,
@@ -110,7 +108,7 @@ static void x__array_item_create(const Array *array, ArrayItem *item, void *data
 }
 
 // remove the item at the given position in the array, and return its data
-[[maybe_unused]] static void *array_pop(Array *array, long i)
+static void *array_pop(Array *array, long i)
 {
     assert(array);
     assert(-array->size <= i && i < array->size);
@@ -124,7 +122,7 @@ static void x__array_item_create(const Array *array, ArrayItem *item, void *data
 }
 
 // remove the first item from the array whose value is equal to data, and return its data
-[[maybe_unused]] static void *array_remove(Array *array, const void *data)
+static void *array_remove(Array *array, const void *data)
 {
     assert(array);
     assert(array->data_cmp);
@@ -142,7 +140,7 @@ static void x__array_item_create(const Array *array, ArrayItem *item, void *data
 }
 
 // return zero-based index in the array of the first item whose value is equal to data
-[[maybe_unused]] static size_t array_index(const Array *array, const void *data)
+static size_t array_index(const Array *array, const void *data)
 {
     assert(array);
     assert(array->data_cmp);
@@ -153,7 +151,7 @@ static void x__array_item_create(const Array *array, ArrayItem *item, void *data
 }
 
 // return the data of the first item from the array whose value is equal to data
-[[maybe_unused]] static void *array_find(const Array *array, const void *data)
+static void *array_find(const Array *array, const void *data)
 {
     assert(array);
     assert(array->data_cmp);
@@ -164,7 +162,7 @@ static void x__array_item_create(const Array *array, ArrayItem *item, void *data
 }
 
 // return the number of times data appears in the array
-[[maybe_unused]] static long array_count(const Array *array, const void *data)
+static long array_count(const Array *array, const void *data)
 {
     assert(array);
     assert(array->data_cmp);
@@ -206,7 +204,7 @@ static void x__array_quick_sort(ArrayItem *item, long low, long high, ArrayDataC
 }
 
 // sort the items of the array in place
-[[maybe_unused]] static void array_sort(Array *array, int reverse)
+static void array_sort(Array *array, int reverse)
 {
     assert(array);
     assert(array->data_cmp);
@@ -215,7 +213,7 @@ static void x__array_quick_sort(ArrayItem *item, long low, long high, ArrayDataC
 }
 
 // reverse the elements of the array in place
-[[maybe_unused]] static void array_reverse(Array *array)
+static void array_reverse(Array *array)
 {
     assert(array);
     if (array->size == 0) return;
@@ -227,7 +225,7 @@ static void x__array_quick_sort(ArrayItem *item, long low, long high, ArrayDataC
 }
 
 // remove all items from the array
-[[maybe_unused]] static void array_clear(Array *array)
+static void array_clear(Array *array)
 {
     assert(array);
     if (array->size == 0) return;

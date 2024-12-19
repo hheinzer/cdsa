@@ -36,9 +36,9 @@ struct DictItem {
             for (DictItem *item = bucket; item; item = item->next)
 
 // create an empty dict
-[[maybe_unused]] static Dict dict_create_full(long capacity, size_t data_size, double load_factor,
-                                              DictKeyHash *key_hash, DictDataCopy *data_copy,
-                                              DictDataFree *data_free)
+static Dict dict_create_full(long capacity, size_t data_size, double load_factor,
+                             DictKeyHash *key_hash, DictDataCopy *data_copy,
+                             DictDataFree *data_free)
 {
     assert(capacity >= 0);
     assert(0 < load_factor && load_factor < 1);
@@ -52,7 +52,7 @@ struct DictItem {
         .data_free = data_free,
     };
 }
-[[maybe_unused]] static Dict dict_create(long capacity, size_t data_size)
+static Dict dict_create(long capacity, size_t data_size)
 {
     return dict_create_full(capacity, data_size, 0.75, strhash_fnv1a, memcpy, free);
 }
@@ -124,7 +124,7 @@ static void x__dict_item_create(const Dict *dict, DictItem *item, const char *ke
 }
 
 // insert an item with a given key; on collision, keep or replace data and return old data
-[[maybe_unused]] static void *dict_insert(Dict *dict, const char *key, void *data, int keep)
+static void *dict_insert(Dict *dict, const char *key, void *data, int keep)
 {
     assert(dict);
     assert(key);
@@ -158,7 +158,7 @@ static void x__dict_item_create(const Dict *dict, DictItem *item, const char *ke
 }
 
 // return a copy of the dict
-[[maybe_unused]] static Dict dict_copy(const Dict *dict)
+static Dict dict_copy(const Dict *dict)
 {
     assert(dict);
     Dict copy = dict_create_full(dict->size, dict->data_size, dict->load_factor, dict->key_hash,
@@ -172,7 +172,7 @@ static void x__dict_item_create(const Dict *dict, DictItem *item, const char *ke
 }
 
 // remove an item with a given key, and return its data
-[[maybe_unused]] static void *dict_remove(Dict *dict, const char *key)
+static void *dict_remove(Dict *dict, const char *key)
 {
     assert(dict);
     assert(key);
@@ -206,7 +206,7 @@ static void x__dict_item_create(const Dict *dict, DictItem *item, const char *ke
 }
 
 // return the data of an item with a given key
-[[maybe_unused]] static void *dict_find(const Dict *dict, const char *key)
+static void *dict_find(const Dict *dict, const char *key)
 {
     assert(dict);
     assert(key);
@@ -218,7 +218,7 @@ static void x__dict_item_create(const Dict *dict, DictItem *item, const char *ke
 }
 
 // remove all items from the dict
-[[maybe_unused]] static void dict_clear(Dict *dict)
+static void dict_clear(Dict *dict)
 {
     assert(dict);
     if (!dict->bucket) return;

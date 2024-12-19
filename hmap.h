@@ -34,9 +34,9 @@ struct HmapItem {
         if (item->key)
 
 // create an empty hmap
-[[maybe_unused]] static Hmap hmap_create_full(long capacity, size_t data_size, double load_factor,
-                                              HmapKeyHash *key_hash, HmapDataCopy *data_copy,
-                                              HmapDataFree *data_free)
+static Hmap hmap_create_full(long capacity, size_t data_size, double load_factor,
+                             HmapKeyHash *key_hash, HmapDataCopy *data_copy,
+                             HmapDataFree *data_free)
 {
     assert(capacity >= 0);
     assert(0 < load_factor && load_factor < 1);
@@ -50,7 +50,7 @@ struct HmapItem {
         .data_free = data_free,
     };
 }
-[[maybe_unused]] static Hmap hmap_create(long capacity, size_t data_size)
+static Hmap hmap_create(long capacity, size_t data_size)
 {
     return hmap_create_full(capacity, data_size, 0.75, strhash_fnv1a, memcpy, free);
 }
@@ -103,7 +103,7 @@ static void x__hmap_item_create(const Hmap *hmap, HmapItem *item, const char *ke
 }
 
 // insert an item with a given key; on collision, keep or replace data and return old data
-[[maybe_unused]] static void *hmap_insert(Hmap *hmap, const char *key, void *data, int keep)
+static void *hmap_insert(Hmap *hmap, const char *key, void *data, int keep)
 {
     assert(hmap);
     assert(key);
@@ -131,7 +131,7 @@ static void x__hmap_item_create(const Hmap *hmap, HmapItem *item, const char *ke
 }
 
 // return a copy of the hmap
-[[maybe_unused]] static Hmap hmap_copy(const Hmap *hmap)
+static Hmap hmap_copy(const Hmap *hmap)
 {
     assert(hmap);
     Hmap copy = hmap_create_full(hmap->size, hmap->data_size, hmap->load_factor, hmap->key_hash,
@@ -143,7 +143,7 @@ static void x__hmap_item_create(const Hmap *hmap, HmapItem *item, const char *ke
 }
 
 // remove an item with a given key, and return its data
-[[maybe_unused]] static void *hmap_remove(Hmap *hmap, const char *key)
+static void *hmap_remove(Hmap *hmap, const char *key)
 {
     assert(hmap);
     assert(key);
@@ -166,7 +166,7 @@ static void x__hmap_item_create(const Hmap *hmap, HmapItem *item, const char *ke
 }
 
 // return the data of an item with a given key
-[[maybe_unused]] static void *hmap_find(const Hmap *hmap, const char *key)
+static void *hmap_find(const Hmap *hmap, const char *key)
 {
     assert(hmap);
     assert(key);
@@ -183,7 +183,7 @@ static void x__hmap_item_create(const Hmap *hmap, HmapItem *item, const char *ke
 }
 
 // remove all items from the hmap
-[[maybe_unused]] static void hmap_clear(Hmap *hmap)
+static void hmap_clear(Hmap *hmap)
 {
     assert(hmap);
     if (!hmap->item) return;

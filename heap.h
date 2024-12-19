@@ -27,8 +27,8 @@ struct HeapItem {
     for (HeapItem *item = (heap)->item; item < (heap)->item + (heap)->size; ++item)
 
 // create an empty heap
-[[maybe_unused]] static Heap heap_create_full(long capacity, size_t data_size,
-                                              HeapDataCopy *data_copy, HeapDataFree *data_free)
+static Heap heap_create_full(long capacity, size_t data_size, HeapDataCopy *data_copy,
+                             HeapDataFree *data_free)
 {
     assert(capacity >= 0);
     return (Heap){
@@ -38,7 +38,7 @@ struct HeapItem {
         .data_free = data_free,
     };
 }
-[[maybe_unused]] static Heap heap_create(long capacity, size_t data_size)
+static Heap heap_create(long capacity, size_t data_size)
 {
     return heap_create_full(capacity, data_size, memcpy, free);
 }
@@ -83,7 +83,7 @@ static void x__heap_item_create(const Heap *heap, HeapItem *item, double priorit
 }
 
 // push an item with a given priority
-[[maybe_unused]] static void heap_push(Heap *heap, double priority, void *data)
+static void heap_push(Heap *heap, double priority, void *data)
 {
     assert(heap);
     if (!heap->item) x__heap_create_items(heap);
@@ -94,7 +94,7 @@ static void x__heap_item_create(const Heap *heap, HeapItem *item, double priorit
 }
 
 // return a copy of the heap
-[[maybe_unused]] static Heap heap_copy(const Heap *heap)
+static Heap heap_copy(const Heap *heap)
 {
     assert(heap);
     Heap copy = heap_create_full(heap->capacity, heap->data_size, heap->data_copy, heap->data_free);
@@ -119,7 +119,7 @@ static long x__heap_sift_down(HeapItem *item, long size, double priority)
 }
 
 // remove the item with the highest priority, and return its data
-[[maybe_unused]] static void *heap_pop(Heap *heap)
+static void *heap_pop(Heap *heap)
 {
     assert(heap);
     if (heap->size == 0) return 0;
@@ -134,7 +134,7 @@ static long x__heap_sift_down(HeapItem *item, long size, double priority)
 }
 
 // return the data of the first item with the highest priority
-[[maybe_unused]] static void *heap_peek(const Heap *heap)
+static void *heap_peek(const Heap *heap)
 {
     assert(heap);
     if (heap->size == 0) return 0;
@@ -142,7 +142,7 @@ static long x__heap_sift_down(HeapItem *item, long size, double priority)
 }
 
 // remove all items from the heap
-[[maybe_unused]] static void heap_clear(Heap *heap)
+static void heap_clear(Heap *heap)
 {
     assert(heap);
     if (heap->size == 0) return;

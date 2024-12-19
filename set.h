@@ -33,9 +33,8 @@ struct SetItem {
         if (item->data)
 
 // create an empty set
-[[maybe_unused]] static Set set_create_full(long capacity, size_t data_size, double load_factor,
-                                            SetDataHash *data_hash, SetDataCopy *data_copy,
-                                            SetDataFree *data_free)
+static Set set_create_full(long capacity, size_t data_size, double load_factor,
+                           SetDataHash *data_hash, SetDataCopy *data_copy, SetDataFree *data_free)
 {
     assert(capacity >= 0);
     assert(0 < load_factor && load_factor < 1);
@@ -49,7 +48,7 @@ struct SetItem {
         .data_free = data_free,
     };
 }
-[[maybe_unused]] static Set set_create(long capacity, size_t data_size)
+static Set set_create(long capacity, size_t data_size)
 {
     return set_create_full(capacity, data_size, 0.75, memhash_fnv1a, memcpy, free);
 }
@@ -98,7 +97,7 @@ static void x__set_item_create(const Set *set, SetItem *item, void *data, size_t
 }
 
 // insert an item; on collision, keep or replace data and return old data
-[[maybe_unused]] static void *set_insert(Set *set, void *data, int keep)
+static void *set_insert(Set *set, void *data, int keep)
 {
     assert(set);
     assert(data);
@@ -126,7 +125,7 @@ static void x__set_item_create(const Set *set, SetItem *item, void *data, size_t
 }
 
 // return a copy of the set
-[[maybe_unused]] static Set set_copy(const Set *set)
+static Set set_copy(const Set *set)
 {
     assert(set);
     Set copy = set_create_full(set->size, set->data_size, set->load_factor, set->data_hash,
@@ -138,7 +137,7 @@ static void x__set_item_create(const Set *set, SetItem *item, void *data, size_t
 }
 
 // remove an item, and return its data
-[[maybe_unused]] static void *set_remove(Set *set, const void *data)
+static void *set_remove(Set *set, const void *data)
 {
     assert(set);
     assert(data);
@@ -160,7 +159,7 @@ static void x__set_item_create(const Set *set, SetItem *item, void *data, size_t
 }
 
 // return the data of an item
-[[maybe_unused]] static void *set_find(const Set *set, const void *data)
+static void *set_find(const Set *set, const void *data)
 {
     assert(set);
     assert(data);
@@ -178,7 +177,7 @@ static void x__set_item_create(const Set *set, SetItem *item, void *data, size_t
 }
 
 // remove all items from the set
-[[maybe_unused]] static void set_clear(Set *set)
+static void set_clear(Set *set)
 {
     assert(set);
     if (!set->item) return;

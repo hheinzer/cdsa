@@ -1,6 +1,6 @@
 # compiler and default flags
 CC = clang
-CFLAGS = -std=c23 -g -Wall -Wextra -Wpedantic -Wshadow
+CFLAGS = -std=c23 -g -Wall -Wextra -Wpedantic -Wshadow -Wno-unused-function
 
 # debug flags
 CFLAGS += -Og -fno-omit-frame-pointer -fsanitize=undefined
@@ -27,7 +27,8 @@ clean:
 check:
 	@cppcheck --quiet --project=compile_commands.json \
 		--enable=all --inconclusive --check-level=exhaustive \
-		--suppress=missingIncludeSystem --suppress=checkersReport
+		--suppress=missingIncludeSystem --suppress=checkersReport \
+		--suppress=unusedFunction
 
 tidy:
 	@clang-tidy --quiet $(shell find . -type f -name '*.[ch]')

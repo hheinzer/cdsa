@@ -37,5 +37,5 @@ format:
 
 # build rules
 .SUFFIXES:
-%: %.c
+%: %.c Makefile
 	-@$(CC) $(CFLAGS) $< -o $@

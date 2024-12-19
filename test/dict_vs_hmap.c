@@ -78,7 +78,7 @@ int main(void)
 void stress_dict(long n, long capacity, double load_factor, DictKeyHash hash)
 {
     char key[1024];
-    Dict dict = dict_create(capacity, sizeof(long), load_factor, hash, memcpy, free);
+    Dict dict = dict_create_full(capacity, sizeof(long), load_factor, hash, memcpy, free);
     for (long i = 0; i < n; ++i) dict_insert(&dict, number(key, i), &i, 0);
     assert(dict.size == n);
     for (long i = 0; i < n; ++i) assert(dict_find(&dict, number(key, i)));
@@ -90,7 +90,7 @@ void stress_dict(long n, long capacity, double load_factor, DictKeyHash hash)
 void stress_hmap(long n, long capacity, double load_factor, HmapKeyHash hash)
 {
     char key[1024];
-    Hmap hmap = hmap_create(capacity, sizeof(long), load_factor, hash, memcpy, free);
+    Hmap hmap = hmap_create_full(capacity, sizeof(long), load_factor, hash, memcpy, free);
     for (long i = 0; i < n; ++i) hmap_insert(&hmap, number(key, i), &i, 0);
     assert(hmap.size == n);
     for (long i = 0; i < n; ++i) assert(hmap_find(&hmap, number(key, i)));

@@ -4,6 +4,8 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include "hash.h"
+
 // general purpose set using hashing and open addressing
 typedef struct Set Set;
 typedef struct SetItem SetItem;
@@ -31,8 +33,9 @@ struct SetItem {
         if (item->data)
 
 // create an empty set
-static Set set_create(long capacity, size_t data_size, double load_factor, SetDataHash *data_hash,
-                      SetDataCopy *data_copy, SetDataFree *data_free)
+[[maybe_unused]] static Set set_create_full(long capacity, size_t data_size, double load_factor,
+                                            SetDataHash *data_hash, SetDataCopy *data_copy,
+                                            SetDataFree *data_free)
 {
     assert(capacity >= 0);
     assert(0 < load_factor && load_factor < 1);
@@ -45,6 +48,10 @@ static Set set_create(long capacity, size_t data_size, double load_factor, SetDa
         .data_copy = data_copy,
         .data_free = data_free,
     };
+}
+[[maybe_unused]] static Set set_create(long capacity, size_t data_size)
+{
+    return set_create_full(capacity, data_size, 0.75, memhash_fnv1a, memcpy, free);
 }
 
 static void x__set_create_items(Set *set)
@@ -122,8 +129,8 @@ static void x__set_item_create(const Set *set, SetItem *item, void *data, size_t
 [[maybe_unused]] static Set set_copy(const Set *set)
 {
     assert(set);
-    Set copy = set_create(set->size, set->data_size, set->load_factor, set->data_hash,
-                          set->data_copy, set->data_free);
+    Set copy = set_create_full(set->size, set->data_size, set->load_factor, set->data_hash,
+                               set->data_copy, set->data_free);
     if (set->size == 0) return copy;
     for (const SetItem *item = set->item; item < set->item + set->capacity; ++item)
         if (item->data) set_insert(&copy, item->data, 0);

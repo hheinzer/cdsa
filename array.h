@@ -2,6 +2,7 @@
 
 #include <assert.h>
 #include <stdlib.h>
+#include <string.h>
 
 // general purpose dynamic array
 typedef struct Array Array;
@@ -30,8 +31,9 @@ struct ArrayItem {
     for (ArrayItem *item = (array)->item + (array)->size - 1; item >= (array)->item; --item)
 
 // create an empty array
-static Array array_create(long capacity, size_t data_size, ArrayDataCompare *data_cmp,
-                          ArrayDataCopy *data_copy, ArrayDataFree *data_free)
+[[maybe_unused]] static Array array_create_full(long capacity, size_t data_size,
+                                                ArrayDataCompare *data_cmp,
+                                                ArrayDataCopy *data_copy, ArrayDataFree *data_free)
 {
     assert(capacity >= 0);
     return (Array){
@@ -41,6 +43,11 @@ static Array array_create(long capacity, size_t data_size, ArrayDataCompare *dat
         .data_copy = data_copy,
         .data_free = data_free,
     };
+}
+[[maybe_unused]] static Array array_create(long capacity, size_t data_size,
+                                           ArrayDataCompare *data_cmp)
+{
+    return array_create_full(capacity, data_size, data_cmp, memcpy, free);
 }
 
 static void x__array_create_items(Array *array)
@@ -94,8 +101,8 @@ static void x__array_item_create(const Array *array, ArrayItem *item, void *data
 [[maybe_unused]] static Array array_copy(const Array *array)
 {
     assert(array);
-    Array copy = array_create(array->capacity, array->data_size, array->data_cmp, array->data_copy,
-                              array->data_free);
+    Array copy = array_create_full(array->capacity, array->data_size, array->data_cmp,
+                                   array->data_copy, array->data_free);
     if (array->size == 0) return copy;
     for (const ArrayItem *item = array->item; item < array->item + array->size; ++item)
         array_append(&copy, item->data);

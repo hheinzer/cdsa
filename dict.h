@@ -4,6 +4,8 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include "hash.h"
+
 // general purpose associative array using open chaining
 typedef struct Dict Dict;
 typedef struct DictItem DictItem;
@@ -34,8 +36,9 @@ struct DictItem {
             for (DictItem *item = bucket; item; item = item->next)
 
 // create an empty dict
-static Dict dict_create(long capacity, size_t data_size, double load_factor, DictKeyHash *key_hash,
-                        DictDataCopy *data_copy, DictDataFree *data_free)
+[[maybe_unused]] static Dict dict_create_full(long capacity, size_t data_size, double load_factor,
+                                              DictKeyHash *key_hash, DictDataCopy *data_copy,
+                                              DictDataFree *data_free)
 {
     assert(capacity >= 0);
     assert(0 < load_factor && load_factor < 1);
@@ -48,6 +51,10 @@ static Dict dict_create(long capacity, size_t data_size, double load_factor, Dic
         .data_copy = data_copy,
         .data_free = data_free,
     };
+}
+[[maybe_unused]] static Dict dict_create(long capacity, size_t data_size)
+{
+    return dict_create_full(capacity, data_size, 0.75, strhash_fnv1a, memcpy, free);
 }
 
 static void x__dict_create_buckets(Dict *dict)
@@ -154,8 +161,8 @@ static void x__dict_item_create(const Dict *dict, DictItem *item, const char *ke
 [[maybe_unused]] static Dict dict_copy(const Dict *dict)
 {
     assert(dict);
-    Dict copy = dict_create(dict->size, dict->data_size, dict->load_factor, dict->key_hash,
-                            dict->data_copy, dict->data_free);
+    Dict copy = dict_create_full(dict->size, dict->data_size, dict->load_factor, dict->key_hash,
+                                 dict->data_copy, dict->data_free);
     if (dict->size == 0) return copy;
     for (const DictItem *bucket = dict->bucket; bucket < dict->bucket + dict->capacity; ++bucket)
         if (bucket->key)

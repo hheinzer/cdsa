@@ -1,5 +1,8 @@
+#pragma once
+
 #include <assert.h>
 #include <stdlib.h>
+#include <string.h>
 
 // general purpose priority queue
 typedef struct Heap Heap;
@@ -24,8 +27,8 @@ struct HeapItem {
     for (HeapItem *item = (heap)->item; item < (heap)->item + (heap)->size; ++item)
 
 // create an empty heap
-static Heap heap_create(long capacity, size_t data_size, HeapDataCopy *data_copy,
-                        HeapDataFree *data_free)
+[[maybe_unused]] static Heap heap_create_full(long capacity, size_t data_size,
+                                              HeapDataCopy *data_copy, HeapDataFree *data_free)
 {
     assert(capacity >= 0);
     return (Heap){
@@ -34,6 +37,10 @@ static Heap heap_create(long capacity, size_t data_size, HeapDataCopy *data_copy
         .data_copy = data_copy,
         .data_free = data_free,
     };
+}
+[[maybe_unused]] static Heap heap_create(long capacity, size_t data_size)
+{
+    return heap_create_full(capacity, data_size, memcpy, free);
 }
 
 static void x__heap_create_items(Heap *heap)
@@ -90,7 +97,7 @@ static void x__heap_item_create(const Heap *heap, HeapItem *item, double priorit
 [[maybe_unused]] static Heap heap_copy(const Heap *heap)
 {
     assert(heap);
-    Heap copy = heap_create(heap->capacity, heap->data_size, heap->data_copy, heap->data_free);
+    Heap copy = heap_create_full(heap->capacity, heap->data_size, heap->data_copy, heap->data_free);
     if (heap->size == 0) return copy;
     for (const HeapItem *item = heap->item; item < heap->item + heap->size; ++item)
         heap_push(&copy, item->priority, item->data);

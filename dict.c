@@ -2,12 +2,10 @@
 
 #include <stdio.h>
 
-#include "hash.h"
-
 int main(void)
 {
     // create a dict that stores integers
-    Dict a = dict_create(10, sizeof(int), 0.75, strhash_fnv1a, memcpy, free);
+    Dict a = dict_create(10, sizeof(int));
 
     // insert key-integer pairs 0 through 9
     const char *key[] = {"zero", "one", "two",   "three", "four",

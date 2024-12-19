@@ -2,6 +2,7 @@
 
 #include <assert.h>
 #include <stdlib.h>
+#include <string.h>
 
 // general purpose doubly linked list
 typedef struct List List;
@@ -29,8 +30,8 @@ struct ListItem {
 #define ListForEachReverse(item, list) for (ListItem *item = (list)->tail; item; item = item->prev)
 
 // create an empty list
-static List list_create(size_t data_size, ListDataCompare *data_cmp, ListDataCopy *data_copy,
-                        ListDataFree *data_free)
+[[maybe_unused]] static List list_create_full(size_t data_size, ListDataCompare *data_cmp,
+                                              ListDataCopy *data_copy, ListDataFree *data_free)
 {
     return (List){
         .data_size = data_size,
@@ -38,6 +39,10 @@ static List list_create(size_t data_size, ListDataCompare *data_cmp, ListDataCop
         .data_copy = data_copy,
         .data_free = data_free,
     };
+}
+[[maybe_unused]] static List list_create(size_t data_size, ListDataCompare *data_cmp)
+{
+    return list_create_full(data_size, data_cmp, memcpy, free);
 }
 
 static ListItem *x__list_item_create(const List *list, void *data)
@@ -106,7 +111,7 @@ static ListItem *x__list_item_create(const List *list, void *data)
 [[maybe_unused]] static List list_copy(const List *list)
 {
     assert(list);
-    List copy = list_create(list->data_size, list->data_cmp, list->data_copy, list->data_free);
+    List copy = list_create_full(list->data_size, list->data_cmp, list->data_copy, list->data_free);
     if (list->size == 0) return copy;
     for (const ListItem *item = list->head; item; item = item->next) list_append(&copy, item->data);
     return copy;

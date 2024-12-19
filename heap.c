@@ -1,14 +1,13 @@
 #include "heap.h"
 
 #include <stdio.h>
-#include <string.h>
 
 #define ABS(a) ((a) >= 0 ? (a) : -(a))
 
 int main(void)
 {
     // create a heap that stores integers
-    Heap a = heap_create(10, sizeof(int), memcpy, free);
+    Heap a = heap_create(10, sizeof(int));
 
     // append integers 0 through 9, with priority -|i - 2.1|
     for (int i = 0; i < 10; ++i) heap_push(&a, -ABS(i - 2.1), &i);

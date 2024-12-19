@@ -1,7 +1,6 @@
 #include "list.h"
 
 #include <stdio.h>
-#include <string.h>
 
 // integer comparison function
 int intcmp(const void *a, const void *b)
@@ -13,7 +12,7 @@ int intcmp(const void *a, const void *b)
 int main(void)
 {
     // create a list that stores integers
-    List a = list_create(sizeof(int), intcmp, memcpy, free);
+    List a = list_create(sizeof(int), intcmp);
 
     // append integers 0 through 9
     for (int i = 0; i < 10; ++i) list_append(&a, &i);

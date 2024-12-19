@@ -4,6 +4,8 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include "hash.h"
+
 // general purpose associative array using open addressing
 typedef struct Hmap Hmap;
 typedef struct HmapItem HmapItem;
@@ -32,8 +34,9 @@ struct HmapItem {
         if (item->key)
 
 // create an empty hmap
-static Hmap hmap_create(long capacity, size_t data_size, double load_factor, HmapKeyHash *key_hash,
-                        HmapDataCopy *data_copy, HmapDataFree *data_free)
+[[maybe_unused]] static Hmap hmap_create_full(long capacity, size_t data_size, double load_factor,
+                                              HmapKeyHash *key_hash, HmapDataCopy *data_copy,
+                                              HmapDataFree *data_free)
 {
     assert(capacity >= 0);
     assert(0 < load_factor && load_factor < 1);
@@ -46,6 +49,10 @@ static Hmap hmap_create(long capacity, size_t data_size, double load_factor, Hma
         .data_copy = data_copy,
         .data_free = data_free,
     };
+}
+[[maybe_unused]] static Hmap hmap_create(long capacity, size_t data_size)
+{
+    return hmap_create_full(capacity, data_size, 0.75, strhash_fnv1a, memcpy, free);
 }
 
 static void x__hmap_create_items(Hmap *hmap)
@@ -127,8 +134,8 @@ static void x__hmap_item_create(const Hmap *hmap, HmapItem *item, const char *ke
 [[maybe_unused]] static Hmap hmap_copy(const Hmap *hmap)
 {
     assert(hmap);
-    Hmap copy = hmap_create(hmap->size, hmap->data_size, hmap->load_factor, hmap->key_hash,
-                            hmap->data_copy, hmap->data_free);
+    Hmap copy = hmap_create_full(hmap->size, hmap->data_size, hmap->load_factor, hmap->key_hash,
+                                 hmap->data_copy, hmap->data_free);
     if (hmap->size == 0) return copy;
     for (const HmapItem *item = hmap->item; item < hmap->item + hmap->capacity; ++item)
         if (item->key) hmap_insert(&copy, item->key, item->data, 0);

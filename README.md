@@ -27,6 +27,8 @@ data and appropriate copy and deallocation function. If you are not storing anyt
 
 ## Features
 
+- Memory
+    - [x] `arena.h`: arena allocator
 - Linear
     - [x] `array.h`: dynamic array
     - [x] `list.h`: linked list

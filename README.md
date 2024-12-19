@@ -28,6 +28,7 @@ data and appropriate copy and deallocation function. If you are not storing anyt
 ## Features
 
 - Memory
+    - [x] `hexdump.h`: print memory buffers
     - [x] `arena.h`: arena allocator
 - Linear
     - [x] `array.h`: dynamic array

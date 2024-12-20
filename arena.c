@@ -15,11 +15,11 @@ Arena arena = {0};
 #define free(ptr) arena_free(&arena, ptr)
 #define memdup(ptr, size) memcpy(arena_malloc(&arena, size), ptr, size)
 #define strdup(str) strcpy(arena_malloc(&arena, strlen(str) + 1), str)
-[[gnu::constructor]] void _run_before_main(void)
+[[gnu::constructor(1)]] void _arena_create(void)
 {
-    arena = arena_create(100 * MB, alignof(size_t));
+    arena = arena_create(MB, alignof(size_t));
 }
-[[gnu::destructor]] void _run_after_main(void)
+[[gnu::destructor(1)]] void _arena_clear(void)
 {
     arena_clear(&arena);
 }

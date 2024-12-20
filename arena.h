@@ -46,9 +46,10 @@ static void *arena_alloc(Arena *arena, long count, long size, long align, int in
 static void *arena_realloc(Arena *arena, void *ptr, long new_size, long align)
 {
     assert(arena);
-    assert(arena->data <= (char *)ptr && (char *)ptr < arena->head);
-    assert((uintptr_t)ptr % align == 0);
+    assert(arena->data);
     if (!ptr || new_size <= 0) return arena_alloc(arena, 1, new_size, align, 0);
+    assert(arena->data <= (char *)ptr && (char *)ptr < arena->head + align);
+    assert((uintptr_t)ptr % align == 0);
     if (ptr == arena->prev) {
         const long old_size = arena->head - arena->prev;
         if (new_size <= old_size) return ptr;
@@ -57,8 +58,8 @@ static void *arena_realloc(Arena *arena, void *ptr, long new_size, long align)
         return arena->prev;
     }
     void *new_ptr = arena_alloc(arena, 1, new_size, align, 0);
-    assert((char *)ptr < arena->prev);
     const long max_old_size = arena->prev - (char *)ptr;
+    if (max_old_size <= 0) return new_ptr;
     return memcpy(new_ptr, ptr, (new_size < max_old_size ? new_size : max_old_size));
 }
 

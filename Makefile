@@ -4,7 +4,7 @@ CFLAGS = -std=c23 -g -Wall -Wextra -Wpedantic -Wshadow -Wno-unused-function
 
 # debug flags
 CFLAGS += -Og -fno-omit-frame-pointer -fsanitize=undefined
-CFLAGS += -fsanitize=address
+#CFLAGS += -fsanitize=address
 #CFLAGS += -fsanitize=memory -fPIE -pie
 
 # release flags

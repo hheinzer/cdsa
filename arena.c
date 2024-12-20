@@ -1,65 +1,50 @@
 #include "arena.h"
 
-#include <limits.h>
 #include <stddef.h>
 #include <stdio.h>
 
 #include "hexdump.h"
 
-// create global memory arena replace default allocator
-Arena arena = {0};
-#define region_push arena_region_push(&arena)
-#define region_pop arena_region_pop(&arena)
-#define malloc(size) arena_malloc(&arena, size)
-#define calloc(count, size) arena_calloc(&arena, count, size)
-#define realloc(ptr, size) arena_realloc(&arena, ptr, size)
-#define free(ptr) arena_free(&arena, ptr)
-#define memdup(ptr, size) memcpy(arena_malloc(&arena, size), ptr, size)
-#define strdup(str) strcpy(arena_malloc(&arena, strlen(str) + 1), str)
-[[gnu::constructor(1)]] void _arena_create(void)
-{
-    arena = arena_create(MB, alignof(max_align_t));
-}
-[[gnu::destructor(1)]] void _arena_clear(void)
-{
-    arena_clear(&arena);
-}
+#define malloc(size) arena_alloc(&arena, 1, size, alignof(max_align_t), 0)
+#define calloc(count, size) arena_alloc(&arena, count, size, alignof(max_align_t), 1)
+#define realloc(ptr, size) arena_realloc(&arena, ptr, size, alignof(max_align_t))
+#define strdup(str) strcpy(malloc(strlen(str) + 1), str)
 
 int main(void)
 {
-    // allocate a string
-    const char *a = strdup("first string");
-    printf("sizeof(%s) = %zu\n", a, arena_sizeof(&arena, a));
-    printf("arena.size = %zu\n\n", arena.size);
+    Arena arena = arena_create(1 << 10);
 
-    // push a region
-    region_push;
-    printf("arena.size = %zu\n\n", arena.size);
-
-    // allocate another string
-    char *b = strdup("second string");
-    printf("sizeof(%s) = %zu\n", b, arena_sizeof(&arena, b));
-    printf("arena.size = %zu\n\n", arena.size);
-
-    // reallocate string
-    b = realloc(b, 2 * arena_sizeof(&arena, b));
-    strcat(b, ", third string");
-    printf("sizeof(%s) = %zu\n", b, arena_sizeof(&arena, b));
-    printf("arena.size = %zu\n\n", arena.size);
-
-    // print arena buffer
-    hexdump(arena.data, arena.size);
+    char *a = strdup("Hello");
+    printf("a = '%s'\n", a);
+    hexdump(arena.data, arena.head - arena.data);
     printf("\n");
 
-    // pop a region
-    region_pop;
-    printf("arena.size = %zu\n\n", arena.size);
+    char *b = strdup("foo");
+    printf("a = '%s'\n", a);
+    printf("b = '%s'\n", b);
+    hexdump(arena.data, arena.head - arena.data);
+    printf("\n");
 
-    // allocate another array in the arena
-    const char *c = strdup("fourth string");
-    printf("sizeof(%s) = %zu\n", c, arena_sizeof(&arena, c));
-    printf("arena.size = %zu\n\n", arena.size);
+    b = realloc(b, strlen(b) + 4 + 1);
+    strcat(b, " bar");
+    printf("a = '%s'\n", a);
+    printf("b = '%s'\n", b);
+    hexdump(arena.data, arena.head - arena.data);
+    printf("\n");
 
-    // print arena buffer
-    hexdump(arena.data, arena.size);
+    a = realloc(a, strlen(a) + 8 + 1);
+    strcat(a, ", World!");
+    printf("a = '%s'\n", a);
+    printf("b = '%s'\n", b);
+    hexdump(arena.data, arena.head - arena.data);
+    printf("\n");
+
+    const char *c = strdup("Arena");
+    printf("a = '%s'\n", a);
+    printf("b = '%s'\n", b);
+    printf("c = '%s'\n", c);
+    hexdump(arena.data, arena.head - arena.data);
+    printf("\n");
+
+    arena_clear(&arena);
 }

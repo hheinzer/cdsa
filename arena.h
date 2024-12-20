@@ -29,7 +29,7 @@ static Arena arena_create(size_t capacity, size_t alignment)
     };
 }
 
-static void x__arena_write(Arena *arena, size_t size)
+static void x__arena_write(const Arena *arena, size_t size)
 {
     *(size_t *)(arena->data + arena->size) = size;
 }

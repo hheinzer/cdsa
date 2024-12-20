@@ -1,6 +1,7 @@
 #include "arena.h"
 
 #include <limits.h>
+#include <stddef.h>
 #include <stdio.h>
 
 #include "hexdump.h"
@@ -17,7 +18,7 @@ Arena arena = {0};
 #define strdup(str) strcpy(arena_malloc(&arena, strlen(str) + 1), str)
 [[gnu::constructor(1)]] void _arena_create(void)
 {
-    arena = arena_create(MB, alignof(size_t));
+    arena = arena_create(MB, alignof(max_align_t));
 }
 [[gnu::destructor(1)]] void _arena_clear(void)
 {

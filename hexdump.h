@@ -12,7 +12,7 @@ static void fhexdump(FILE *file, const void *ptr, size_t size)
     assert(ptr);
     assert(size);
     const int nbytes = 16;
-    fprintf(file, "%-8s  %-*s %s\n", "Offset", 3 * nbytes, "Data (Hexadecimal)", "ASCII");
+    fprintf(file, "%-8s  %-*s %s\n", "Offset", 3 * nbytes, "Data", "ASCII");
     for (size_t i = 0; i < size; i += nbytes) {
         fprintf(file, "%08zx  ", i);
         for (size_t j = 0; j < nbytes; ++j) {

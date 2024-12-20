@@ -27,8 +27,8 @@ Arena arena = {0};
 int main(void)
 {
     // allocate a string
-    const char *a = strdup("Hello, World!");
-    printf("sizeof(a) = %zu\n", arena_sizeof(&arena, a));
+    const char *a = strdup("first string");
+    printf("sizeof(%s) = %zu\n", a, arena_sizeof(&arena, a));
     printf("arena.size = %zu\n\n", arena.size);
 
     // push a region
@@ -36,14 +36,14 @@ int main(void)
     printf("arena.size = %zu\n\n", arena.size);
 
     // allocate another string
-    char *b = strdup("Wow, so creative!");
-    printf("sizeof(b) = %zu\n", arena_sizeof(&arena, b));
+    char *b = strdup("second string");
+    printf("sizeof(%s) = %zu\n", b, arena_sizeof(&arena, b));
     printf("arena.size = %zu\n\n", arena.size);
 
     // reallocate string
-    b = realloc(b, 3 * arena_sizeof(&arena, b));
-    strcat(b, " And elegant too <3");
-    printf("sizeof(b) = %zu\n", arena_sizeof(&arena, b));
+    b = realloc(b, 2 * arena_sizeof(&arena, b));
+    strcat(b, ", third string");
+    printf("sizeof(%s) = %zu\n", b, arena_sizeof(&arena, b));
     printf("arena.size = %zu\n\n", arena.size);
 
     // print arena buffer
@@ -55,8 +55,8 @@ int main(void)
     printf("arena.size = %zu\n\n", arena.size);
 
     // allocate another array in the arena
-    const char *c = strdup("Another one!!!");
-    printf("sizeof(c) = %zu\n", arena_sizeof(&arena, c));
+    const char *c = strdup("fourth string");
+    printf("sizeof(%s) = %zu\n", c, arena_sizeof(&arena, c));
     printf("arena.size = %zu\n\n", arena.size);
 
     // print arena buffer

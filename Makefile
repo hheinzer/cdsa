@@ -27,8 +27,7 @@ clean:
 check:
 	@cppcheck --quiet --project=compile_commands.json \
 		--enable=all --inconclusive --check-level=exhaustive \
-		--suppress=missingIncludeSystem --suppress=checkersReport \
-		--suppress=unusedFunction
+		--suppress=missingIncludeSystem --suppress=checkersReport
 
 tidy:
 	@clang-tidy --quiet $(shell find . -type f -name '*.[ch]')

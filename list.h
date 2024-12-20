@@ -300,7 +300,5 @@ static void list_clear(List *list)
         if (list->data_free) list->data_free(item->data);
         free(item);
     }
-    list->head = 0;
-    list->tail = 0;
-    list->size = 0;
+    *list = (List){0};
 }

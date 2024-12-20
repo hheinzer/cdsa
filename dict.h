@@ -234,6 +234,5 @@ static void dict_clear(Dict *dict)
         }
     }
     free(dict->bucket);
-    dict->bucket = 0;
-    dict->size = 0;
+    *dict = (Dict){0};
 }

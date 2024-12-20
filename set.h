@@ -185,6 +185,5 @@ static void set_clear(Set *set)
         for (SetItem *item = set->item; item < set->item + set->capacity; ++item)
             if (item->data) set->data_free(item->data);
     free(set->item);
-    set->item = 0;
-    set->size = 0;
+    *set = (Set){0};
 }

@@ -149,6 +149,5 @@ static void heap_clear(Heap *heap)
     if (heap->data_free)
         for (long i = 0; i < heap->size; ++i) heap->data_free(heap->item[i].data);
     free(heap->item);
-    heap->item = 0;
-    heap->size = 0;
+    *heap = (Heap){0};
 }

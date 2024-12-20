@@ -232,6 +232,5 @@ static void array_clear(Array *array)
     if (array->data_free)
         for (long i = 0; i < array->size; ++i) array->data_free(array->item[i].data);
     free(array->item);
-    array->item = 0;
-    array->size = 0;
+    *array = (Array){0};
 }

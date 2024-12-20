@@ -193,6 +193,5 @@ static void hmap_clear(Hmap *hmap)
         if (hmap->data_free) hmap->data_free(item->data);
     }
     free(hmap->item);
-    hmap->item = 0;
-    hmap->size = 0;
+    *hmap = (Hmap){0};
 }

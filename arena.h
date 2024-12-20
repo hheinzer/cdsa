@@ -31,14 +31,12 @@ static void *arena_alloc(Arena *arena, long count, long size, long align, int in
 {
     assert(arena);
     assert(arena->data);
-    assert(count > 0);
-    assert(size > 0);
     assert(align > 0 && (align & (align - 1)) == 0);
     const long padding = -(uintptr_t)arena->head & (align - 1);
+    if (count <= 0 || size <= 0) return arena->head + padding;
     const long available = arena->tail - arena->head - padding;
     if (available < 0 || count > available / size) abort();
     arena->prev = arena->head + padding;
-    assert((uintptr_t)arena->prev % align == 0);
     arena->head = arena->prev + count * size;
     return init ? memset(arena->prev, 0, count * size) : arena->prev;
 }
@@ -46,17 +44,17 @@ static void *arena_alloc(Arena *arena, long count, long size, long align, int in
 // reallocate a block of memory
 static void *arena_realloc(Arena *arena, void *ptr, long new_size, long align)
 {
-    if (!ptr) return arena_alloc(arena, 1, new_size, align, 0);
+    if (!ptr || new_size <= 0) return arena_alloc(arena, 1, new_size, align, 0);
     if (ptr == arena->prev) {
         const long old_size = arena->head - arena->prev;
+        if (new_size <= old_size) return ptr;
         arena_alloc(arena, 1, new_size - old_size, align, 0);
         arena->prev = ptr;
-        assert(ptr == arena->prev);
-        return ptr;
+        return arena->prev;
     }
-    void *new = arena_alloc(arena, 1, new_size, align, 0);
+    void *new_ptr = arena_alloc(arena, 1, new_size, align, 0);
     const long max_old_size = arena->prev - (char *)ptr;
-    return memcpy(new, ptr, (new_size < max_old_size ? new_size : max_old_size));
+    return memcpy(new_ptr, ptr, (new_size < max_old_size ? new_size : max_old_size));
 }
 
 // remove all memory from the arena

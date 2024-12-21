@@ -20,12 +20,13 @@ static Arena arena_create(long capacity)
     assert(data);
     return (Arena){
         .data = memset(data, 0, capacity),
+        .prev = data,
         .head = data,
         .tail = data + capacity,
     };
 }
 
-// allocate a block of memory
+// allocate a block of memory; return aligned pointer on zero size; abort on out of memory
 [[gnu::malloc, gnu::alloc_size(2, 3), gnu::alloc_align(4)]]
 static void *arena_alloc(Arena *arena, long count, long size, long align, int init)
 {
@@ -51,11 +52,8 @@ static void *arena_realloc(Arena *arena, void *ptr, long new_size, long align)
     assert(arena->data <= (char *)ptr && (char *)ptr < arena->head + align);
     assert((uintptr_t)ptr % align == 0);
     if (ptr == arena->prev) {
-        const long old_size = arena->head - arena->prev;
-        if (new_size <= old_size) return ptr;
-        arena_alloc(arena, 1, new_size - old_size, align, 0);
-        arena->prev = ptr;
-        return arena->prev;
+        arena->head = arena->prev;
+        return arena_alloc(arena, 1, new_size, align, 0);
     }
     void *new_ptr = arena_alloc(arena, 1, new_size, align, 0);
     const long max_old_size = arena->prev - (char *)ptr;

@@ -9,13 +9,12 @@
 // general purpose set using hashing and open addressing
 typedef struct Set Set;
 typedef struct SetItem SetItem;
-typedef size_t SetDataHash(const void *mem, size_t size);
+typedef uint64_t SetDataHash(const void *mem, long size);
 typedef void *SetDataCopy(void *, const void *, size_t);
 typedef void SetDataFree(void *);
 
 struct Set {
-    long size, capacity, max_dist;
-    size_t data_size;
+    long size, capacity, data_size, max_dist;
     double load_factor;
     SetDataHash *data_hash;
     SetDataCopy *data_copy;
@@ -25,7 +24,7 @@ struct Set {
 
 struct SetItem {
     void *data;
-    size_t hash;
+    uint64_t hash;
 };
 
 #define SetForEach(item, set)                                                       \
@@ -33,10 +32,11 @@ struct SetItem {
         if (item->data)
 
 // create an empty set
-static Set set_create_full(long capacity, size_t data_size, double load_factor,
+static Set set_create_full(long capacity, long data_size, double load_factor,
                            SetDataHash *data_hash, SetDataCopy *data_copy, SetDataFree *data_free)
 {
     assert(capacity >= 0);
+    assert(data_size >= 0);
     assert(0 < load_factor && load_factor < 1);
     assert(data_hash);
     return (Set){
@@ -48,7 +48,7 @@ static Set set_create_full(long capacity, size_t data_size, double load_factor,
         .data_free = data_free,
     };
 }
-static Set set_create(long capacity, size_t data_size)
+static Set set_create(long capacity, long data_size)
 {
     return set_create_full(capacity, data_size, 0.75, memhash_fnv1a, memcpy, free);
 }
@@ -83,7 +83,7 @@ static void x__set_resize_items(Set *set)
     set->max_dist = _max_dist;
 }
 
-static void x__set_item_create(const Set *set, SetItem *item, void *data, size_t hash)
+static void x__set_item_create(const Set *set, SetItem *item, void *data, uint64_t hash)
 {
     if (set->data_copy) {
         item->data = malloc(set->data_size);
@@ -103,7 +103,7 @@ static void *set_insert(Set *set, void *data, int keep)
     assert(data);
     if (!set->item) x__set_create_items(set);
     if (set->size + 1 > set->capacity * set->load_factor) x__set_resize_items(set);
-    const size_t hash = set->data_hash(data, set->data_size);
+    const uint64_t hash = set->data_hash(data, set->data_size);
     long dist = 0, i = hash % set->capacity;
     SetItem *item = &set->item[i];
     while (item->data && (item->hash != hash || memcmp(item->data, data, set->data_size))) {
@@ -142,7 +142,7 @@ static void *set_remove(Set *set, const void *data)
     assert(set);
     assert(data);
     if (set->size == 0) return 0;
-    const size_t hash = set->data_hash(data, set->data_size);
+    const uint64_t hash = set->data_hash(data, set->data_size);
     long i = hash % set->capacity;
     SetItem *item = &set->item[i];
     for (long dist = 0; dist <= set->max_dist; ++dist) {
@@ -164,7 +164,7 @@ static void *set_find(const Set *set, const void *data)
     assert(set);
     assert(data);
     if (set->size == 0) return 0;
-    const size_t hash = set->data_hash(data, set->data_size);
+    const uint64_t hash = set->data_hash(data, set->data_size);
     long i = hash % set->capacity;
     SetItem *item = &set->item[i];
     for (long dist = 0; dist <= set->max_dist; ++dist) {

@@ -12,8 +12,7 @@ typedef void *ArrayDataCopy(void *, const void *, size_t);
 typedef void ArrayDataFree(void *);
 
 struct Array {
-    long size, capacity;
-    size_t data_size;
+    long size, capacity, data_size;
     ArrayDataCompare *data_cmp;
     ArrayDataCopy *data_copy;
     ArrayDataFree *data_free;
@@ -31,10 +30,11 @@ struct ArrayItem {
     for (ArrayItem *item = (array)->item + (array)->size - 1; item >= (array)->item; --item)
 
 // create an empty array
-static Array array_create_full(long capacity, size_t data_size, ArrayDataCompare *data_cmp,
+static Array array_create_full(long capacity, long data_size, ArrayDataCompare *data_cmp,
                                ArrayDataCopy *data_copy, ArrayDataFree *data_free)
 {
     assert(capacity >= 0);
+    assert(data_size >= 0);
     return (Array){
         .capacity = capacity,
         .data_size = data_size,
@@ -43,7 +43,7 @@ static Array array_create_full(long capacity, size_t data_size, ArrayDataCompare
         .data_free = data_free,
     };
 }
-static Array array_create(long capacity, size_t data_size, ArrayDataCompare *data_cmp)
+static Array array_create(long capacity, long data_size, ArrayDataCompare *data_cmp)
 {
     return array_create_full(capacity, data_size, data_cmp, memcpy, free);
 }
@@ -140,7 +140,7 @@ static void *array_remove(Array *array, const void *data)
 }
 
 // return zero-based index in the array of the first item whose value is equal to data
-static size_t array_index(const Array *array, const void *data)
+static long array_index(const Array *array, const void *data)
 {
     assert(array);
     assert(array->data_cmp);

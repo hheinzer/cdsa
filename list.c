@@ -49,8 +49,8 @@ int main(void)
     printf("]\n");
 
     // print index of item with a value of 33
-    printf("a.index(33) = %zu\n", list_index(&a, (int[]){33}));
-    printf("b.index(33) = %zu\n", list_index(&b, (int[]){33}));
+    printf("a.index(33) = %ld\n", list_index(&a, (int[]){33}));
+    printf("b.index(33) = %ld\n", list_index(&b, (int[]){33}));
 
     // print address of item with a value of 33
     printf("a.find(33) = %p\n", list_find(&a, (int[]){33}));

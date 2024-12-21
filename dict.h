@@ -9,13 +9,12 @@
 // general purpose associative array using open chaining
 typedef struct Dict Dict;
 typedef struct DictItem DictItem;
-typedef size_t DictKeyHash(const char *);
+typedef uint64_t DictKeyHash(const char *);
 typedef void *DictDataCopy(void *, const void *, size_t);
 typedef void DictDataFree(void *);
 
 struct Dict {
-    long size, capacity;
-    size_t data_size;
+    long size, capacity, data_size;
     double load_factor;
     DictKeyHash *key_hash;
     DictDataCopy *data_copy;
@@ -26,7 +25,7 @@ struct Dict {
 struct DictItem {
     char *key;
     void *data;
-    size_t hash;
+    uint64_t hash;
     DictItem *next;
 };
 
@@ -36,11 +35,12 @@ struct DictItem {
             for (DictItem *item = bucket; item; item = item->next)
 
 // create an empty dict
-static Dict dict_create_full(long capacity, size_t data_size, double load_factor,
+static Dict dict_create_full(long capacity, long data_size, double load_factor,
                              DictKeyHash *key_hash, DictDataCopy *data_copy,
                              DictDataFree *data_free)
 {
     assert(capacity >= 0);
+    assert(data_size >= 0);
     assert(0 < load_factor && load_factor < 1);
     assert(key_hash);
     return (Dict){
@@ -52,7 +52,7 @@ static Dict dict_create_full(long capacity, size_t data_size, double load_factor
         .data_free = data_free,
     };
 }
-static Dict dict_create(long capacity, size_t data_size)
+static Dict dict_create(long capacity, long data_size)
 {
     return dict_create_full(capacity, data_size, 0.75, strhash_fnv1a, memcpy, free);
 }
@@ -108,7 +108,7 @@ static void x__dict_resize_buckets(Dict *dict)
 }
 
 static void x__dict_item_create(const Dict *dict, DictItem *item, const char *key, void *data,
-                                size_t hash)
+                                uint64_t hash)
 {
     item->key = strdup(key);
     assert(item->key);
@@ -130,7 +130,7 @@ static void *dict_insert(Dict *dict, const char *key, void *data, int keep)
     assert(key);
     if (!dict->bucket) x__dict_create_buckets(dict);
     if (dict->size + 1 > dict->capacity * dict->load_factor) x__dict_resize_buckets(dict);
-    const size_t hash = dict->key_hash(key);
+    const uint64_t hash = dict->key_hash(key);
     DictItem *item = &dict->bucket[hash % dict->capacity];
     DictItem *prev = 0;
     while (item && item->key && (item->hash != hash || strcmp(item->key, key))) {
@@ -177,7 +177,7 @@ static void *dict_remove(Dict *dict, const char *key)
     assert(dict);
     assert(key);
     if (dict->size == 0) return 0;
-    const size_t hash = dict->key_hash(key);
+    const uint64_t hash = dict->key_hash(key);
     DictItem *item = &dict->bucket[hash % dict->capacity];
     DictItem *prev = 0;
     while (item && item->key && (item->hash != hash || strcmp(item->key, key))) {
@@ -211,7 +211,7 @@ static void *dict_find(const Dict *dict, const char *key)
     assert(dict);
     assert(key);
     if (dict->size == 0) return 0;
-    const size_t hash = dict->key_hash(key);
+    const uint64_t hash = dict->key_hash(key);
     DictItem *item = &dict->bucket[hash % dict->capacity];
     while (item && item->key && (item->hash != hash || strcmp(item->key, key))) item = item->next;
     return (!item || !item->key ? 0 : item->data);

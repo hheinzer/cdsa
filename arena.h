@@ -40,7 +40,7 @@ static void *arena_alloc(Arena *arena, long count, long size, long align, int in
     arena->prev = arena->head + padding;
     assert((uintptr_t)arena->prev % align == 0);
     arena->head = arena->prev + count * size;
-    return init ? memset(arena->prev, 0, count * size) : arena->prev;
+    return (init ? memset(arena->prev, 0, count * size) : arena->prev);
 }
 
 // reallocate a block of memory

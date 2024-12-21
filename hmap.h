@@ -9,13 +9,12 @@
 // general purpose associative array using open addressing
 typedef struct Hmap Hmap;
 typedef struct HmapItem HmapItem;
-typedef size_t HmapKeyHash(const char *);
+typedef uint64_t HmapKeyHash(const char *);
 typedef void *HmapDataCopy(void *, const void *, size_t);
 typedef void HmapDataFree(void *);
 
 struct Hmap {
-    long size, capacity, max_dist;
-    size_t data_size;
+    long size, capacity, data_size, max_dist;
     double load_factor;
     HmapKeyHash *key_hash;
     HmapDataCopy *data_copy;
@@ -26,7 +25,7 @@ struct Hmap {
 struct HmapItem {
     char *key;
     void *data;
-    size_t hash;
+    uint64_t hash;
 };
 
 #define HmapForEach(item, hmap)                                                         \
@@ -34,11 +33,12 @@ struct HmapItem {
         if (item->key)
 
 // create an empty hmap
-static Hmap hmap_create_full(long capacity, size_t data_size, double load_factor,
+static Hmap hmap_create_full(long capacity, long data_size, double load_factor,
                              HmapKeyHash *key_hash, HmapDataCopy *data_copy,
                              HmapDataFree *data_free)
 {
     assert(capacity >= 0);
+    assert(data_size >= 0);
     assert(0 < load_factor && load_factor < 1);
     assert(key_hash);
     return (Hmap){
@@ -50,7 +50,7 @@ static Hmap hmap_create_full(long capacity, size_t data_size, double load_factor
         .data_free = data_free,
     };
 }
-static Hmap hmap_create(long capacity, size_t data_size)
+static Hmap hmap_create(long capacity, long data_size)
 {
     return hmap_create_full(capacity, data_size, 0.75, strhash_fnv1a, memcpy, free);
 }
@@ -87,7 +87,7 @@ static void x__hmap_resize_items(Hmap *hmap)
 }
 
 static void x__hmap_item_create(const Hmap *hmap, HmapItem *item, const char *key, void *data,
-                                size_t hash)
+                                uint64_t hash)
 {
     item->key = strdup(key);
     assert(item->key);
@@ -109,7 +109,7 @@ static void *hmap_insert(Hmap *hmap, const char *key, void *data, int keep)
     assert(key);
     if (!hmap->item) x__hmap_create_items(hmap);
     if (hmap->size + 1 > hmap->capacity * hmap->load_factor) x__hmap_resize_items(hmap);
-    const size_t hash = hmap->key_hash(key);
+    const uint64_t hash = hmap->key_hash(key);
     long dist = 0, i = hash % hmap->capacity;
     HmapItem *item = &hmap->item[i];
     while (item->key && (item->hash != hash || strcmp(item->key, key))) {
@@ -148,7 +148,7 @@ static void *hmap_remove(Hmap *hmap, const char *key)
     assert(hmap);
     assert(key);
     if (hmap->size == 0) return 0;
-    const size_t hash = hmap->key_hash(key);
+    const uint64_t hash = hmap->key_hash(key);
     long i = hash % hmap->capacity;
     HmapItem *item = &hmap->item[i];
     for (long dist = 0; dist <= hmap->max_dist; ++dist) {
@@ -171,7 +171,7 @@ static void *hmap_find(const Hmap *hmap, const char *key)
     assert(hmap);
     assert(key);
     if (hmap->size == 0) return 0;
-    const size_t hash = hmap->key_hash(key);
+    const uint64_t hash = hmap->key_hash(key);
     long i = hash % hmap->capacity;
     HmapItem *item = &hmap->item[i];
     for (long dist = 0; dist <= hmap->max_dist; ++dist) {

@@ -11,8 +11,7 @@ typedef void *HeapDataCopy(void *, const void *, size_t);
 typedef void HeapDataFree(void *);
 
 struct Heap {
-    long size, capacity;
-    size_t data_size;
+    long size, capacity, data_size;
     HeapDataCopy *data_copy;
     HeapDataFree *data_free;
     HeapItem *item;
@@ -27,10 +26,11 @@ struct HeapItem {
     for (HeapItem *item = (heap)->item; item < (heap)->item + (heap)->size; ++item)
 
 // create an empty heap
-static Heap heap_create_full(long capacity, size_t data_size, HeapDataCopy *data_copy,
+static Heap heap_create_full(long capacity, long data_size, HeapDataCopy *data_copy,
                              HeapDataFree *data_free)
 {
     assert(capacity >= 0);
+    assert(data_size >= 0);
     return (Heap){
         .capacity = capacity,
         .data_size = data_size,
@@ -38,7 +38,7 @@ static Heap heap_create_full(long capacity, size_t data_size, HeapDataCopy *data
         .data_free = data_free,
     };
 }
-static Heap heap_create(long capacity, size_t data_size)
+static Heap heap_create(long capacity, long data_size)
 {
     return heap_create_full(capacity, data_size, memcpy, free);
 }

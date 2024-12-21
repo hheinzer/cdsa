@@ -12,8 +12,7 @@ typedef void *ListDataCopy(void *, const void *, size_t);
 typedef void ListDataFree(void *);
 
 struct List {
-    long size;
-    size_t data_size;
+    long size, data_size;
     ListDataCompare *data_cmp;
     ListDataCopy *data_copy;
     ListDataFree *data_free;
@@ -30,9 +29,10 @@ struct ListItem {
 #define ListForEachReverse(item, list) for (ListItem *item = (list)->tail; item; item = item->prev)
 
 // create an empty list
-static List list_create_full(size_t data_size, ListDataCompare *data_cmp, ListDataCopy *data_copy,
+static List list_create_full(long data_size, ListDataCompare *data_cmp, ListDataCopy *data_copy,
                              ListDataFree *data_free)
 {
+    assert(data_size >= 0);
     return (List){
         .data_size = data_size,
         .data_cmp = data_cmp,
@@ -40,7 +40,7 @@ static List list_create_full(size_t data_size, ListDataCompare *data_cmp, ListDa
         .data_free = data_free,
     };
 }
-static List list_create(size_t data_size, ListDataCompare *data_cmp)
+static List list_create(long data_size, ListDataCompare *data_cmp)
 {
     return list_create_full(data_size, data_cmp, memcpy, free);
 }
@@ -188,7 +188,7 @@ static void *list_remove(List *list, const void *data)
 }
 
 // return zero-based index in the list of the first item whose value is equal to data
-static size_t list_index(const List *list, const void *data)
+static long list_index(const List *list, const void *data)
 {
     assert(list);
     assert(list->data_cmp);

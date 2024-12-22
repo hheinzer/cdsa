@@ -1,22 +1,19 @@
 # compiler and default flags
 CC = clang
-CFLAGS = -std=c23 -g -Wall -Wextra -Wpedantic -Wshadow -Wno-unused-function
+CFLAGS = -std=c23 -g3 -Wall -Wextra -Wpedantic -Wshadow -Wno-unused-function
 
 # debug flags
-CFLAGS += -Og -fno-omit-frame-pointer -fsanitize=undefined
+CFLAGS += -fsanitize-trap=undefined
 
 # release flags
-#CFLAGS += -march=native -Ofast -flto=auto -DNDEBUG
-
-# profiling flags
-#CFLAGS += -pg
+#CFLAGS += -Ofast -march=native -flto=auto
 
 # sources, objects, and programs
 SRC = $(shell find . -type f -name '*.c')
 BIN = $(patsubst %.c, %, $(SRC))
 
 # make functions
-.PHONY: all clean check tidy format
+.PHONY: all clean check
 all: $(BIN)
 
 clean:
@@ -26,12 +23,6 @@ check:
 	@cppcheck --quiet --project=compile_commands.json \
 		--enable=all --inconclusive --check-level=exhaustive \
 		--suppress=missingIncludeSystem --suppress=checkersReport
-
-tidy:
-	@clang-tidy --quiet $(shell find . -type f -name '*.[ch]')
-
-format:
-	@clang-format -i $(shell find . -type f -name '*.[ch]')
 
 # build rules
 .SUFFIXES:

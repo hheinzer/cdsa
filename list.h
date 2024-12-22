@@ -1,229 +1,215 @@
 #pragma once
 
 #include <assert.h>
-#include <stdlib.h>
-#include <string.h>
 
-// general purpose doubly linked list
+#include "arena.h"
+
 typedef struct List List;
 typedef struct ListItem ListItem;
-typedef int ListDataCompare(const void *, const void *);
-typedef void *ListDataCopy(void *, const void *, size_t);
-typedef void ListDataFree(void *);
 
 struct List {
-    long size, data_size;
-    ListDataCompare *data_cmp;
-    ListDataCopy *data_copy;
-    ListDataFree *data_free;
-    ListItem *head, *tail;
+    Arena *arena;
+    struct {
+        long size;
+        int (*compare)(const void *, const void *);
+        void *(*copy)(void *, const void *, size_t);
+        void (*destroy)(void *);
+    } data;
+    long length;
+    ListItem *begin;
+    ListItem *end;
 };
 
 struct ListItem {
     void *data;
-    ListItem *next, *prev;
+    ListItem *next;
+    ListItem *prev;
 };
 
-#define ListForEach(item, list) for (ListItem *item = (list)->head; item; item = item->next)
+typedef enum {
+    REVERSE = 1 << 1,
+} ListFlags;
 
-#define ListForEachReverse(item, list) for (ListItem *item = (list)->tail; item; item = item->prev)
+#define ListForEach(item, list) for (ListItem *item = (list)->begin; item; item = item->next)
 
-// create an empty list
-static List list_create_full(long data_size, ListDataCompare *data_cmp, ListDataCopy *data_copy,
-                             ListDataFree *data_free)
-{
-    assert(data_size >= 0);
-    return (List){
-        .data_size = data_size,
-        .data_cmp = data_cmp,
-        .data_copy = data_copy,
-        .data_free = data_free,
-    };
+#define ListForEachReverse(item, list) for (ListItem *item = (list)->end; item; item = item->prev)
+
+#define ListForEach2(item1, item2, list1, list2)                                    \
+    for (ListItem *item1 = (list1)->begin, *item2 = (list2)->begin; item1 && item2; \
+         item1 = item1->next, item2 = item2->next)
+
+#define ListForEach2Reverse(item1, item2, list1, list2)                         \
+    for (ListItem *item1 = (list1)->end, *item2 = (list2)->end; item1 && item2; \
+         item1 = item1->prev, item2 = item2->prev)
+
+static List list_create(Arena *arena, long size, int (*compare)(const void *, const void *)) {
+    List list = {0};
+    list.arena = arena;
+    list.data.size = size;
+    list.data.compare = compare;
+    list.data.copy = memcpy;
+    return list;
 }
-static List list_create(long data_size, ListDataCompare *data_cmp)
-{
-    return list_create_full(data_size, data_cmp, memcpy, free);
-}
 
-static ListItem *x__list_item_create(const List *list, void *data)
-{
-    ListItem *item = malloc(sizeof(*item));
-    assert(item);
-    if (data && list->data_copy) {
-        item->data = malloc(list->data_size);
-        assert(item->data);
-        list->data_copy(item->data, data, list->data_size);
-    }
-    else {
+static ListItem *x__list_item_create(const List *self, void *data) {
+    ListItem *item = arena_alloc(self->arena, 1, sizeof(ListItem), alignof(ListItem), 0);
+    if (data && self->data.copy) {
+        item->data = arena_alloc(self->arena, 1, self->data.size, alignof(void *), NOZERO);
+        self->data.copy(item->data, data, self->data.size);
+    } else {
         item->data = data;
     }
-    item->next = 0;
-    item->prev = 0;
     return item;
 }
 
-// insert an item at a given position
-static void list_insert(List *list, long i, void *data)
-{
-    assert(list);
-    assert(-list->size <= i && i <= list->size);
-    ListItem *item = x__list_item_create(list, data);
-    if (list->size == 0) {
-        list->head = item;
-        list->tail = item;
+static void list_insert(List *self, long index, void *data) {
+    if (index < -self->length || self->length < index) {
+        abort();
     }
-    else if (i == 0 || i == -list->size) {
-        item->next = list->head;
-        list->head->prev = item;
-        list->head = item;
-    }
-    else if (i == list->size) {
-        item->prev = list->tail;
-        list->tail->next = item;
-        list->tail = item;
-    }
-    else {
-        i = (list->size + i) % list->size;
+    ListItem *item = x__list_item_create(self, data);
+    if (self->length == 0) {
+        self->begin = item;
+        self->end = item;
+    } else if (index == 0 || index == -self->length) {
+        item->next = self->begin;
+        self->begin->prev = item;
+        self->begin = item;
+    } else if (index == self->length) {
+        item->prev = self->end;
+        self->end->next = item;
+        self->end = item;
+    } else {
+        index = (self->length + index) % self->length;
         ListItem *next = 0;
-        if (i <= list->size - 1 - i) {
-            next = list->head;
-            for (long n = 0; n < i; ++n) next = next->next;
-        }
-        else {
-            next = list->tail;
-            for (long n = 0; n < list->size - 1 - i; ++n) next = next->prev;
+        if (index <= (self->length - 1) / 2) {
+            next = self->begin;
+            for (long i = 0; i < index; i++) {
+                next = next->next;
+            }
+        } else {
+            next = self->end;
+            for (long i = self->length - 1; i > index; i--) {
+                next = next->prev;
+            }
         }
         item->next = next;
         item->prev = next->prev;
         item->next->prev = item;
         item->prev->next = item;
     }
-    list->size += 1;
+    self->length += 1;
 }
 
-// add an item to the end of the list
-static void list_append(List *list, void *data)
-{
-    list_insert(list, list->size, data);
+static void list_append(List *self, void *data) {
+    list_insert(self, self->length, data);
 }
 
-// return a copy of the list
-static List list_copy(const List *list)
-{
-    assert(list);
-    List copy = list_create_full(list->data_size, list->data_cmp, list->data_copy, list->data_free);
-    if (list->size == 0) return copy;
-    for (const ListItem *item = list->head; item; item = item->next) list_append(&copy, item->data);
-    return copy;
+static List list_copy(const List *self, Arena *arena) {
+    List list = {0};
+    list.arena = arena;
+    list.data = self->data;
+    for (ListItem *item = self->begin; item; item = item->next) {
+        list_append(&list, item->data);
+    }
+    return list;
 }
 
-// remove the item at the given position in the list, and return its data
-static void *list_pop(List *list, long i)
-{
-    assert(list);
-    assert(-list->size <= i && i < list->size);
-    if (list->size == 0) return 0;
+static void *list_pop(List *self, long index) {
+    if (index < -self->length || self->length <= index) {
+        abort();
+    }
     ListItem *item = 0;
-    if (list->size == 1) {
-        item = list->head;
-        list->head = 0;
-        list->tail = 0;
-    }
-    else if (i == 0 || i == -list->size) {
-        item = list->head;
-        list->head = item->next;
-        list->head->prev = 0;
-    }
-    else if (i == list->size - 1 || i == -1) {
-        item = list->tail;
-        list->tail = item->prev;
-        list->tail->next = 0;
-    }
-    else {
-        i = (list->size + i) % list->size;
-        if (i <= list->size - 1 - i) {
-            item = list->head;
-            for (long n = 0; n < i; ++n) item = item->next;
-        }
-        else {
-            item = list->tail;
-            for (long n = 0; n < list->size - 1 - i; ++n) item = item->prev;
+    if (self->length == 1) {
+        item = self->begin;
+        self->begin = 0;
+        self->end = 0;
+    } else if (index == 0 || index == -self->length) {
+        item = self->begin;
+        self->begin = item->next;
+        self->begin->prev = 0;
+    } else if (index == self->length - 1 || index == -1) {
+        item = self->end;
+        self->end = item->prev;
+        self->end->next = 0;
+    } else {
+        index = (self->length + index) % self->length;
+        if (index <= (self->length - 1) / 2) {
+            item = self->begin;
+            for (long i = 0; i < index; i++) {
+                item = item->next;
+            }
+        } else {
+            item = self->end;
+            for (long i = self->length - 1; i > index; i--) {
+                item = item->prev;
+            }
         }
         item->next->prev = item->prev;
         item->prev->next = item->next;
     }
-    void *data = item->data;
-    free(item);
-    list->size -= 1;
-    return data;
+    self->length -= 1;
+    return item->data;
 }
 
-// remove the first item from the list whose value is equal to data, and return its data
-static void *list_remove(List *list, const void *data)
-{
-    assert(list);
-    assert(list->data_cmp);
-    if (list->size == 0) return 0;
-    for (ListItem *item = list->head; item; item = item->next) {
-        if (!list->data_cmp(item->data, data)) {
-            if (item == list->head) {
-                list->head = item->next;
-                if (list->head) list->head->prev = 0;
-            }
-            else if (item == list->tail) {
-                list->tail = item->prev;
-                list->tail->next = 0;
-            }
-            else {
-                item->next->prev = item->prev;
-                item->prev->next = item->next;
-            }
-            void *item_data = item->data;
-            free(item);
-            list->size -= 1;
-            return item_data;
+static void *list_remove(List *self, const void *data) {
+    assert(self->data.compare);
+    for (ListItem *item = self->begin; item; item = item->next) {
+        if (self->data.compare(item->data, data)) {
+            continue;
+        }
+        if (self->length == 1) {
+            self->begin = 0;
+            self->end = 0;
+        } else if (item == self->begin) {
+            self->begin = item->next;
+            self->begin->prev = 0;
+        } else if (item == self->end) {
+            self->end = item->prev;
+            self->end->next = 0;
+        } else {
+            item->next->prev = item->prev;
+            item->prev->next = item->next;
+        }
+        self->length -= 1;
+        return item->data;
+    }
+    return 0;
+}
+
+static long list_index(const List *self, const void *data) {
+    assert(self->data.compare);
+    long index = 0;
+    for (ListItem *item = self->begin; item; item = item->next) {
+        if (!self->data.compare(item->data, data)) {
+            return index;
+        }
+        index += 1;
+    }
+    return -1;
+}
+
+static void *list_find(const List *self, const void *data) {
+    assert(self->data.compare);
+    for (ListItem *item = self->begin; item; item = item->next) {
+        if (!self->data.compare(item->data, data)) {
+            return item->data;
         }
     }
     return 0;
 }
 
-// return zero-based index in the list of the first item whose value is equal to data
-static long list_index(const List *list, const void *data)
-{
-    assert(list);
-    assert(list->data_cmp);
-    if (list->size == 0) return -1;
-    long i = 0;
-    for (const ListItem *item = list->head; item; item = item->next, ++i)
-        if (!list->data_cmp(item->data, data)) return i;
-    return -1;
+static long list_count(const List *self, const void *data) {
+    assert(self->data.compare);
+    long count = 0;
+    for (ListItem *item = self->begin; item; item = item->next) {
+        if (!self->data.compare(item->data, data)) {
+            count += 1;
+        }
+    }
+    return count;
 }
 
-// return the data of the first item from the list whose value is equal to data
-static void *list_find(const List *list, const void *data)
-{
-    assert(list);
-    assert(list->data_cmp);
-    if (list->size == 0) return 0;
-    for (const ListItem *item = list->head; item; item = item->next)
-        if (!list->data_cmp(item->data, data)) return item->data;
-    return 0;
-}
-
-// return the number of times data appears in the list
-static long list_count(const List *list, const void *data)
-{
-    assert(list);
-    assert(list->data_cmp);
-    if (list->size == 0) return 0;
-    long n = 0;
-    for (const ListItem *item = list->head; item; item = item->next)
-        if (!list->data_cmp(item->data, data)) n += 1;
-    return n;
-}
-
-static ListItem *x__list_merge_sort_split(ListItem *first)
-{
+static ListItem *x__list_merge_sort_split(ListItem *first) {
     ListItem *slow = first, *fast = first;
     while (fast && fast->next && fast->next->next) {
         slow = slow->next;
@@ -231,74 +217,72 @@ static ListItem *x__list_merge_sort_split(ListItem *first)
     }
     ListItem *second = slow->next;
     slow->next = 0;
-    if (second) second->prev = 0;
+    if (second) {
+        second->prev = 0;
+    }
     return second;
 }
 
-static ListItem *x__list_merge_sort_merge(ListItem *first, ListItem *second, ListDataCompare cmp,
-                                          int order)
-{
-    if (!first) return second;
-    if (!second) return first;
-    if (order * cmp(first->data, second->data) < 0) {
-        first->next = x__list_merge_sort_merge(first->next, second, cmp, order);
-        if (first->next) first->next->prev = first;
+static ListItem *x__list_merge_sort_merge(List *self, ListItem *first, ListItem *second,
+                                          int order) {
+    if (!first) {
+        return second;
+    }
+    if (!second) {
+        return first;
+    }
+    if (order * self->data.compare(first->data, second->data) < 0) {
+        first->next = x__list_merge_sort_merge(self, first->next, second, order);
+        if (first->next) {
+            first->next->prev = first;
+        }
         first->prev = 0;
         return first;
     }
-    second->next = x__list_merge_sort_merge(first, second->next, cmp, order);
-    if (second->next) second->next->prev = second;
+    second->next = x__list_merge_sort_merge(self, first, second->next, order);
+    if (second->next) {
+        second->next->prev = second;
+    }
     second->prev = 0;
     return second;
 }
 
-static ListItem *x__list_merge_sort(ListItem *first, ListDataCompare cmp, int order)
-{
-    if (!first || !first->next) return first;
+static ListItem *x__list_merge_sort(List *self, ListItem *first, int order) {
+    if (!first || !first->next) {
+        return first;
+    }
     ListItem *second = x__list_merge_sort_split(first);
-    first = x__list_merge_sort(first, cmp, order);
-    second = x__list_merge_sort(second, cmp, order);
-    return x__list_merge_sort_merge(first, second, cmp, order);
+    first = x__list_merge_sort(self, first, order);
+    second = x__list_merge_sort(self, second, order);
+    return x__list_merge_sort_merge(self, first, second, order);
 }
 
-// sort the items of the list in place
-static void list_sort(List *list, int reverse)
-{
-    assert(list);
-    assert(list->data_cmp);
-    if (list->size == 0) return;
-    list->head = x__list_merge_sort(list->head, list->data_cmp, (reverse ? -1 : 1));
-    ListItem *item = list->head;
-    while (item && item->next) item = item->next;
-    list->tail = item;
-}
-
-// reverse the elements of the list in place
-static void list_reverse(List *list)
-{
-    assert(list);
-    if (list->size == 0) return;
-    ListItem *item = list->head;
-    while (item) {
-        ListItem *swap = item->prev;
-        item->prev = item->next;
-        item->next = swap;
-        item = item->prev;
+static void list_sort(List *self, int flags) {
+    assert(self->data.compare);
+    self->begin = x__list_merge_sort(self, self->begin, flags & REVERSE ? -1 : 1);
+    ListItem *item = self->begin;
+    while (item && item->next) {
+        item = item->next;
     }
-    ListItem *swap = list->head;
-    list->head = list->tail;
-    list->tail = swap;
+    self->end = item;
 }
 
-// remove all items from the list
-static void list_clear(List *list)
-{
-    assert(list);
-    if (list->size == 0) return;
-    for (ListItem *item = list->head, *next; item; item = next) {
-        next = item->next;
-        if (list->data_free) list->data_free(item->data);
-        free(item);
+static void list_reverse(List *self) {
+    for (ListItem *item = self->begin; item; item = item->prev) {
+        ListItem *swap = item->next;
+        item->next = item->prev;
+        item->prev = swap;
     }
-    *list = (List){0};
+    ListItem *swap = self->begin;
+    self->begin = self->end;
+    self->end = swap;
+}
+
+static void list_destroy(List *self) {
+    if (self->data.destroy) {
+        for (ListItem *item = self->begin; item; item = item->next) {
+            self->data.destroy(item->data);
+        }
+    }
+    *self = (List){0};
 }

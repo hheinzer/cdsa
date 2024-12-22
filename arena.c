@@ -3,56 +3,49 @@
 #include <stddef.h>
 #include <stdio.h>
 
-#include "hexdump.h"
+#include "dump.h"
 
-#define malloc(arena, size) arena_alloc(arena, 1, size, alignof(max_align_t), 0)
-#define realloc(arena, ptr, size) arena_realloc(arena, ptr, size, alignof(max_align_t))
-#define strdup(arena, str) strcpy(malloc(arena, strlen(str) + 1), str)
+#define alloc(a, n, t) arena_alloc(a, n, sizeof(t), alignof(typeof(t)), 0)
+#define realloc(a, p, n, t) arena_realloc(a, p, n, sizeof(t), alignof(typeof(t)))
+#define strdup(a, s) strcpy(alloc(a, strlen(s) + 1, *s), s)
+#define strapp(a, s, ss) strcat(realloc(a, s, strlen(s) + strlen(ss) + 1, *s), ss)
 
-int main(void)
-{
-    // create a memory arena
+void temporary(Arena arena);
+void permanent(Arena *arena);
+
+int main(void) {
     Arena arena = arena_create(1 << 10);
 
-    // allocate a string
-    char *a = strdup(&arena, "Hello");
-    printf("a = '%s'\n", a);
-    hexdump(arena.data, arena.head - arena.data);
+    char *s1 = strdup(&arena, "Hello");
+    dump(arena.data, arena.begin);
     printf("\n");
 
-    {  // create a temporary memory region (braces are not strictly needed)
-        Arena scratch = arena;
-
-        // allocate another string
-        char *b = strdup(&scratch, "foo");
-        printf("a = '%s'\n", a);
-        printf("b = '%s'\n", b);
-        hexdump(scratch.data, scratch.head - scratch.data);
-        printf("\n");
-
-        // resize last string
-        b = realloc(&scratch, b, strlen(b) + 4 + 1);
-        strcat(b, " bar");
-        printf("a = '%s'\n", a);
-        printf("b = '%s'\n", b);
-        hexdump(scratch.data, scratch.head - scratch.data);
-        printf("\n");
-    }
-
-    // resize the first string
-    a = realloc(&arena, a, strlen(a) + 8 + 1);
-    strcat(a, ", World!");
-    printf("a = '%s'\n", a);
-    hexdump(arena.data, arena.head - arena.data);
+    temporary(arena);
+    dump(arena.data, arena.begin);
     printf("\n");
 
-    // allocate another string
-    const char *c = strdup(&arena, "Arena");
-    printf("a = '%s'\n", a);
-    printf("c = '%s'\n", c);
-    hexdump(arena.data, arena.head - arena.data);
+    permanent(&arena);
+    dump(arena.data, arena.begin);
     printf("\n");
 
-    // cleanup
-    arena_clear(&arena);
+    strapp(&arena, s1, ", World!");
+    dump(arena.data, arena.begin);
+
+    arena_destroy(&arena);
+}
+
+void temporary(Arena arena) {
+    char *s2 = strdup(&arena, "foo");
+    dump(arena.data, arena.begin);
+    printf("\n");
+
+    strapp(&arena, s2, ", bar");
+    dump(arena.data, arena.begin);
+    printf("\n");
+}
+
+void permanent(Arena *arena) {
+    strdup(arena, "arena allocator");
+    dump(arena->data, arena->begin);
+    printf("\n");
 }

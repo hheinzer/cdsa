@@ -1,70 +1,60 @@
 #pragma once
 
-#include <assert.h>
 #include <stdint.h>
 #include <stdlib.h>
 #include <string.h>
 
-// general purpose arena allocator
-typedef struct Arena Arena;
+typedef struct {
+    void *data;
+    void *last;
+    char *begin;
+    char *end;
+} Arena;
 
-struct Arena {
-    char *data, *prev, *head, *tail;
-};
+typedef enum {
+    NOZERO = 1 << 1,
+} ArenaFlags;
 
-// create an empty arena
-static Arena arena_create(long capacity)
-{
-    assert(capacity > 0);
-    char *data = malloc(capacity);
-    assert(data);
-    return (Arena){
-        .data = memset(data, 0, capacity),
-        .prev = data,
-        .head = data,
-        .tail = data + capacity,
-    };
+static Arena arena_create(long capacity) {
+    Arena arena = {0};
+    arena.data = malloc(capacity);
+    arena.begin = arena.data;
+    arena.end = arena.begin ? arena.begin + capacity : 0;
+    return arena;
 }
 
-// allocate a block of memory; return aligned pointer on zero size; abort on out of memory
 [[gnu::malloc, gnu::alloc_size(2, 3), gnu::alloc_align(4)]]
-static void *arena_alloc(Arena *arena, long count, long size, long align, int init)
-{
-    assert(arena);
-    assert(arena->data);
-    assert(align > 0 && (align & (align - 1)) == 0);
-    const long padding = -(uintptr_t)arena->head & (align - 1);
-    if (count <= 0 || size <= 0) return arena->head + padding;
-    const long available = arena->tail - arena->head - padding;
-    if (available < 0 || count > available / size) abort();
-    arena->prev = arena->head + padding;
-    assert((uintptr_t)arena->prev % align == 0);
-    arena->head = arena->prev + count * size;
-    return (init ? memset(arena->prev, 0, count * size) : arena->prev);
-}
-
-// reallocate a block of memory
-static void *arena_realloc(Arena *arena, void *ptr, long new_size, long align)
-{
-    assert(arena);
-    assert(arena->data);
-    if (!ptr || new_size <= 0) return arena_alloc(arena, 1, new_size, align, 0);
-    assert(arena->data <= (char *)ptr && (char *)ptr < arena->head + align);
-    assert((uintptr_t)ptr % align == 0);
-    if (ptr == arena->prev) {
-        arena->head = arena->prev;
-        return arena_alloc(arena, 1, new_size, align, 0);
+static void *arena_alloc(Arena *self, long count, long size, long align, int flags) {
+    long available = self->end - self->begin;
+    long padding = -(uintptr_t)self->begin & (align - 1);
+    if (count > (available - padding) / size) {
+        abort();  // out of memory or overflow
     }
-    void *new_ptr = arena_alloc(arena, 1, new_size, align, 0);
-    const long max_old_size = arena->prev - (char *)ptr;
-    if (max_old_size <= 0) return new_ptr;
-    return memcpy(new_ptr, ptr, (new_size < max_old_size ? new_size : max_old_size));
+    long total = count * size;
+    self->last = self->begin + padding;
+    self->begin += padding + total;
+    return flags & NOZERO ? self->last : memset(self->last, 0, total);
 }
 
-// remove all memory from the arena
-static void arena_clear(Arena *arena)
-{
-    assert(arena);
-    free(arena->data);
-    *arena = (Arena){0};
+[[gnu::malloc, gnu::alloc_size(3, 4), gnu::alloc_align(5)]]
+static void *arena_realloc(Arena *self, void *ptr, long count, long size, long align) {
+    if (!ptr) {
+        return arena_alloc(self, count, size, align, NOZERO);
+    }
+    if (ptr == self->last) {
+        self->begin = self->last;
+        return arena_alloc(self, count, size, align, NOZERO);
+    }
+    if (ptr < self->data || self->last < ptr) {
+        abort();
+    }
+    void *new = arena_alloc(self, count, size, align, NOZERO);
+    long total = count * size;
+    long max_total = (char *)self->last - (char *)ptr;
+    return memcpy(new, ptr, total < max_total ? total : max_total);
+}
+
+static void arena_destroy(Arena *self) {
+    free(self->data);
+    *self = (Arena){0};
 }

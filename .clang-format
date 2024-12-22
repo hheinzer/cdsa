@@ -4,5 +4,6 @@ IndentWidth: 4
 ColumnLimit: 100
 AllowShortCaseLabelsOnASingleLine: true
 AllowShortFunctionsOnASingleLine: None
-BreakBeforeBraces: Stroustrup
+BraceWrapping:
+  BeforeElse: true
 ...

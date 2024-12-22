@@ -2,19 +2,23 @@
 
 This repository provides general purpose data structures and algorithms that are often needed when
 programming in C. Each data structure is implemented as a single header that only depends on the C
-standard library (and possibly a base data structure). Most data structures are semantically
-identical to their Python counterparts with the same name. Example usage is provided in the source
-files with the same names.
+standard library (and possibly other headers from this repository). Most data structures are
+semantically identical to their Python counterparts with the same name. Example usage is provided in
+the source files with the same names.
 
 Any C23 compliant C compiler should be able to handle the data structures without any special flags.
 Most of the code should also compile under C99, but for anything lower, you might need to get your
 hands dirty.
 
-The employed “error handling strategy” is heavy usage of `assert`. This might not be compatible with
+The employed “error handling strategy” is `assert` and `abort`. This might not be compatible with
 your project if you want to be able to recover from errors.
 
-All memory is allocated through `malloc`, `calloc`, and `realloc`. If you want to use a custom
-allocator, use macros to redefine these functions, or adjust the header files directly.
+Data structures manage their memory using
+[arena allocators](https://www.rfleury.com/p/untangling-lifetimes-the-arena-allocator), which
+streamline memory management by grouping allocations together and freeing them all at once. I first
+learned about this type of allocator [here](https://nullprogram.com/blog/2023/09/27/) and was
+immediately hooked by their elegance and simplicity. You may still use traditional heap
+allocation for the actual data if dynamic resizing or longer lifetimes are required.
 
 Some creation parameters are optional and accept a literal `0` (or null pointer). For example, if
 you want to create a list, but never need to compare list items, you don't need to pass a comparison
@@ -22,24 +26,25 @@ function.
 
 Even though I'm big sucker for performance, the primary focus of this project is flexibility.
 Therefore, the stored data is always a `void` pointer and the user needs to provide the size of the
-data and appropriate copy and deallocation function. If you are not storing anything complicated,
-`memcpy` and `free` are your friends.
+data and appropriate copy and destroy functions. If you are not storing anything complicated,
+`memcpy` and `free` are your friends. If you use an arena allocator for your data, you probably
+won't need a destroy function.
 
 ## Features
 
 - Memory
-    - [x] `hexdump.h`: print memory buffers
+    - [x] `dump.h`: inspect memory buffers
     - [x] `arena.h`: arena allocator
 - Linear
-    - [x] `array.h`: dynamic array
-    - [x] `list.h`: linked list
+    - [x] `list.h`: doubly linked list
 - Hashing
-    - [x] `hash.h`: hash functions
-    - [x] `dict.h`: associative array using open chaining
-    - [x] `hmap.h`: associative array using open addressing
-    - [x] `set.h`: set using hashing and open addressing
+    - [ ] `hash.h`: hash functions
+    - [ ] `dict.h`: associative array using open chaining
+    - [ ] `hmap.h`: associative array using open addressing
+    - [ ] `set.h`: set using hashing and open addressing
 - Trees
-    - [x] `heap.h`: priority queue
+    - [ ] `trie.h`: prefix tree (dynamic hash map)
+    - [ ] `heap.h`: priority queue
 - Graphs
     - [ ] `graph.h`
 

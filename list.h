@@ -11,7 +11,8 @@ struct List {
     Arena *arena;
     struct {
         long size;
-        int (*compare)(const void *, const void *);
+        int (*compare)(const void *, const void *, void *);
+        void *context;
         void *(*copy)(void *, const void *, size_t);
         void (*destroy)(void *);
     } data;
@@ -42,11 +43,13 @@ typedef enum {
     for (ListItem *item1 = (list1)->end, *item2 = (list2)->end; item1 && item2; \
          item1 = item1->prev, item2 = item2->prev)
 
-static List list_create(Arena *arena, long size, int (*compare)(const void *, const void *)) {
+static List list_create(Arena *arena, long size, int (*compare)(const void *, const void *, void *),
+                        void *context) {
     List list = {0};
     list.arena = arena;
     list.data.size = size;
     list.data.compare = compare;
+    list.data.context = context;
     list.data.copy = memcpy;
     return list;
 }
@@ -154,7 +157,7 @@ static void *list_pop(List *self, long index) {
 static void *list_remove(List *self, const void *data) {
     assert(self->data.compare);
     for (ListItem *item = self->begin; item; item = item->next) {
-        if (self->data.compare(item->data, data)) {
+        if (self->data.compare(item->data, data, self->data.context)) {
             continue;
         }
         if (self->length == 1) {
@@ -180,7 +183,7 @@ static long list_index(const List *self, const void *data) {
     assert(self->data.compare);
     long index = 0;
     for (ListItem *item = self->begin; item; item = item->next) {
-        if (!self->data.compare(item->data, data)) {
+        if (!self->data.compare(item->data, data, self->data.context)) {
             return index;
         }
         index += 1;
@@ -191,7 +194,7 @@ static long list_index(const List *self, const void *data) {
 static void *list_find(const List *self, const void *data) {
     assert(self->data.compare);
     for (ListItem *item = self->begin; item; item = item->next) {
-        if (!self->data.compare(item->data, data)) {
+        if (!self->data.compare(item->data, data, self->data.context)) {
             return item->data;
         }
     }
@@ -202,7 +205,7 @@ static long list_count(const List *self, const void *data) {
     assert(self->data.compare);
     long count = 0;
     for (ListItem *item = self->begin; item; item = item->next) {
-        if (!self->data.compare(item->data, data)) {
+        if (!self->data.compare(item->data, data, self->data.context)) {
             count += 1;
         }
     }
@@ -231,7 +234,7 @@ static ListItem *x__list_merge_sort_merge(List *self, ListItem *first, ListItem 
     if (!second) {
         return first;
     }
-    if (order * self->data.compare(first->data, second->data) < 0) {
+    if (order * self->data.compare(first->data, second->data, self->data.context) < 0) {
         first->next = x__list_merge_sort_merge(self, first->next, second, order);
         if (first->next) {
             first->next->prev = first;

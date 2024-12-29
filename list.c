@@ -2,7 +2,7 @@
 
 #include <stdio.h>
 
-int intcmp(const void *a, const void *b) {
+int intcmp(const void *a, const void *b, void *) {
     const int *ia = a, *ib = b;
     return (*ia > *ib) - (*ia < *ib);
 }
@@ -10,7 +10,7 @@ int intcmp(const void *a, const void *b) {
 int main(void) {
     Arena arena = arena_create(1 << 10);
 
-    List a = list_create(&arena, sizeof(int), intcmp);
+    List a = list_create(&arena, sizeof(int), intcmp, 0);
     for (int i = 0; i < 10; i++) {
         list_append(&a, &i);
     }

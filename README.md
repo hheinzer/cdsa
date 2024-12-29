@@ -35,10 +35,10 @@ won't need a destroy function.
 - Memory
     - [x] `dump.h`: inspect memory buffers
     - [x] `arena.h`: arena allocator
+    - [ ] `fatptr.h`: fat pointers (or non-null terminated strings)
 - Linear
     - [x] `list.h`: doubly linked list
 - Hashing
-    - [ ] `hash.h`: hash functions
     - [ ] `dict.h`: associative array using open chaining
     - [ ] `hmap.h`: associative array using open addressing
     - [ ] `set.h`: set using hashing and open addressing

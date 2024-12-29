@@ -107,13 +107,20 @@ static void list_append(List *self, void *data) {
     list_insert(self, self->length, data);
 }
 
-static List list_copy(const List *self, Arena *arena) {
+static void *list_copy(void *_other, const void *_self, size_t) {
+    List *other = _other;
+    const List *self = _self;
+    other->data = self->data;
+    for (ListItem *item = self->begin; item; item = item->next) {
+        list_append(other, item->data);
+    }
+    return other;
+}
+
+static List list_clone(const List *self, Arena *arena) {
     List list = {0};
     list.arena = arena;
-    list.data = self->data;
-    for (ListItem *item = self->begin; item; item = item->next) {
-        list_append(&list, item->data);
-    }
+    list_copy(&list, self, 0);
     return list;
 }
 

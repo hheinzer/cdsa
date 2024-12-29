@@ -2,9 +2,9 @@
 
 #include <stdio.h>
 
-int intcmp(const void *a, const void *b, void *) {
-    const int *ia = a, *ib = b;
-    return (*ia > *ib) - (*ia < *ib);
+int intcmp(const void *_a, const void *_b, void *) {
+    const int *a = _a, *b = _b;
+    return (*a > *b) - (*a < *b);
 }
 
 int main(void) {
@@ -19,7 +19,7 @@ int main(void) {
 
     list_insert(&a, -3, (int[]){-33});
 
-    List b = list_copy(&a, &arena);
+    List b = list_clone(&a, &arena);
 
     list_pop(&a, a.length / 2);
 

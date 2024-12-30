@@ -3,13 +3,13 @@
 #include <ctype.h>
 #include <stdio.h>
 
-static void dump(const void *head, const void *tail) {
-    int offset = 16;
+static void dump(const void *begin, const void *end) {
+    int offset = 2 * 8;
     printf("%-8s  %-*s %s\n", "Offset", 3 * offset, "Data", "ASCII");
-    for (const char *byte = head; byte < (char *)tail; byte += offset) {
-        printf("%08tx  ", byte - (char *)head);
+    for (const char *byte = begin; byte < (char *)end; byte += offset) {
+        printf("%08tx  ", byte - (char *)begin);
         for (int i = 0; i < offset; i++) {
-            if (byte + i < (char *)tail) {
+            if (byte + i < (char *)end) {
                 printf("%02x ", (unsigned char)byte[i]);
             } else {
                 printf("   ");
@@ -17,7 +17,7 @@ static void dump(const void *head, const void *tail) {
         }
         printf(" ");
         for (int i = 0; i < offset; i++) {
-            if (byte + i < (char *)tail) {
+            if (byte + i < (char *)end) {
                 printf("%c", isprint(byte[i]) ? byte[i] : '.');
             }
         }

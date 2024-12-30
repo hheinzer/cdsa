@@ -5,16 +5,16 @@
 
 #include "dump.h"
 
-#define alloc(a, n, t) arena_alloc(a, n, sizeof(t), alignof(typeof(t)), 0)
-#define realloc(a, p, n, t) arena_realloc(a, p, n, sizeof(t), alignof(typeof(t)))
-#define strdup(a, s) strcpy(alloc(a, strlen(s) + 1, *s), s)
-#define strapp(a, s, ss) strcat(realloc(a, s, strlen(s) + strlen(ss) + 1, *s), ss)
+#define alloc(a, p, n) arena_alloc(a, n, sizeof(*(p)), alignof(typeof(*(p))), 0)
+#define realloc(a, p, n) arena_realloc(a, p, n, sizeof(*(p)), alignof(typeof(*(p))))
+#define strdup(a, s) strcpy(alloc(a, s, strlen(s) + 1), s)
+#define strapp(a, s, ss) strcat(realloc(a, s, strlen(s) + strlen(ss) + 1), ss)
 
 void temporary(Arena arena);
 void permanent(Arena *arena);
 
 int main(void) {
-    Arena arena = arena_create(1 << 10);
+    Arena arena = arena_create(1 << 20);
 
     char *s1 = strdup(&arena, "Hello");
     dump(arena.data, arena.begin);

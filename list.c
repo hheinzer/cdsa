@@ -8,9 +8,9 @@ int intcmp(const void *_a, const void *_b, void *) {
 }
 
 int main(void) {
-    Arena arena = arena_create(1 << 10);
+    Arena arena = arena_create(1 << 20);
 
-    List a = list_create(&arena, sizeof(int), intcmp, 0);
+    List a = list_create(&arena, sizeof(int), intcmp);
     for (int i = 0; i < 10; i++) {
         list_append(&a, &i);
     }
@@ -25,16 +25,16 @@ int main(void) {
 
     list_remove(&b, (int[]){33});
 
-    list_sort(&a, 0);
+    list_sort(&a, 0, 0);
 
     list_reverse(&b);
 
     printf("a = [");
-    ListForEach(item, &a) printf("%d, ", *(int *)item->data);
+    list_for_each(item, &a) printf("%d, ", *(int *)item->data);
     printf("]\n");
 
     printf("reverse(b) = [");
-    ListForEachReverse(item, &b) printf("%d, ", *(int *)item->data);
+    list_for_each_reverse(item, &b) printf("%d, ", *(int *)item->data);
     printf("]\n");
 
     printf("a.index(33) = %ld\n", list_index(&a, (int[]){33}));

@@ -2,6 +2,8 @@
 
 #include <stdio.h>
 
+#include "dump.h"
+
 int intcmp(const void *_a, const void *_b, void *) {
     const int *a = _a, *b = _b;
     return (*a > *b) - (*a < *b);
@@ -28,6 +30,9 @@ int main(void) {
     list_sort(&a, 0, 0);
 
     list_reverse(&b);
+
+    dump(arena.data, arena.begin);
+    printf("\n");
 
     printf("a = [");
     list_for_each(item, &a) printf("%d, ", *(int *)item->data);

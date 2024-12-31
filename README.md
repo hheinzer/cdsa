@@ -1,49 +1,43 @@
 # Common Data Structures and Algorithms for C
 
-This repository provides general purpose data structures and algorithms that are often needed when
+This repository provides general purpose data structures and algorithms that are useful when
 programming in C. Each data structure is implemented as a single header that only depends on the C
-standard library (and possibly other headers from this repository). Most data structures are
-semantically identical to their Python counterparts with the same name. Example usage is provided in
-the source files with the same names.
+standard library (and possibly other headers from this repository). Example usage is provided in the
+source files with the same names.
 
 Any C23 compliant C compiler should be able to handle the data structures without any special flags.
 Most of the code should also compile under C99, but for anything lower, you might need to get your
 hands dirty.
 
-The employed “error handling strategy” is `assert` and `abort`. This might not be compatible with
-your project if you want to be able to recover from errors.
+The employed “error handling strategy” is `assert`. This might not be compatible with your project
+if you want to be able to recover from errors.
 
 Data structures manage their memory using
 [arena allocators](https://www.rfleury.com/p/untangling-lifetimes-the-arena-allocator), which
 streamline memory management by grouping allocations together and freeing them all at once. I first
 learned about this type of allocator [here](https://nullprogram.com/blog/2023/09/27/) and was
-immediately hooked by their elegance and simplicity. You may still use traditional heap
-allocation for the actual data if dynamic resizing or longer lifetimes are required.
+immediately hooked by their elegance and simplicity. If you require heap allocated objects, you
+might need to get your hands dirty again, because there is no dedicated destruction function.
 
 Some creation parameters are optional and accept a literal `0` (or null pointer). For example, if
 you want to create a list, but never need to compare list items, you don't need to pass a comparison
 function.
 
 Even though I'm big sucker for performance, the primary focus of this project is flexibility.
-Therefore, the stored data is always a `void` pointer and the user needs to provide the size of the
-data and appropriate copy and destroy functions. If you are not storing anything complicated,
-`memcpy` and `free` are your friends. If you use an arena allocator for your data, you probably
-won't need a destroy function.
+Therefore, the stored data is a `void` pointer and the user needs to provide the size of the data
+and an appropriate copy function. If you are not storing anything complicated, the default copy
+function `arena_memcpy` is your friend.
 
 ## Features
 
 - Memory
     - [x] `dump.h`: inspect memory buffers
     - [x] `arena.h`: arena allocator
-    - [ ] `fatptr.h`: fat pointers (or non-null terminated strings)
 - Linear
     - [x] `list.h`: doubly linked list
 - Hashing
-    - [ ] `dict.h`: associative array using open chaining
-    - [ ] `hmap.h`: associative array using open addressing
-    - [ ] `set.h`: set using hashing and open addressing
+    - [x] `dict.h`: dictionary (4-ary hash trie)
 - Trees
-    - [ ] `trie.h`: prefix tree (dynamic hash map)
     - [ ] `heap.h`: priority queue
 - Graphs
     - [ ] `graph.h`

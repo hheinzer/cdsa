@@ -1,14 +1,14 @@
 #pragma once
 
 #include <assert.h>
+#include <stddef.h>
 
 #include "arena.h"
 
 typedef struct List List;
 typedef struct ListItem ListItem;
 typedef int ListDataCompare(const void *, const void *, void *);
-typedef void *ListDataCopy(void *, const void *, size_t);
-typedef void ListDataDestroy(void *);
+typedef void *ListDataCopy(Arena *, void *, const void *, long);
 
 struct List {
     Arena *arena;
@@ -16,7 +16,6 @@ struct List {
         long size;
         ListDataCompare *compare;
         ListDataCopy *copy;
-        ListDataDestroy *destroy;
     } data;
     long length;
     ListItem *begin;
@@ -51,23 +50,21 @@ static List list_create(Arena *arena, long size, ListDataCompare *compare) {
     list.arena = arena;
     list.data.size = size;
     list.data.compare = compare;
-    list.data.copy = memcpy;
+    list.data.copy = arena_memcpy;
     return list;
 }
 
 static void x__list_item_create(const List *self, ListItem *item, void *data) {
     if (data && self->data.copy) {
-        item->data = arena_alloc(self->arena, 1, self->data.size, alignof(void *), NOZERO);
-        self->data.copy(item->data, data, self->data.size);
+        item->data = arena_alloc(self->arena, 1, self->data.size, alignof(max_align_t), NOZERO);
+        self->data.copy(self->arena, item->data, data, self->data.size);
     } else {
         item->data = data;
     }
 }
 
 static void list_insert(List *self, long index, void *data) {
-    if (index < -self->length || self->length < index) {
-        abort();
-    }
+    assert(-self->length <= index && index <= self->length);
     ListItem *item = arena_alloc(self->arena, 1, sizeof(ListItem), alignof(ListItem), 0);
     x__list_item_create(self, item, data);
     if (self->length == 0) {
@@ -107,27 +104,18 @@ static void list_append(List *self, void *data) {
     list_insert(self, self->length, data);
 }
 
-static void *list_copy(void *_other, const void *_self, size_t) {
-    List *other = _other;
-    const List *self = _self;
-    other->data = self->data;
-    for (ListItem *item = self->begin; item; item = item->next) {
-        list_append(other, item->data);
-    }
-    return other;
-}
-
 static List list_clone(const List *self, Arena *arena) {
     List list = {0};
     list.arena = arena;
-    list_copy(&list, self, 0);
+    list.data = self->data;
+    for (ListItem *item = self->begin; item; item = item->next) {
+        list_append(&list, item->data);
+    }
     return list;
 }
 
 static void *list_pop(List *self, long index) {
-    if (index < -self->length || self->length <= index) {
-        abort();
-    }
+    assert(-self->length <= index && index < self->length);
     ListItem *item = 0;
     if (self->length == 1) {
         item = self->begin;
@@ -286,13 +274,4 @@ static void list_reverse(List *self) {
     ListItem *swap = self->begin;
     self->begin = self->end;
     self->end = swap;
-}
-
-static void list_destroy(List *self) {
-    if (self->data.destroy) {
-        for (ListItem *item = self->begin; item; item = item->next) {
-            self->data.destroy(item->data);
-        }
-    }
-    *self = (List){0};
 }

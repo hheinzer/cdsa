@@ -51,8 +51,5 @@ int main(void) {
     printf("a.count(33) = %ld\n", list_count(&a, (int[]){33}));
     printf("b.count(33) = %ld\n", list_count(&b, (int[]){33}));
 
-    list_destroy(&a);
-    list_destroy(&b);
-
     arena_destroy(&arena);
 }

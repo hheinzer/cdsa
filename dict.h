@@ -21,7 +21,7 @@ struct Dict {
 
 struct DictItem {
     struct {
-        char *data;
+        void *data;
         long size;
     } key;
     void *data;
@@ -100,18 +100,6 @@ static void *dict_insert(Dict *self, const void *key, long size, void *data, int
     return 0;
 }
 
-static Dict dict_clone(const Dict *self, Arena *arena) {
-    Dict dict = {0};
-    dict.arena = arena;
-    dict.data = self->data;
-    for (DictItem *item = self->begin; item; item = item->next) {
-        if (item->key.size) {
-            dict_insert(&dict, item->key.data, item->key.size, item->data, 0);
-        }
-    }
-    return dict;
-}
-
 static void *dict_remove(Dict *self, const void *key, long size) {
     if (!size) {
         size = strlen(key) + 1;
@@ -140,4 +128,16 @@ static void *dict_find(const Dict *self, const void *key, long size) {
         item = item->child[hash >> 62];
     }
     return 0;
+}
+
+static Dict dict_clone(const Dict *self, Arena *arena) {
+    Dict dict = {0};
+    dict.arena = arena;
+    dict.data = self->data;
+    for (DictItem *item = self->begin; item; item = item->next) {
+        if (item->key.size) {
+            dict_insert(&dict, item->key.data, item->key.size, item->data, 0);
+        }
+    }
+    return dict;
 }

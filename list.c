@@ -42,6 +42,9 @@ int main(void) {
     list_for_each_reverse(item, &b) printf("%d, ", *(int *)item->data);
     printf("]\n");
 
+    printf("a.get(10) = %d\n", *(int *)list_get(&a, 10));
+    printf("b.get(10) = %d\n", *(int *)list_get(&b, 10));
+
     printf("a.index(33) = %ld\n", list_index(&a, (int[]){33}));
     printf("b.index(33) = %ld\n", list_index(&b, (int[]){33}));
 

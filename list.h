@@ -104,16 +104,6 @@ static void list_append(List *self, void *data) {
     list_insert(self, self->length, data);
 }
 
-static List list_clone(const List *self, Arena *arena) {
-    List list = {0};
-    list.arena = arena;
-    list.data = self->data;
-    for (ListItem *item = self->begin; item; item = item->next) {
-        list_append(&list, item->data);
-    }
-    return list;
-}
-
 static void *list_pop(List *self, long index) {
     assert(-self->length <= index && index < self->length);
     ListItem *item = 0;
@@ -174,16 +164,22 @@ static void *list_remove(List *self, const void *data) {
     return 0;
 }
 
-static long list_index(const List *self, const void *data) {
-    assert(self->data.compare);
-    long index = 0;
-    for (ListItem *item = self->begin; item; item = item->next) {
-        if (!self->data.compare(item->data, data, 0)) {
-            return index;
+static void *list_get(const List *self, long index) {
+    assert(-self->length <= index && index < self->length);
+    ListItem *item = 0;
+    index = (self->length + index) % self->length;
+    if (index <= (self->length - 1) / 2) {
+        item = self->begin;
+        for (long i = 0; i < index; i++) {
+            item = item->next;
         }
-        index += 1;
+    } else {
+        item = self->end;
+        for (long i = self->length - 1; i > index; i--) {
+            item = item->prev;
+        }
     }
-    return -1;
+    return item->data;
 }
 
 static void *list_find(const List *self, const void *data) {
@@ -194,6 +190,18 @@ static void *list_find(const List *self, const void *data) {
         }
     }
     return 0;
+}
+
+static long list_index(const List *self, const void *data) {
+    assert(self->data.compare);
+    long index = 0;
+    for (ListItem *item = self->begin; item; item = item->next) {
+        if (!self->data.compare(item->data, data, 0)) {
+            return index;
+        }
+        index += 1;
+    }
+    return -1;
 }
 
 static long list_count(const List *self, const void *data) {
@@ -274,4 +282,14 @@ static void list_reverse(List *self) {
     ListItem *swap = self->begin;
     self->begin = self->end;
     self->end = swap;
+}
+
+static List list_clone(const List *self, Arena *arena) {
+    List list = {0};
+    list.arena = arena;
+    list.data = self->data;
+    for (ListItem *item = self->begin; item; item = item->next) {
+        list_append(&list, item->data);
+    }
+    return list;
 }

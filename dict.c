@@ -25,11 +25,11 @@ int main(void) {
     printf("\n");
 
     printf("a = {");
-    dict_for_each(item, &a) printf("%s: %d, ", item->key.data, *(int *)item->data);
+    dict_for_each(item, &a) printf("%s: %d, ", (char *)item->key.data, *(int *)item->data);
     printf("}\n");
 
     printf("b = {");
-    dict_for_each(item, &b) printf("%s: %d, ", item->key.data, *(int *)item->data);
+    dict_for_each(item, &b) printf("%s: %d, ", (char *)item->key.data, *(int *)item->data);
     printf("}\n");
 
     printf("a.find(six) = %p\n", dict_find(&a, "six", 0));

@@ -285,6 +285,9 @@ static void list_reverse(List *self) {
 }
 
 static List list_clone(const List *self, Arena *arena) {
+    if (!arena) {
+        arena = self->arena;
+    }
     List list = {0};
     list.arena = arena;
     list.data = self->data;
@@ -294,11 +297,14 @@ static List list_clone(const List *self, Arena *arena) {
     return list;
 }
 
-static void *list_to_array(const List *self, Arena *arena) {
-    char *data = arena_alloc(arena, self->length, self->data.size, alignof(max_align_t), NOZERO);
+static ListItem *list_items(const List *self, Arena *arena) {
+    if (!arena) {
+        arena = self->arena;
+    }
+    ListItem *items = arena_alloc(arena, self->length, sizeof(ListItem), alignof(ListItem), NOZERO);
     long index = 0;
     for (ListItem *item = self->begin; item; item = item->next) {
-        memcpy(data + index++ * self->data.size, item->data, self->data.size);
+        items[index++] = *item;
     }
-    return data;
+    return items;
 }

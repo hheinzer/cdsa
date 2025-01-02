@@ -29,3 +29,7 @@ static int set_find(const Set *self, const void *key, long size) {
 static Set set_clone(const Set *self, Arena *arena) {
     return dict_clone(self, arena);
 }
+
+static SetItem *set_items(const Set *self, Arena *arena) {
+    return dict_items(self, arena);
+}

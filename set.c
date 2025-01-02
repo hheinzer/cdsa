@@ -16,20 +16,26 @@ int main(void) {
         set_insert(&a, key[i], 0);
     }
 
-    Set b = set_clone(&a, &arena);
+    Set b = set_clone(&a, 0);
 
     set_remove(&b, "six", 0);
     set_insert(&b, "ten", 0);
+
+    const DictItem *b_item = set_items(&b, 0);
 
     dump(arena.data, arena.begin);
     printf("\n");
 
     printf("a = {");
-    set_for_each(item, &a) printf("%s, ", (char *)item->key.data);
+    set_for_each(item, &a) {
+        printf("%s, ", (char *)item->key.data);
+    }
     printf("}\n");
 
     printf("b = {");
-    set_for_each(item, &b) printf("%s, ", (char *)item->key.data);
+    for (long i = 0; i < b.length; i++) {
+        printf("%s, ", (char *)b_item[i].key.data);
+    }
     printf("}\n");
 
     printf("a.find(six) = %d\n", set_find(&a, "six", 0));

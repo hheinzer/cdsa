@@ -21,7 +21,7 @@ int main(void) {
 
     list_insert(&a, -3, (int[]){-33});
 
-    List b = list_clone(&a, &arena);
+    List b = list_clone(&a, 0);
 
     list_pop(&a, a.length / 2);
 
@@ -31,17 +31,21 @@ int main(void) {
 
     list_reverse(&b);
 
-    const int *bdata = list_to_array(&b, &arena);
+    const ListItem *b_item = list_items(&b, 0);
 
     dump(arena.data, arena.begin);
     printf("\n");
 
     printf("a = [");
-    list_for_each(item, &a) printf("%d, ", *(int *)item->data);
+    list_for_each(item, &a) {
+        printf("%d, ", *(int *)item->data);
+    }
     printf("]\n");
 
     printf("b = [");
-    for (long i = 0; i < b.length; i++) printf("%d, ", bdata[i]);
+    for (long i = 0; i < b.length; i++) {
+        printf("%d, ", *(int *)b_item[i].data);
+    }
     printf("]\n");
 
     printf("a.get(10) = %d\n", *(int *)list_get(&a, 10));

@@ -16,20 +16,26 @@ int main(void) {
         dict_insert(&a, key[i], 0, &i, 0);
     }
 
-    Dict b = dict_clone(&a, &arena);
+    Dict b = dict_clone(&a, 0);
 
     dict_remove(&b, "six", 0);
     dict_insert(&b, "ten", 0, (int[]){10}, 0);
+
+    const DictItem *b_item = dict_items(&b, 0);
 
     dump(arena.data, arena.begin);
     printf("\n");
 
     printf("a = {");
-    dict_for_each(item, &a) printf("%s: %d, ", (char *)item->key.data, *(int *)item->data);
+    dict_for_each(item, &a) {
+        printf("%s: %d, ", (char *)item->key.data, *(int *)item->data);
+    }
     printf("}\n");
 
     printf("b = {");
-    dict_for_each(item, &b) printf("%s: %d, ", (char *)item->key.data, *(int *)item->data);
+    for (long i = 0; i < b.length; i++) {
+        printf("%s: %d, ", (char *)b_item[i].key.data, *(int *)b_item[i].data);
+    }
     printf("}\n");
 
     printf("a.find(six) = %p\n", dict_find(&a, "six", 0));

@@ -293,3 +293,12 @@ static List list_clone(const List *self, Arena *arena) {
     }
     return list;
 }
+
+static void *list_to_array(const List *self, Arena *arena) {
+    char *data = arena_alloc(arena, self->length, self->data.size, alignof(max_align_t), NOZERO);
+    long index = 0;
+    for (ListItem *item = self->begin; item; item = item->next) {
+        memcpy(data + index++ * self->data.size, item->data, self->data.size);
+    }
+    return data;
+}

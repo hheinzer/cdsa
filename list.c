@@ -31,6 +31,8 @@ int main(void) {
 
     list_reverse(&b);
 
+    const int *bdata = list_to_array(&b, &arena);
+
     dump(arena.data, arena.begin);
     printf("\n");
 
@@ -38,8 +40,8 @@ int main(void) {
     list_for_each(item, &a) printf("%d, ", *(int *)item->data);
     printf("]\n");
 
-    printf("reverse(b) = [");
-    list_for_each_reverse(item, &b) printf("%d, ", *(int *)item->data);
+    printf("b = [");
+    for (long i = 0; i < b.length; i++) printf("%d, ", bdata[i]);
     printf("]\n");
 
     printf("a.get(10) = %d\n", *(int *)list_get(&a, 10));

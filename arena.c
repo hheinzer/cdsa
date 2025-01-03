@@ -5,7 +5,7 @@
 
 #include "dump.h"
 
-#define alloc(a, p, n) arena_alloc(a, n, sizeof(*(p)), alignof(typeof(*(p))), 0)
+#define calloc(a, p, n) arena_alloc(a, n, sizeof(*(p)), alignof(typeof(*(p))), 0)
 #define realloc(a, p, n) arena_realloc(a, p, n, sizeof(*(p)), alignof(typeof(*(p))))
 #define memdup(a, p, n) arena_memdup(a, p, n, sizeof(*(p)), alignof(typeof(*(p))))
 #define strdup(a, s) memdup(a, s, strlen(s) + 1)

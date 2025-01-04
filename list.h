@@ -9,6 +9,7 @@ typedef struct List List;
 typedef struct ListItem ListItem;
 typedef int ListDataCompare(const void *, const void *, void *);
 typedef void *ListDataCopy(Arena *, void *, const void *, long);
+typedef void ListForEach(const ListItem *, void *);
 
 struct List {
     Arena *arena;
@@ -31,19 +32,6 @@ struct ListItem {
 typedef enum {
     REVERSE = 1 << 1,
 } ListFlags;
-
-#define list_for_each(item, list) for (ListItem *item = (list)->begin; item; item = item->next)
-
-#define list_for_each_reverse(item, list) \
-    for (ListItem *item = (list)->end; item; item = item->prev)
-
-#define list_for_each_two(item1, item2, list1, list2)                               \
-    for (ListItem *item1 = (list1)->begin, *item2 = (list2)->begin; item1 && item2; \
-         item1 = item1->next, item2 = item2->next)
-
-#define list_for_each_two_reverse(item1, item2, list1, list2)                   \
-    for (ListItem *item1 = (list1)->end, *item2 = (list2)->end; item1 && item2; \
-         item1 = item1->prev, item2 = item2->prev)
 
 static List list_create(Arena *arena, long size, ListDataCompare *compare) {
     List list = {0};
@@ -301,6 +289,17 @@ static void list_reverse(List *self) {
     ListItem *swap = self->begin;
     self->begin = self->end;
     self->end = swap;
+}
+
+static void x__list_for_each(const ListItem *item, ListForEach *callback, void *context) {
+    if (item) {
+        callback(item, context);
+        x__list_for_each(item->next, callback, context);
+    }
+}
+
+static void list_for_each(const List *self, ListForEach *callback, void *context) {
+    x__list_for_each(self->begin, callback, context);
 }
 
 static List list_clone(const List *self, Arena *arena) {

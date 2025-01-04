@@ -7,7 +7,7 @@
 typedef struct Dict Dict;
 typedef struct DictItem DictItem;
 typedef void *DictDataCopy(Arena *, void *, const void *, long);
-typedef void DictForEach(DictItem *, void *);
+typedef void DictForEach(const DictItem *, void *);
 
 struct Dict {
     Arena *arena;
@@ -124,7 +124,7 @@ static void *dict_find(const Dict *self, const void *key, long size) {
     return 0;
 }
 
-static void x__dict_for_each(DictItem *item, DictForEach *callback, void *context) {
+static void x__dict_for_each(const DictItem *item, DictForEach *callback, void *context) {
     if (item) {
         if (item->key.size) {
             callback(item, context);
@@ -139,7 +139,7 @@ static void dict_for_each(const Dict *self, DictForEach *callback, void *context
     x__dict_for_each(self->begin, callback, context);
 }
 
-static void x__dict_clone(DictItem *item, void *dict) {
+static void x__dict_clone(const DictItem *item, void *dict) {
     dict_insert(dict, item->key.data, item->key.size, item->data, 0);
 }
 
@@ -154,7 +154,7 @@ static Dict dict_clone(const Dict *self, Arena *arena) {
     return dict;
 }
 
-static void x__dict_items(DictItem *item, void *context) {
+static void x__dict_items(const DictItem *item, void *context) {
     DictItem **items = context;
     *((*items)++) = *item;
 }

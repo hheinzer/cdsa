@@ -5,8 +5,7 @@
 
 typedef struct Dict Set;
 typedef struct DictItem SetItem;
-
-#define set_for_each(item, set) dict_for_each(item, set)
+typedef DictForEach SetForEach;
 
 static Set set_create(Arena *arena) {
     Set set = dict_create(arena, 0);
@@ -24,6 +23,10 @@ static int set_remove(Set *self, const void *key, long size) {
 
 static int set_find(const Set *self, const void *key, long size) {
     return !!dict_find(self, key, size);
+}
+
+static void set_for_each(const Set *self, SetForEach *callback, void *context) {
+    dict_for_each(self, callback, context);
 }
 
 static Set set_clone(const Set *self, Arena *arena) {

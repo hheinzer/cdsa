@@ -2,9 +2,7 @@
 
 #include <stdio.h>
 
-#include "dump.h"
-
-void print(DictItem *item, void *) {
+void print(const DictItem *item, void *) {
     printf("%s: %d, ", (char *)item->key.data, *(int *)item->data);
 }
 
@@ -25,16 +23,13 @@ int main(void) {
     dict_remove(&b, "six", 0);
     dict_insert(&b, "ten", 0, (int[]){10}, 0);
 
-    dump(arena.data, arena.begin);
-    printf("\n");
-
     printf("a = {");
     dict_for_each(&a, print, 0);
     printf("}\n");
 
     printf("b = {");
     for (DictItem *items = dict_items(&b, 0), *item = items; item < items + b.length; item++) {
-        printf("%s: %d, ", (char *)item->key.data, *(int *)item->data);
+        print(item, 0);
     }
     printf("}\n");
 

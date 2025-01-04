@@ -2,7 +2,9 @@
 
 #include <stdio.h>
 
-#include "dump.h"
+void print(const SetItem *item, void *) {
+    printf("%s, ", (char *)item->key.data);
+}
 
 int main(void) {
     Arena arena = arena_create(1 << 20);
@@ -21,20 +23,13 @@ int main(void) {
     set_remove(&b, "six", 0);
     set_insert(&b, "ten", 0);
 
-    const DictItem *b_item = set_items(&b, 0);
-
-    dump(arena.data, arena.begin);
-    printf("\n");
-
     printf("a = {");
-    set_for_each(item, &a) {
-        printf("%s, ", (char *)item->key.data);
-    }
+    set_for_each(&a, print, 0);
     printf("}\n");
 
     printf("b = {");
-    for (long i = 0; i < b.length; i++) {
-        printf("%s, ", (char *)b_item[i].key.data);
+    for (SetItem *items = set_items(&b, 0), *item = items; item < items + b.length; item++) {
+        print(item, 0);
     }
     printf("}\n");
 

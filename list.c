@@ -2,11 +2,13 @@
 
 #include <stdio.h>
 
-#include "dump.h"
-
 int intcmp(const void *_a, const void *_b, void *) {
     const int *a = _a, *b = _b;
     return (*a > *b) - (*a < *b);
+}
+
+void print(const ListItem *item, void *) {
+    printf("%d, ", *(int *)item->data);
 }
 
 int main(void) {
@@ -31,20 +33,13 @@ int main(void) {
 
     list_reverse(&b);
 
-    const ListItem *b_item = list_items(&b, 0);
-
-    dump(arena.data, arena.begin);
-    printf("\n");
-
     printf("a = [");
-    list_for_each(item, &a) {
-        printf("%d, ", *(int *)item->data);
-    }
+    list_for_each(&a, print, 0);
     printf("]\n");
 
     printf("b = [");
-    for (long i = 0; i < b.length; i++) {
-        printf("%d, ", *(int *)b_item[i].data);
+    for (ListItem *items = list_items(&b, 0), *item = items; item < items + b.length; item++) {
+        print(item, 0);
     }
     printf("]\n");
 

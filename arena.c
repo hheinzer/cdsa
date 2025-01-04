@@ -29,7 +29,7 @@ int main(void) {
     dump(arena.data, arena.begin);
     printf("\n");
 
-    strapp(&arena, s1, ", World!");
+    s1 = strapp(&arena, s1, ", World!");
     dump(arena.data, arena.begin);
 
     arena_destroy(&arena);

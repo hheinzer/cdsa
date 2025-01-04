@@ -17,7 +17,12 @@ void permanent(Arena *arena);
 int main(void) {
     Arena arena = arena_create(1 << 20);
 
-    char *s1 = strdup(&arena, "Hello");
+    char *s = strdup(&arena, "Hello");
+    dump(arena.data, arena.begin);
+    printf("\n");
+
+    Arena scratch = arena_scratch(&arena, 1 << 4);
+    strdup(&scratch, "scratch");
     dump(arena.data, arena.begin);
     printf("\n");
 
@@ -29,18 +34,18 @@ int main(void) {
     dump(arena.data, arena.begin);
     printf("\n");
 
-    s1 = strapp(&arena, s1, ", World!");
+    s = strapp(&arena, s, ", World!");
     dump(arena.data, arena.begin);
 
     arena_destroy(&arena);
 }
 
 void temporary(Arena arena) {
-    char *s2 = strdup(&arena, "foo");
+    char *s = strdup(&arena, "foo");
     dump(arena.data, arena.begin);
     printf("\n");
 
-    strapp(&arena, s2, ", bar");
+    strapp(&arena, s, ", bar");
     dump(arena.data, arena.begin);
     printf("\n");
 }

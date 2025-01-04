@@ -1,6 +1,7 @@
 #pragma once
 
 #include <assert.h>
+#include <stddef.h>
 #include <stdint.h>
 #include <stdlib.h>
 #include <string.h>
@@ -58,6 +59,14 @@ static void *arena_memcpy(Arena *, void *dest, const void *src, long size) {
 
 static void *arena_memdup(Arena *self, const void *src, long count, long size, long align) {
     return memcpy(arena_alloc(self, count, size, align, NOZERO), src, count * size);
+}
+
+static Arena arena_scratch(Arena *self, long capacity) {
+    Arena arena = {0};
+    arena.data = arena_alloc(self, 1, capacity, alignof(max_align_t), NOZERO);
+    arena.begin = arena.data;
+    arena.end = arena.begin + capacity;
+    return arena;
 }
 
 static void arena_destroy(Arena *self) {

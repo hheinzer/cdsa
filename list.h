@@ -110,6 +110,9 @@ static void list_append(List *self, void *data) {
 }
 
 static void *list_pop(List *self, long index) {
+    if (self->length == 0) {
+        return 0;
+    }
     assert(-self->length <= index && index < self->length);
     ListItem *item = 0;
     if (self->length == 1) {
@@ -177,6 +180,9 @@ static void *list_remove(List *self, const void *data) {
 }
 
 static void *list_get(const List *self, long index) {
+    if (self->length == 0) {
+        return 0;
+    }
     assert(-self->length <= index && index < self->length);
     ListItem *item = 0;
     index = (self->length + index) % self->length;

@@ -39,9 +39,7 @@ function `arena_memcpy` is your friend.
     - [x] `dict.h`: associative array (4-ary hash trie)
     - [x] `set.h`: set (value-less dict)
 - Trees
-    - [ ] `heap.h`: priority queue
-- Graphs
-    - [ ] `graph.h`
+    - [x] `heap.h`: binary heap
 
 ## Contributing
 

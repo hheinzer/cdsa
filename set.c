@@ -14,7 +14,7 @@ int main(void) {
     const char *key[] = {
         "zero", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine",
     };
-    for (long i = 0; i < 10; ++i) {
+    for (long i = 0; i < 10; i++) {
         set_insert(&a, key[i], 0);
     }
 

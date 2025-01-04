@@ -43,7 +43,7 @@ static Dict dict_create(Arena *arena, long size) {
 
 static uint64_t x__dict_hash_fnv1a(const char *key, long size) {
     uint64_t hash = 0xcbf29ce484222325;
-    for (const char *byte = key; byte < key + size; ++byte) {
+    for (const char *byte = key; byte < key + size; byte++) {
         hash ^= *byte;
         hash *= 0x00000100000001b3;
     }

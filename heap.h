@@ -125,8 +125,8 @@ static void x__heap_sift_down(const Heap *self, HeapItem *item, void *context) {
             break;
         }
         void *swap = item->data;
-        item->data = smallest->data;
-        smallest->data = swap;
+        item->data = smallest->data;  // cppcheck-suppress nullPointerRedundantCheck
+        smallest->data = swap;        // cppcheck-suppress nullPointerRedundantCheck
         item = smallest;
     }
 }

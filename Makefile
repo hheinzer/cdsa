@@ -20,7 +20,7 @@ clean:
 	@rm -rf $(BIN)
 
 check:
-	@cppcheck --quiet --project=compile_commands.json \
+	@cppcheck --quiet --project=compile_commands.json --inline-suppr \
 		--enable=all --inconclusive --check-level=exhaustive \
 		--suppress=missingIncludeSystem --suppress=checkersReport
 

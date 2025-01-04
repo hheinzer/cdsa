@@ -4,6 +4,10 @@
 
 #include "dump.h"
 
+void print(DictItem *item, void *) {
+    printf("%s: %d, ", (char *)item->key.data, *(int *)item->data);
+}
+
 int main(void) {
     Arena arena = arena_create(1 << 20);
 
@@ -21,20 +25,16 @@ int main(void) {
     dict_remove(&b, "six", 0);
     dict_insert(&b, "ten", 0, (int[]){10}, 0);
 
-    const DictItem *b_item = dict_items(&b, 0);
-
     dump(arena.data, arena.begin);
     printf("\n");
 
     printf("a = {");
-    dict_for_each(item, &a) {
-        printf("%s: %d, ", (char *)item->key.data, *(int *)item->data);
-    }
+    dict_for_each(&a, print, 0);
     printf("}\n");
 
     printf("b = {");
-    for (long i = 0; i < b.length; i++) {
-        printf("%s: %d, ", (char *)b_item[i].key.data, *(int *)b_item[i].data);
+    for (DictItem *items = dict_items(&b, 0), *item = items; item < items + b.length; item++) {
+        printf("%s: %d, ", (char *)item->key.data, *(int *)item->data);
     }
     printf("}\n");
 

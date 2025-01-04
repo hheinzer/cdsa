@@ -7,6 +7,7 @@
 typedef struct Dict Dict;
 typedef struct DictItem DictItem;
 typedef void *DictDataCopy(Arena *, void *, const void *, long);
+typedef void DictForEach(DictItem *, void *);
 
 struct Dict {
     Arena *arena;
@@ -26,16 +27,11 @@ struct DictItem {
     } key;
     void *data;
     DictItem *child[4];
-    DictItem *next;
 };
 
 typedef enum {
     KEEPOLD = 1 << 1,
 } DictFlags;
-
-#define dict_for_each(item, dict)                                 \
-    for (DictItem *item = (dict)->begin; item; item = item->next) \
-        if (item->key.size)
 
 static Dict dict_create(Arena *arena, long size) {
     Dict dict = {0};
@@ -91,9 +87,6 @@ static void *dict_insert(Dict *self, const void *key, long size, void *data, int
     }
     if (!*item) {
         *item = arena_alloc(self->arena, 1, sizeof(DictItem), alignof(DictItem), 0);
-        if (self->end) {
-            self->end->next = *item;
-        }
         self->end = *item;
     }
     x__dict_item_create(self, *item, key, size, data);
@@ -131,6 +124,25 @@ static void *dict_find(const Dict *self, const void *key, long size) {
     return 0;
 }
 
+static void x__dict_for_each(DictItem *item, DictForEach *callback, void *context) {
+    if (item) {
+        if (item->key.size) {
+            callback(item, context);
+        }
+        for (long i = 0; i < 4; i++) {
+            x__dict_for_each(item->child[i], callback, context);
+        }
+    }
+}
+
+static void dict_for_each(const Dict *self, DictForEach *callback, void *context) {
+    x__dict_for_each(self->begin, callback, context);
+}
+
+static void x__dict_clone(DictItem *item, void *dict) {
+    dict_insert(dict, item->key.data, item->key.size, item->data, 0);
+}
+
 static Dict dict_clone(const Dict *self, Arena *arena) {
     if (!arena) {
         arena = self->arena;
@@ -138,12 +150,13 @@ static Dict dict_clone(const Dict *self, Arena *arena) {
     Dict dict = {0};
     dict.arena = arena;
     dict.data = self->data;
-    for (DictItem *item = self->begin; item; item = item->next) {
-        if (item->key.size) {
-            dict_insert(&dict, item->key.data, item->key.size, item->data, 0);
-        }
-    }
+    dict_for_each(self, x__dict_clone, &dict);
     return dict;
+}
+
+static void x__dict_items(DictItem *item, void *context) {
+    DictItem **items = context;
+    *((*items)++) = *item;
 }
 
 static DictItem *dict_items(const Dict *self, Arena *arena) {
@@ -151,11 +164,6 @@ static DictItem *dict_items(const Dict *self, Arena *arena) {
         arena = self->arena;
     }
     DictItem *items = arena_alloc(arena, self->length, sizeof(DictItem), alignof(DictItem), NOZERO);
-    long index = 0;
-    for (DictItem *item = self->begin; item; item = item->next) {
-        if (item->key.size) {
-            items[index++] = *item;
-        }
-    }
+    dict_for_each(self, x__dict_items, (void *[]){items});
     return items;
 }

@@ -65,7 +65,8 @@ static void x__dict_item_create(const Dict *self, DictItem *item, const void *ke
     if (data && self->data.copy) {
         item->data = arena_alloc(self->arena, 1, self->data.size, alignof(max_align_t), NOZERO);
         self->data.copy(self->arena, item->data, data, self->data.size);
-    } else {
+    }
+    else {
         item->data = data;
     }
 }

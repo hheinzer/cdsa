@@ -6,4 +6,5 @@ AllowShortCaseLabelsOnASingleLine: true
 AllowShortFunctionsOnASingleLine: None
 BraceWrapping:
   BeforeElse: true
+BreakBeforeBraces: Custom
 ...

@@ -12,7 +12,8 @@ static void dump(const void *begin, const void *end) {
         for (int i = 0; i < OFFSET; i++) {
             if (byte + i < (char *)end) {
                 printf("%02x ", (unsigned char)byte[i]);
-            } else {
+            }
+            else {
                 printf("   ");
             }
         }

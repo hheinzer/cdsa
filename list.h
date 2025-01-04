@@ -58,7 +58,8 @@ static void x__list_item_create(const List *self, ListItem *item, void *data) {
     if (data && self->data.copy) {
         item->data = arena_alloc(self->arena, 1, self->data.size, alignof(max_align_t), NOZERO);
         self->data.copy(self->arena, item->data, data, self->data.size);
-    } else {
+    }
+    else {
         item->data = data;
     }
 }
@@ -70,15 +71,18 @@ static void list_insert(List *self, long index, void *data) {
     if (self->length == 0) {
         self->begin = item;
         self->end = item;
-    } else if (index == 0 || index == -self->length) {
+    }
+    else if (index == 0 || index == -self->length) {
         item->next = self->begin;
         self->begin->prev = item;
         self->begin = item;
-    } else if (index == self->length) {
+    }
+    else if (index == self->length) {
         item->prev = self->end;
         self->end->next = item;
         self->end = item;
-    } else {
+    }
+    else {
         index = (self->length + index) % self->length;
         ListItem *next = 0;
         if (index <= (self->length - 1) / 2) {
@@ -86,7 +90,8 @@ static void list_insert(List *self, long index, void *data) {
             for (long i = 0; i < index; i++) {
                 next = next->next;
             }
-        } else {
+        }
+        else {
             next = self->end;
             for (long i = self->length - 1; i > index; i--) {
                 next = next->prev;
@@ -111,22 +116,26 @@ static void *list_pop(List *self, long index) {
         item = self->begin;
         self->begin = 0;
         self->end = 0;
-    } else if (index == 0 || index == -self->length) {
+    }
+    else if (index == 0 || index == -self->length) {
         item = self->begin;
         self->begin = item->next;
         self->begin->prev = 0;
-    } else if (index == self->length - 1 || index == -1) {
+    }
+    else if (index == self->length - 1 || index == -1) {
         item = self->end;
         self->end = item->prev;
         self->end->next = 0;
-    } else {
+    }
+    else {
         index = (self->length + index) % self->length;
         if (index <= (self->length - 1) / 2) {
             item = self->begin;
             for (long i = 0; i < index; i++) {
                 item = item->next;
             }
-        } else {
+        }
+        else {
             item = self->end;
             for (long i = self->length - 1; i > index; i--) {
                 item = item->prev;
@@ -148,13 +157,16 @@ static void *list_remove(List *self, const void *data) {
         if (self->length == 1) {
             self->begin = 0;
             self->end = 0;
-        } else if (item == self->begin) {
+        }
+        else if (item == self->begin) {
             self->begin = item->next;
             self->begin->prev = 0;
-        } else if (item == self->end) {
+        }
+        else if (item == self->end) {
             self->end = item->prev;
             self->end->next = 0;
-        } else {
+        }
+        else {
             item->next->prev = item->prev;
             item->prev->next = item->next;
         }
@@ -173,7 +185,8 @@ static void *list_get(const List *self, long index) {
         for (long i = 0; i < index; i++) {
             item = item->next;
         }
-    } else {
+    }
+    else {
         item = self->end;
         for (long i = self->length - 1; i > index; i--) {
             item = item->prev;

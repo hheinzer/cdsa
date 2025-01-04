@@ -17,21 +17,21 @@ typedef enum {
 } ArenaFlags;
 
 #ifdef ARENA_USE_STDLIB
-#pragma message("USING STDLIB MEMORY MANAGEMENT!")
+#warning "arena allocator uses stdlib backend"
 static struct {
     void **ptr;
     long len;
     long cap;
-} x__alloc = {0};
+} stdlib = {0};
 #endif
 
 static Arena arena_create(long capacity) {
-#ifdef ARENA_USE_STDLIB
-    x__alloc.cap = 1 << 10;
-    x__alloc.ptr = calloc(x__alloc.cap, sizeof(*x__alloc.ptr));
-    return (Arena){0};
-#endif
     Arena arena = {0};
+#ifdef ARENA_USE_STDLIB
+    stdlib.cap = 1 << 10;
+    stdlib.ptr = calloc(stdlib.cap, sizeof(*stdlib.ptr));
+    return arena;
+#endif
     arena.data = malloc(capacity);
     assert(arena.data);
     arena.begin = arena.data;
@@ -42,12 +42,11 @@ static Arena arena_create(long capacity) {
 [[gnu::malloc, gnu::alloc_size(2, 3), gnu::alloc_align(4)]]
 static void *arena_alloc(Arena *self, long count, long size, long align, int flags) {
 #ifdef ARENA_USE_STDLIB
-    if (x__alloc.len >= x__alloc.cap) {
-        x__alloc.cap <<= 1;
-        x__alloc.ptr = realloc(x__alloc.ptr, x__alloc.cap * sizeof(*x__alloc.ptr));
+    if (stdlib.len >= stdlib.cap) {
+        stdlib.cap <<= 1;
+        stdlib.ptr = realloc(stdlib.ptr, stdlib.cap * sizeof(*stdlib.ptr));
     }
-    return x__alloc.ptr[x__alloc.len++] =
-               flags & NOZERO ? malloc(count * size) : calloc(count, size);
+    return stdlib.ptr[stdlib.len++] = flags & NOZERO ? malloc(count * size) : calloc(count, size);
 #endif
     long available = self->end - self->begin;
     long padding = -(uintptr_t)self->begin & (align - 1);
@@ -64,9 +63,9 @@ static void *arena_realloc(Arena *self, void *ptr, long count, long size, long a
         return arena_alloc(self, count, size, align, NOZERO);
     }
 #ifdef ARENA_USE_STDLIB
-    for (long i = x__alloc.len - 1; i >= 0; i--) {
-        if (x__alloc.ptr[i] == ptr) {
-            return x__alloc.ptr[i] = realloc(ptr, count * size);
+    for (long i = stdlib.len - 1; i >= 0; i--) {
+        if (stdlib.ptr[i] == ptr) {
+            return stdlib.ptr[i] = realloc(ptr, count * size);
         }
     }
     abort();
@@ -92,10 +91,10 @@ static void *arena_memdup(Arena *self, const void *src, long count, long size, l
 
 static void arena_destroy(Arena *self) {
 #ifdef ARENA_USE_STDLIB
-    for (long i = 0; i < x__alloc.len; i++) {
-        free(x__alloc.ptr[i]);
+    for (long i = 0; i < stdlib.len; i++) {
+        free(stdlib.ptr[i]);
     }
-    free(x__alloc.ptr);
+    free(stdlib.ptr);
     return;
 #endif
     free(self->data);

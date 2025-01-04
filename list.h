@@ -29,10 +29,6 @@ struct ListItem {
     ListItem *prev;
 };
 
-typedef enum {
-    REVERSE = 1 << 1,
-} ListFlags;
-
 static List list_create(Arena *arena, long size, ListDataCompare *compare) {
     List list = {0};
     list.arena = arena;
@@ -237,22 +233,22 @@ static ListItem *x__list_merge_sort_split(ListItem *first) {
 }
 
 static ListItem *x__list_merge_sort_merge(List *self, ListItem *first, ListItem *second,
-                                          void *context, int order) {
+                                          void *context) {
     if (!first) {
         return second;
     }
     if (!second) {
         return first;
     }
-    if (order * self->data.compare(first->data, second->data, context) < 0) {
-        first->next = x__list_merge_sort_merge(self, first->next, second, context, order);
+    if (self->data.compare(first->data, second->data, context) < 0) {
+        first->next = x__list_merge_sort_merge(self, first->next, second, context);
         if (first->next) {
             first->next->prev = first;
         }
         first->prev = 0;
         return first;
     }
-    second->next = x__list_merge_sort_merge(self, first, second->next, context, order);
+    second->next = x__list_merge_sort_merge(self, first, second->next, context);
     if (second->next) {
         second->next->prev = second;
     }
@@ -260,19 +256,19 @@ static ListItem *x__list_merge_sort_merge(List *self, ListItem *first, ListItem 
     return second;
 }
 
-static ListItem *x__list_merge_sort(List *self, ListItem *first, void *context, int order) {
+static ListItem *x__list_merge_sort(List *self, ListItem *first, void *context) {
     if (!first || !first->next) {
         return first;
     }
     ListItem *second = x__list_merge_sort_split(first);
-    first = x__list_merge_sort(self, first, context, order);
-    second = x__list_merge_sort(self, second, context, order);
-    return x__list_merge_sort_merge(self, first, second, context, order);
+    first = x__list_merge_sort(self, first, context);
+    second = x__list_merge_sort(self, second, context);
+    return x__list_merge_sort_merge(self, first, second, context);
 }
 
-static void list_sort(List *self, void *context, int flags) {
+static void list_sort(List *self, void *context) {
     assert(self->data.compare);
-    self->begin = x__list_merge_sort(self, self->begin, context, flags & REVERSE ? -1 : 1);
+    self->begin = x__list_merge_sort(self, self->begin, context);
     ListItem *item = self->begin;
     while (item && item->next) {
         item = item->next;

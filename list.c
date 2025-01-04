@@ -29,7 +29,7 @@ int main(void) {
 
     list_remove(&b, (int[]){33});
 
-    list_sort(&a, 0, 0);
+    list_sort(&a, 0);
 
     list_reverse(&b);
 

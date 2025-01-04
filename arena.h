@@ -46,7 +46,8 @@ static void *arena_alloc(Arena *self, long count, long size, long align, int fla
         x__alloc.cap <<= 1;
         x__alloc.ptr = realloc(x__alloc.ptr, x__alloc.cap * sizeof(*x__alloc.ptr));
     }
-    return x__alloc.ptr[x__alloc.len++] = calloc(count, size);
+    return x__alloc.ptr[x__alloc.len++] =
+               flags & NOZERO ? malloc(count * size) : calloc(count, size);
 #endif
     long available = self->end - self->begin;
     long padding = -(uintptr_t)self->begin & (align - 1);

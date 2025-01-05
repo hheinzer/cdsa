@@ -63,6 +63,7 @@ static void *arena_memdup(Arena *self, const void *src, long count, long size, l
 
 static Arena arena_scratch(Arena *self, long capacity) {
     Arena arena = {0};
+#pragma omp critical
     arena.data = arena_alloc(self, 1, capacity, alignof(max_align_t), NOZERO);
     arena.begin = arena.data;
     arena.end = arena.begin + capacity;

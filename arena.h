@@ -1,7 +1,7 @@
 #pragma once
 
 #include <assert.h>
-#include <stddef.h>
+#include <omp.h>
 #include <stdint.h>
 #include <stdlib.h>
 #include <string.h>
@@ -21,6 +21,17 @@ static Arena arena_create(long capacity) {
     Arena arena = {0};
     arena.data = malloc(capacity);
     assert(arena.data);
+    arena.begin = arena.data;
+    arena.end = arena.begin + capacity;
+    return arena;
+}
+
+static Arena arena_thread(const Arena *self) {
+    Arena arena = {0};
+    long available = self->end - self->begin;
+    long capacity = available / omp_get_num_threads();
+    long offset = omp_get_thread_num() * capacity;
+    arena.data = self->begin + offset;
     arena.begin = arena.data;
     arena.end = arena.begin + capacity;
     return arena;
@@ -59,15 +70,6 @@ static void *arena_memcpy(Arena *, void *dest, const void *src, long size) {
 
 static void *arena_memdup(Arena *self, const void *src, long count, long size, long align) {
     return memcpy(arena_alloc(self, count, size, align, NOZERO), src, count * size);
-}
-
-static Arena arena_scratch(Arena *self, long capacity) {
-    Arena arena = {0};
-#pragma omp critical
-    arena.data = arena_alloc(self, 1, capacity, alignof(max_align_t), NOZERO);
-    arena.begin = arena.data;
-    arena.end = arena.begin + capacity;
-    return arena;
 }
 
 static void arena_destroy(Arena *self) {

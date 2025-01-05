@@ -26,17 +26,6 @@ static Arena arena_create(long capacity) {
     return arena;
 }
 
-static Arena arena_thread(const Arena *self) {
-    Arena arena = {0};
-    long available = self->end - self->begin;
-    long capacity = available / omp_get_num_threads();
-    long offset = omp_get_thread_num() * capacity;
-    arena.data = self->begin + offset;
-    arena.begin = arena.data;
-    arena.end = arena.begin + capacity;
-    return arena;
-}
-
 [[gnu::malloc, gnu::alloc_size(2, 3), gnu::alloc_align(4)]]
 static void *arena_alloc(Arena *self, long count, long size, long align, int flags) {
     long available = self->end - self->begin;
@@ -70,6 +59,25 @@ static void *arena_memcpy(Arena *, void *dest, const void *src, long size) {
 
 static void *arena_memdup(Arena *self, const void *src, long count, long size, long align) {
     return memcpy(arena_alloc(self, count, size, align, NOZERO), src, count * size);
+}
+
+static Arena arena_scratch(Arena *self, long capacity) {
+    Arena arena = {0};
+    arena.data = arena_alloc(self, 1, capacity, 1, 0);
+    arena.begin = arena.data;
+    arena.end = arena.begin + capacity;
+    return arena;
+}
+
+static Arena arena_thread(const Arena *self) {
+    long available = self->end - self->begin;
+    long capacity = available / omp_get_num_threads();
+    long offset = omp_get_thread_num() * capacity;
+    Arena arena = {0};
+    arena.data = self->begin + offset;
+    arena.begin = arena.data;
+    arena.end = arena.begin + capacity;
+    return arena;
 }
 
 static void arena_destroy(Arena *self) {

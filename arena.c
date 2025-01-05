@@ -17,9 +17,14 @@ void parallel(Arena arena);
 
 int main(void) {
     Arena arena = arena_create(1 << 20);
+    Arena scratch = arena_scratch(&arena, 16);
 
-    char *s = strdup(&arena, "Hello");
+    char *s = strdup(&arena, "arena");
     dump(arena.data, arena.begin);
+    printf("\n");
+
+    strdup(&scratch, "scratch");
+    dump(scratch.data, scratch.begin);
     printf("\n");
 
     temporary(arena);
@@ -34,37 +39,37 @@ int main(void) {
     dump(arena.data, arena.begin);
     printf("\n");
 
-    s = strapp(&arena, s, ", World!");
+    s = strapp(&arena, s, " allocator");
     dump(arena.data, arena.begin);
 
     arena_destroy(&arena);
 }
 
 void temporary(Arena arena) {
-    char *s = strdup(&arena, "foo");
+    char *s = strdup(&arena, "tempo");
     dump(arena.data, arena.begin);
     printf("\n");
 
-    strapp(&arena, s, ", bar");
+    strapp(&arena, s, "rary");
     dump(arena.data, arena.begin);
     printf("\n");
 }
 
 void permanent(Arena *arena) {
-    strdup(arena, "arena allocator");
+    strdup(arena, "permanent");
     dump(arena->data, arena->begin);
     printf("\n");
 }
 
 void parallel(Arena arena) {
-#pragma omp parallel
+#pragma omp parallel num_threads(3)
     {
-        arena = arena_thread(&arena);
-        char *s = calloc(&arena, s, 16);
+        Arena thread = arena_thread(&arena);
+        char *s = calloc(&thread, s, 16);
         sprintf(s, "thread %d", omp_get_thread_num());
 #pragma omp critical
         {
-            dump(arena.data, arena.begin);
+            dump(thread.data, thread.begin);
             printf("\n");
         }
     }

@@ -22,7 +22,7 @@ clean:
 check:
 	@cppcheck --quiet --project=compile_commands.json --inline-suppr \
 		--enable=all --inconclusive --check-level=exhaustive \
-		--suppress=missingIncludeSystem --suppress=checkersReport
+		--suppress=checkersReport --suppress=missingIncludeSystem
 
 # build rules
 .SUFFIXES:

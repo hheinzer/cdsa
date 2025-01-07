@@ -5,11 +5,11 @@
 
 #include "dump.h"
 
-#define calloc(a, p, n) arena_alloc(a, n, sizeof(*(p)), alignof(typeof(*(p))), 0)
-#define realloc(a, p, n) arena_realloc(a, p, n, sizeof(*(p)), alignof(typeof(*(p))))
-#define memdup(a, p, n) arena_memdup(a, p, n, sizeof(*(p)), alignof(typeof(*(p))))
-#define strdup(a, s) memdup(a, s, strlen(s) + 1)
-#define strapp(a, s, ss) strcat(realloc(a, s, strlen(s) + strlen(ss) + 1), ss)
+#define calloc(A, P, N) arena_alloc(A, N, sizeof(*(P)), alignof(typeof(*(P))), 0)
+#define realloc(A, P, N) arena_realloc(A, P, N, sizeof(*(P)), alignof(typeof(*(P))))
+#define memdup(A, P, N) arena_memdup(A, P, N, sizeof(*(P)), alignof(typeof(*(P))))
+#define strdup(A, S) memdup(A, S, strlen(S) + 1)
+#define strapp(A, S1, S2) strcat(realloc(A, S1, strlen(S1) + strlen(S2) + 1), S2)
 
 void temporary(Arena arena);
 void permanent(Arena *arena);

@@ -1,13 +1,13 @@
 #include "dump.h"
 
-#define countof(a) (sizeof(a) / sizeof(*(a)))
-#define dump_array(a) dump(a, a + countof(a))
+#define countof(A) (sizeof(A) / sizeof(*(A)))
+#define array_dump(A) dump(A, A + countof(A))
 
 int main(void) {
     char s[] = "Hello, World!";
-    dump_array(s);
+    array_dump(s);
     printf("\n");
 
     int a[] = {14, -15, 23, 111};
-    dump_array(a);
+    array_dump(a);
 }

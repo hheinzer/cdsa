@@ -180,3 +180,15 @@ static Heap heap_clone(const Heap *self, void *context, Arena *arena) {
     }
     return heap;
 }
+
+static HeapItem *heap_items(const Heap *self, Arena *arena) {
+    if (!arena) {
+        arena = self->arena;
+    }
+    HeapItem *items = arena_alloc(arena, self->length, sizeof(HeapItem), alignof(HeapItem), NOZERO);
+    long index = 0;
+    for (HeapItem *item = self->begin; item; item = item->next) {
+        items[index++] = *item;
+    }
+    return items;
+}

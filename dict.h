@@ -145,3 +145,17 @@ static Dict dict_clone(const Dict *self, Arena *arena) {
     }
     return dict;
 }
+
+static DictItem *dict_items(const Dict *self, Arena *arena) {
+    if (!arena) {
+        arena = self->arena;
+    }
+    DictItem *items = arena_alloc(arena, self->length, sizeof(DictItem), alignof(DictItem), NOZERO);
+    long index = 0;
+    for (DictItem *item = self->begin; item; item = item->next) {
+        if (item->key.size) {
+            items[index++] = *item;
+        }
+    }
+    return items;
+}

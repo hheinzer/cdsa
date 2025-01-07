@@ -36,7 +36,7 @@ int main(void) {
     printf("]\n");
 
     printf("b = [");
-    list_for_each(item, &b) {
+    for (ListItem *items = list_items(&b, 0), *item = items; item < items + b.length; item++) {
         printf("%d, ", *(int *)item->data);
     }
     printf("]\n");

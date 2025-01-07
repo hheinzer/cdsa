@@ -26,7 +26,7 @@ int main(void) {
     printf("}\n");
 
     printf("b = {");
-    set_for_each(item, &b) {
+    for (SetItem *items = set_items(&b, 0), *item = items; item < items + b.length; item++) {
         printf("%s, ", (char *)item->key.data);
     }
     printf("}\n");

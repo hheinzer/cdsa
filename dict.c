@@ -26,7 +26,7 @@ int main(void) {
     printf("}\n");
 
     printf("b = {");
-    dict_for_each(item, &b) {
+    for (DictItem *items = dict_items(&b, 0), *item = items; item < items + b.length; item++) {
         printf("%s: %d, ", (char *)item->key.data, *(int *)item->data);
     }
     printf("}\n");

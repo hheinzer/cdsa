@@ -26,7 +26,7 @@ int main(void) {
     printf("]\n");
 
     printf("b = [");
-    heap_for_each(item, &b) {
+    for (HeapItem *items = heap_items(&b, 0), *item = items; item < items + b.length; item++) {
         printf("%d, ", *(int *)item->data);
     }
     printf("]\n");

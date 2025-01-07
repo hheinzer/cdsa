@@ -300,3 +300,15 @@ static List list_clone(const List *self, Arena *arena) {
     }
     return list;
 }
+
+static ListItem *list_items(const List *self, Arena *arena) {
+    if (!arena) {
+        arena = self->arena;
+    }
+    ListItem *items = arena_alloc(arena, self->length, sizeof(ListItem), alignof(ListItem), NOZERO);
+    long index = 0;
+    for (ListItem *item = self->begin; item; item = item->next) {
+        items[index++] = *item;
+    }
+    return items;
+}

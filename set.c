@@ -26,8 +26,8 @@ int main(void) {
     printf("}\n");
 
     printf("b = {");
-    for (SetItem *items = set_items(&b, 0), *item = items; item < items + b.length; item++) {
-        printf("%s, ", (char *)item->key.data);
+    for (SetItem *i = set_items(&b, 0), *ii = i; i < ii + b.length; i++) {
+        printf("%s, ", (char *)i->key.data);
     }
     printf("}\n");
 

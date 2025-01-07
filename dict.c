@@ -26,8 +26,8 @@ int main(void) {
     printf("}\n");
 
     printf("b = {");
-    for (DictItem *items = dict_items(&b, 0), *item = items; item < items + b.length; item++) {
-        printf("%s: %d, ", (char *)item->key.data, *(int *)item->data);
+    for (DictItem *i = dict_items(&b, 0), *ii = i; i < ii + b.length; i++) {
+        printf("%s: %d, ", (char *)i->key.data, *(int *)i->data);
     }
     printf("}\n");
 

@@ -8,7 +8,6 @@ typedef struct Heap Heap;
 typedef struct HeapItem HeapItem;
 typedef int HeapDataCompare(const void *, const void *, void *);
 typedef void *HeapDataCopy(Arena *, void *, const void *, long);
-typedef void HeapForEach(const HeapItem *, void *);
 
 struct Heap {
     Arena *arena;
@@ -27,7 +26,10 @@ struct HeapItem {
     HeapItem *parent;
     HeapItem *left;
     HeapItem *right;
+    HeapItem *next;
 };
+
+#define heap_for_each(item, self) for (HeapItem *item = (self)->begin; item; item = item->next)
 
 static Heap heap_create(Arena *arena, long size, HeapDataCompare *compare) {
     Heap heap = {0};
@@ -92,6 +94,7 @@ static void heap_push(Heap *self, void *data, void *context) {
         else {
             parent->right = item;
         }
+        self->end->next = item;
         self->end = item;
         x__heap_sift_up(self, item, context);
     }
@@ -142,6 +145,7 @@ static void *heap_pop(Heap *self, void *context) {
     }
     else {
         assert(self->end->parent);
+        HeapItem *end = x__heap_find_end(self->end);
         if (self->end == self->end->parent->right) {
             self->end->parent->right = 0;
         }
@@ -149,7 +153,8 @@ static void *heap_pop(Heap *self, void *context) {
             self->end->parent->left = 0;
         }
         self->begin->data = self->end->data;
-        self->end = x__heap_find_end(self->end);
+        self->end = end;
+        self->end->next = 0;
         x__heap_sift_down(self, self->begin, context);
     }
     self->length -= 1;
@@ -163,58 +168,15 @@ static void *heap_peek(const Heap *self) {
     return self->begin->data;
 }
 
-static void x__heap_for_each(const HeapItem *item, HeapForEach *callback, void *context) {
-    if (item) {
-        callback(item, context);
-        x__heap_for_each(item->left, callback, context);
-        x__heap_for_each(item->right, callback, context);
-    }
-}
-
-static void heap_for_each(const Heap *self, HeapForEach *callback, void *context) {
-    x__heap_for_each(self->begin, callback, context);
-}
-
-static HeapItem *x__heap_clone(const Heap *self, const HeapItem *begin, HeapItem **end) {
-    if (!begin) {
-        return 0;
-    }
-    HeapItem *item = arena_alloc(self->arena, 1, sizeof(HeapItem), alignof(HeapItem), 0);
-    x__heap_item_create(self, item, begin->data);
-    *end = item;
-    item->left = x__heap_clone(self, begin->left, end);
-    if (item->left) {
-        item->left->parent = item;
-    }
-    item->right = x__heap_clone(self, begin->right, end);
-    if (item->right) {
-        item->right->parent = item;
-    }
-    return item;
-}
-
-static Heap heap_clone(const Heap *self, Arena *arena) {
+static Heap heap_clone(const Heap *self, void *context, Arena *arena) {
     if (!arena) {
         arena = self->arena;
     }
     Heap heap = {0};
     heap.arena = arena;
     heap.data = self->data;
-    heap.length = self->length;
-    heap.begin = x__heap_clone(self, self->begin, &heap.end);
-    return heap;
-}
-
-static void x__heap_items(const HeapItem *item, void *context) {
-    HeapItem **items = context;
-    *((*items)++) = *item;
-}
-
-static HeapItem *heap_items(const Heap *self, Arena *arena) {
-    if (!arena) {
-        arena = self->arena;
+    for (HeapItem *item = self->begin; item; item = item->next) {
+        heap_push(&heap, item->data, context);
     }
-    HeapItem *items = arena_alloc(arena, self->length, sizeof(HeapItem), alignof(HeapItem), NOZERO);
-    heap_for_each(self, x__heap_items, (void *[]){items});
-    return items;
+    return heap;
 }

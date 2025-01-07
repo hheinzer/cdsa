@@ -7,10 +7,6 @@ int intcmp(const void *_a, const void *_b, void *) {
     return (*a > *b) - (*a < *b);
 }
 
-void print(const HeapItem *item, void *) {
-    printf("%d, ", *(int *)item->data);
-}
-
 int main(void) {
     Arena arena = arena_create(1 << 20);
 
@@ -19,17 +15,19 @@ int main(void) {
         heap_push(&a, &i, 0);
     }
 
-    Heap b = heap_clone(&a, 0);
+    Heap b = heap_clone(&a, 0, 0);
 
     heap_pop(&b, 0);
 
     printf("a = [");
-    heap_for_each(&a, print, 0);
+    heap_for_each(item, &a) {
+        printf("%d, ", *(int *)item->data);
+    }
     printf("]\n");
 
     printf("b = [");
-    for (HeapItem *items = heap_items(&b, 0), *item = items; item < items + b.length; item++) {
-        print(item, 0);
+    heap_for_each(item, &b) {
+        printf("%d, ", *(int *)item->data);
     }
     printf("]\n");
 

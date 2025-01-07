@@ -9,7 +9,6 @@ typedef struct List List;
 typedef struct ListItem ListItem;
 typedef int ListDataCompare(const void *, const void *, void *);
 typedef void *ListDataCopy(Arena *, void *, const void *, long);
-typedef void ListForEach(const ListItem *, void *);
 
 struct List {
     Arena *arena;
@@ -28,6 +27,8 @@ struct ListItem {
     ListItem *next;
     ListItem *prev;
 };
+
+#define list_for_each(item, self) for (ListItem *item = (self)->begin; item; item = item->next)
 
 static List list_create(Arena *arena, long size, ListDataCompare *compare) {
     List list = {0};
@@ -287,17 +288,6 @@ static void list_reverse(List *self) {
     self->end = swap;
 }
 
-static void x__list_for_each(const ListItem *item, ListForEach *callback, void *context) {
-    if (item) {
-        callback(item, context);
-        x__list_for_each(item->next, callback, context);
-    }
-}
-
-static void list_for_each(const List *self, ListForEach *callback, void *context) {
-    x__list_for_each(self->begin, callback, context);
-}
-
 static List list_clone(const List *self, Arena *arena) {
     if (!arena) {
         arena = self->arena;
@@ -309,16 +299,4 @@ static List list_clone(const List *self, Arena *arena) {
         list_append(&list, item->data);
     }
     return list;
-}
-
-static ListItem *list_items(const List *self, Arena *arena) {
-    if (!arena) {
-        arena = self->arena;
-    }
-    ListItem *items = arena_alloc(arena, self->length, sizeof(ListItem), alignof(ListItem), NOZERO);
-    long index = 0;
-    for (ListItem *item = self->begin; item; item = item->next) {
-        items[index++] = *item;
-    }
-    return items;
 }

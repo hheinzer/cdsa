@@ -2,10 +2,6 @@
 
 #include <stdio.h>
 
-void print(const SetItem *item, void *) {
-    printf("%s, ", (char *)item->key.data);
-}
-
 int main(void) {
     Arena arena = arena_create(1 << 20);
 
@@ -24,12 +20,14 @@ int main(void) {
     set_insert(&b, "ten", 0);
 
     printf("a = {");
-    set_for_each(&a, print, 0);
+    set_for_each(item, &a) {
+        printf("%s, ", (char *)item->key.data);
+    }
     printf("}\n");
 
     printf("b = {");
-    for (SetItem *items = set_items(&b, 0), *item = items; item < items + b.length; item++) {
-        print(item, 0);
+    set_for_each(item, &b) {
+        printf("%s, ", (char *)item->key.data);
     }
     printf("}\n");
 

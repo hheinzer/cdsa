@@ -7,10 +7,6 @@ int intcmp(const void *_a, const void *_b, void *) {
     return (*a > *b) - (*a < *b);
 }
 
-void print(const ListItem *item, void *) {
-    printf("%d, ", *(int *)item->data);
-}
-
 int main(void) {
     Arena arena = arena_create(1 << 20);
 
@@ -34,12 +30,14 @@ int main(void) {
     list_reverse(&b);
 
     printf("a = [");
-    list_for_each(&a, print, 0);
+    list_for_each(item, &a) {
+        printf("%d, ", *(int *)item->data);
+    }
     printf("]\n");
 
     printf("b = [");
-    for (ListItem *items = list_items(&b, 0), *item = items; item < items + b.length; item++) {
-        print(item, 0);
+    list_for_each(item, &b) {
+        printf("%d, ", *(int *)item->data);
     }
     printf("]\n");
 

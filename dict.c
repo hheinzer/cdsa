@@ -2,10 +2,6 @@
 
 #include <stdio.h>
 
-void print(const DictItem *item, void *) {
-    printf("%s: %d, ", (char *)item->key.data, *(int *)item->data);
-}
-
 int main(void) {
     Arena arena = arena_create(1 << 20);
 
@@ -24,12 +20,14 @@ int main(void) {
     dict_insert(&b, "ten", 0, (int[]){10}, 0);
 
     printf("a = {");
-    dict_for_each(&a, print, 0);
+    dict_for_each(item, &a) {
+        printf("%s: %d, ", (char *)item->key.data, *(int *)item->data);
+    }
     printf("}\n");
 
     printf("b = {");
-    for (DictItem *items = dict_items(&b, 0), *item = items; item < items + b.length; item++) {
-        print(item, 0);
+    dict_for_each(item, &b) {
+        printf("%s: %d, ", (char *)item->key.data, *(int *)item->data);
     }
     printf("}\n");
 

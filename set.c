@@ -7,7 +7,7 @@ int main(void) {
 
     Set a = set_create(&arena);
 
-    const char *key[] = {
+    char *key[] = {
         "zero", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine",
     };
     for (long i = 0; i < 10; i++) {

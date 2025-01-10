@@ -41,7 +41,7 @@ static List list_create(Arena *arena, long size, ListDataCompare *compare) {
 
 static void x__list_item_create(const List *self, ListItem *item, void *data) {
     if (data && self->data.copy) {
-        item->data = arena_alloc(self->arena, 1, self->data.size, alignof(max_align_t), NOZERO);
+        item->data = arena_malloc(self->arena, 1, self->data.size, alignof(max_align_t));
         self->data.copy(self->arena, item->data, data, self->data.size);
     }
     else {
@@ -51,7 +51,7 @@ static void x__list_item_create(const List *self, ListItem *item, void *data) {
 
 static void list_insert(List *self, long index, void *data) {
     assert(-self->length <= index && index <= self->length);
-    ListItem *item = arena_alloc(self->arena, 1, sizeof(ListItem), alignof(ListItem), 0);
+    ListItem *item = arena_calloc(self->arena, 1, sizeof(ListItem), alignof(ListItem));
     x__list_item_create(self, item, data);
     if (self->length == 0) {
         self->begin = item;
@@ -305,7 +305,7 @@ static ListItem *list_items(const List *self, Arena *arena) {
     if (!arena) {
         arena = self->arena;
     }
-    ListItem *items = arena_alloc(arena, self->length, sizeof(ListItem), alignof(ListItem), NOZERO);
+    ListItem *items = arena_malloc(arena, self->length, sizeof(ListItem), alignof(ListItem));
     long index = 0;
     for (ListItem *item = self->begin; item; item = item->next) {
         items[index++] = *item;

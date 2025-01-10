@@ -42,7 +42,7 @@ static Heap heap_create(Arena *arena, long size, HeapDataCompare *compare) {
 
 static void x__heap_item_create(const Heap *self, HeapItem *item, void *data) {
     if (data && self->data.copy) {
-        item->data = arena_alloc(self->arena, 1, self->data.size, alignof(max_align_t), NOZERO);
+        item->data = arena_malloc(self->arena, 1, self->data.size, alignof(max_align_t));
         self->data.copy(self->arena, item->data, data, self->data.size);
     }
     else {
@@ -78,7 +78,7 @@ static void x__heap_sift_up(const Heap *self, HeapItem *item, void *context) {
 }
 
 static void heap_push(Heap *self, void *data, void *context) {
-    HeapItem *item = arena_alloc(self->arena, 1, sizeof(HeapItem), alignof(HeapItem), 0);
+    HeapItem *item = arena_calloc(self->arena, 1, sizeof(HeapItem), alignof(HeapItem));
     x__heap_item_create(self, item, data);
     if (self->length == 0) {
         self->begin = item;
@@ -185,7 +185,7 @@ static HeapItem *heap_items(const Heap *self, Arena *arena) {
     if (!arena) {
         arena = self->arena;
     }
-    HeapItem *items = arena_alloc(arena, self->length, sizeof(HeapItem), alignof(HeapItem), NOZERO);
+    HeapItem *items = arena_malloc(arena, self->length, sizeof(HeapItem), alignof(HeapItem));
     long index = 0;
     for (HeapItem *item = self->begin; item; item = item->next) {
         items[index++] = *item;

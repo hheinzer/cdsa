@@ -27,9 +27,8 @@ static void *arena_malloc(Arena *self, long count, long size, long align) {
     long available = self->end - self->begin;
     long padding = -(uintptr_t)self->begin & (align - 1);
     assert(count <= (available - padding) / size);
-    long total = count * size;
     self->last = self->begin + padding;
-    self->begin += padding + total;
+    self->begin += padding + count * size;
     return self->last;
 }
 

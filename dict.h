@@ -29,10 +29,6 @@ struct DictItem {
     DictItem *next;
 };
 
-typedef enum {
-    KEEPOLD = 1 << 1,
-} DictFlags;
-
 #define dict_for_each(item, self)                                 \
     for (DictItem *item = (self)->begin; item; item = item->next) \
         if (item->key.size)
@@ -71,7 +67,7 @@ static void x__dict_item_create(const Dict *self, DictItem *item, const void *ke
     }
 }
 
-static void *dict_insert(Dict *self, const void *key, long size, void *data, int flags) {
+static void *dict_insert(Dict *self, const void *key, long size, void *data) {
     if (!size) {
         size = strlen(key) + 1;
     }
@@ -81,11 +77,7 @@ static void *dict_insert(Dict *self, const void *key, long size, void *data, int
             break;
         }
         if (x__dict_key_equals(*item, key, size)) {
-            void *item_data = (*item)->data;
-            if (!(flags & KEEPOLD)) {
-                (*item)->data = data;
-            }
-            return item_data;
+            return (*item)->data;
         }
         item = &(*item)->child[hash >> 62];
     }
@@ -140,7 +132,7 @@ static Dict dict_clone(const Dict *self, Arena *arena) {
     dict.data = self->data;
     for (DictItem *item = self->begin; item; item = item->next) {
         if (item->key.size) {
-            dict_insert(&dict, item->key.data, item->key.size, item->data, 0);
+            dict_insert(&dict, item->key.data, item->key.size, item->data);
         }
     }
     return dict;

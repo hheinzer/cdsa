@@ -15,7 +15,7 @@ static Set set_create(Arena *arena) {
 }
 
 static int set_insert(Set *self, const void *key, long size) {
-    return !!dict_insert(self, key, size, (void *)1, KEEPOLD);
+    return !!dict_insert(self, key, size, (void *)1);
 }
 
 static int set_remove(Set *self, const void *key, long size) {

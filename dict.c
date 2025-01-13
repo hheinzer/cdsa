@@ -11,13 +11,13 @@ int main(void) {
         "zero", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine",
     };
     for (long i = 0; i < 10; i++) {
-        dict_insert(&a, key[i], 0, &i, 0);
+        dict_insert(&a, key[i], 0, &i);
     }
 
     Dict b = dict_clone(&a, 0);
 
     dict_remove(&b, "six", 0);
-    dict_insert(&b, "ten", 0, (int[]){10}, 0);
+    dict_insert(&b, "ten", 0, (int[]){10});
 
     printf("a = {");
     dict_for_each(item, &a) {

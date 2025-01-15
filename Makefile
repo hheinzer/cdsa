@@ -6,7 +6,7 @@ CFLAGS = -std=c23 -g3 -Wall -Wextra -Wpedantic -Wshadow -fopenmp -Wno-unused-fun
 CFLAGS += -fsanitize-trap=undefined -fsanitize=address
 
 # release flags
-#CFLAGS += -Ofast -march=native -flto=auto
+#CFLAGS += -O3 -march=native -flto=auto
 
 # sources, objects, and programs
 SRC = $(shell find . -type f -name '*.c')

@@ -41,7 +41,7 @@ static Heap heap_create(Arena *arena, long size, HeapDataCompare *compare) {
 }
 
 static void x__heap_item_create(const Heap *self, HeapItem *item, void *data) {
-    if (data && self->data.copy) {
+    if (data && self->data.size) {
         item->data = arena_malloc(self->arena, 1, self->data.size, alignof(max_align_t));
         self->data.copy(self->arena, item->data, data, self->data.size);
     }

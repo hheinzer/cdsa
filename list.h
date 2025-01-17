@@ -40,7 +40,7 @@ static List list_create(Arena *arena, long size, ListDataCompare *compare) {
 }
 
 static void x__list_item_create(const List *self, ListItem *item, void *data) {
-    if (data && self->data.copy) {
+    if (data && self->data.size) {
         item->data = arena_malloc(self->arena, 1, self->data.size, alignof(max_align_t));
         self->data.copy(self->arena, item->data, data, self->data.size);
     }

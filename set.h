@@ -9,9 +9,7 @@ typedef struct DictItem SetItem;
 #define set_for_each(item, self) dict_for_each(item, self)
 
 static Set set_create(Arena *arena) {
-    Set set = dict_create(arena, 0);
-    set.data.copy = 0;
-    return set;
+    return dict_create(arena, 0);
 }
 
 static int set_insert(Set *self, const void *key, long size) {

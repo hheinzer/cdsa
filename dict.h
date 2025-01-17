@@ -58,7 +58,7 @@ static void x__dict_item_create(const Dict *self, DictItem *item, const void *ke
                                 void *data) {
     item->key.data = arena_memdup(self->arena, key, 1, size, alignof(max_align_t));
     item->key.size = size;
-    if (data && self->data.copy) {
+    if (data && self->data.size) {
         item->data = arena_malloc(self->arena, 1, self->data.size, alignof(max_align_t));
         self->data.copy(self->arena, item->data, data, self->data.size);
     }

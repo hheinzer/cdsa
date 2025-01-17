@@ -3,7 +3,7 @@ CC = clang
 CFLAGS = -std=c23 -g3 -Wall -Wextra -Wpedantic -Wshadow -Wno-unused-function
 
 # debug flags
-CFLAGS += -fsanitize-trap=undefined -fsanitize=address
+CFLAGS += -fsanitize-trap=undefined
 
 # release flags
 #CFLAGS += -O3 -march=native -flto=auto

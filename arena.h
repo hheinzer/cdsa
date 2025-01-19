@@ -58,6 +58,22 @@ static void *arena_memdup(Arena *self, const void *src, long count, long size, l
     return memcpy(arena_malloc(self, count, size, align), src, count * size);
 }
 
+static Arena arena_scratch_create(Arena *self, long capacity) {
+    long available = self->end - self->begin;
+    assert(available >= capacity);
+    self->end -= capacity;
+    Arena scratch = {0};
+    scratch.data = self->end;
+    scratch.begin = scratch.data;
+    scratch.end = scratch.begin + capacity;
+    return scratch;
+}
+
+static void arena_scratch_destroy(Arena *self, Arena scratch) {
+    assert(scratch.data == self->end);
+    self->end = scratch.end;
+}
+
 static void arena_destroy(Arena *self) {
     free(self->data);
 }

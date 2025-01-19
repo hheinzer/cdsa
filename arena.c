@@ -13,7 +13,7 @@
 #define strapp(A, S1, S2) strcat(realloc(A, S1, strlen(S1) + strlen(S2) + 1), S2)
 
 void temporary(Arena arena);
-void permanent(Arena *arena);
+void permanent(Arena *arena, Arena scratch);
 
 int main(void) {
     Arena arena = arena_create(1 << 20);
@@ -26,9 +26,13 @@ int main(void) {
     dump(arena.data, arena.begin);
     printf("\n");
 
-    permanent(&arena);
+    Arena scratch = arena_scratch_create(&arena, 32);
+
+    permanent(&arena, scratch);
     dump(arena.data, arena.begin);
     printf("\n");
+
+    arena_scratch_destroy(&arena, scratch);
 
     s = strapp(&arena, s, " allocator");
     dump(arena.data, arena.begin);
@@ -46,8 +50,16 @@ void temporary(Arena arena) {
     printf("\n");
 }
 
-void permanent(Arena *arena) {
-    strdup(arena, "permanent");
+void permanent(Arena *arena, Arena scratch) {
+    char *s = strdup(arena, "perma");
+    dump(arena->data, arena->begin);
+    printf("\n");
+
+    strdup(&scratch, "scratch");
+    dump(scratch.data, scratch.begin);
+    printf("\n");
+
+    strapp(arena, s, "nent");
     dump(arena->data, arena->begin);
     printf("\n");
 }

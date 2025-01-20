@@ -2,7 +2,6 @@
 BasedOnStyle: Google
 IndentWidth: 4
 ColumnLimit: 100
-AllowShortCaseLabelsOnASingleLine: true
 AllowShortFunctionsOnASingleLine: None
 BraceWrapping:
   BeforeElse: true

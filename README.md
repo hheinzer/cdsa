@@ -12,12 +12,12 @@ hands dirty.
 The employed “error handling strategy” is `assert`. This might not be compatible with your project
 if you want to be able to recover from errors.
 
-Data structures manage their memory using
-[arena allocators](https://www.rfleury.com/p/untangling-lifetimes-the-arena-allocator), which
-streamline memory management by grouping allocations together and freeing them all at once. I first
-learned about this type of allocator [here](https://nullprogram.com/blog/2023/09/27/) and was
-immediately hooked by their elegance and simplicity. If you require heap allocated objects, you
-might need to get your hands dirty again, because there is no dedicated destruction function.
+Data structures manage their memory using [arena
+allocators](https://www.rfleury.com/p/untangling-lifetimes-the-arena-allocator), which streamline
+memory management by grouping allocations together and freeing them all at once. I first learned
+about this type of allocator [here](https://nullprogram.com/blog/2023/09/27/) which made me want to
+try it out for myself. If you require heap allocated objects, you might need to get your hands dirty
+again, because there is no dedicated destruction function.
 
 Some creation parameters are optional and accept a literal `0` (or null pointer). For example, if
 you want to create a list, but never need to compare list items, you don't need to pass a comparison
@@ -25,8 +25,8 @@ function.
 
 Even though I'm big sucker for performance, the primary focus of this project is flexibility.
 Therefore, the stored data is a `void` pointer and the user needs to provide the size of the data
-and an appropriate copy function. If you are not storing anything complicated, the default copy
-function `arena_memcpy` is your friend.
+and an appropriate copy function. If you are not storing anything complicated, or you are fine with
+shallow copies, the default copy function `arena_memcpy` is your friend.
 
 ## Features
 
@@ -55,7 +55,6 @@ contribute code:
 
 - [Me](https://github.com/hheinzer/advent-of-code-c) for [Advent of Code](https://adventofcode.com/)
   in 2024 (and beyond)
-
 
 ## License
 

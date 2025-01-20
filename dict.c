@@ -2,40 +2,43 @@
 
 #include <stdio.h>
 
+static constexpr long mega_byte = 1 << 20;
+
+#define countof(A) ((long)(sizeof(A) / sizeof(*(A))))
+
 int main(void) {
-    Arena arena = arena_create(1 << 20);
+    Arena arena = arena_create(mega_byte);
 
-    Dict a = dict_create(&arena, sizeof(int));
+    Dict dict = dict_create(&arena, sizeof(int));
 
-    char *key[] = {
-        "zero", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine",
-    };
-    for (long i = 0; i < 10; i++) {
-        dict_insert(&a, key[i], 0, &i);
+    char *key[] = {"zero", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine"};
+    for (long i = 0; i < countof(key); i++) {
+        dict_insert(&dict, key[i], 0, &i);
     }
 
-    Dict b = dict_clone(&a, 0);
+    Dict clone = dict_clone(&dict, nullptr);
 
-    dict_remove(&b, "six", 0);
-    dict_insert(&b, "ten", 0, (int[]){10});
+    dict_remove(&clone, "six", 0);
+    dict_insert(&clone, "ten", 0, &(int){10});
 
     printf("a = {");
-    dict_for_each(item, &a) {
+    dict_for_each(item, &dict) {
         printf("%s: %d, ", (char *)item->key.data, *(int *)item->data);
     }
     printf("}\n");
 
     printf("b = {");
-    for (DictItem *i = dict_items(&b, 0), *ii = i; i < ii + b.length; i++) {
-        printf("%s: %d, ", (char *)i->key.data, *(int *)i->data);
+    DictItem *items = dict_items(&clone, nullptr);
+    for (DictItem *item = items; item < items + clone.length; item++) {
+        printf("%s: %d, ", (char *)item->key.data, *(int *)item->data);
     }
     printf("}\n");
 
-    printf("a.find(six) = %p\n", dict_find(&a, "six", 0));
-    printf("b.find(six) = %p\n", dict_find(&b, "six", 0));
+    printf("dict.find(six) = %p\n", dict_find(&dict, "six", 0));
+    printf("clone.find(six) = %p\n", dict_find(&clone, "six", 0));
 
-    printf("a.find(ten) = %p\n", dict_find(&a, "ten", 0));
-    printf("b.find(ten) = %p\n", dict_find(&b, "ten", 0));
+    printf("dict.find(ten) = %p\n", dict_find(&dict, "ten", 0));
+    printf("clone.find(ten) = %p\n", dict_find(&clone, "ten", 0));
 
     arena_destroy(&arena);
 }

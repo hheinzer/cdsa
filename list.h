@@ -28,10 +28,11 @@ struct ListItem {
     ListItem *prev;
 };
 
-#define list_for_each(item, self) for (ListItem *item = (self)->begin; item; item = item->next)
+#define list_for_each(item, self) \
+    for (ListItem * (item) = (self)->begin; item; (item) = (item)->next)
 
 static List list_create(Arena *arena, long size, ListDataCompare *compare) {
-    List list = {0};
+    List list = {};
     list.arena = arena;
     list.data.size = size;
     list.data.compare = compare;
@@ -69,7 +70,7 @@ static void list_insert(List *self, long index, void *data) {
     }
     else {
         index = (self->length + index) % self->length;
-        ListItem *next = 0;
+        ListItem *next = nullptr;
         if (index <= (self->length - 1) / 2) {
             next = self->begin;
             for (long i = 0; i < index; i++) {
@@ -96,24 +97,24 @@ static void list_append(List *self, void *data) {
 
 static void *list_pop(List *self, long index) {
     if (self->length == 0) {
-        return 0;
+        return nullptr;
     }
     assert(-self->length <= index && index < self->length);
-    ListItem *item = 0;
+    ListItem *item = nullptr;
     if (self->length == 1) {
         item = self->begin;
-        self->begin = 0;
-        self->end = 0;
+        self->begin = nullptr;
+        self->end = nullptr;
     }
     else if (index == 0 || index == -self->length) {
         item = self->begin;
         self->begin = item->next;
-        self->begin->prev = 0;
+        self->begin->prev = nullptr;
     }
     else if (index == self->length - 1 || index == -1) {
         item = self->end;
         self->end = item->prev;
-        self->end->next = 0;
+        self->end->next = nullptr;
     }
     else {
         index = (self->length + index) % self->length;
@@ -139,20 +140,20 @@ static void *list_pop(List *self, long index) {
 static void *list_remove(List *self, const void *data) {
     assert(self->data.compare);
     for (ListItem *item = self->begin; item; item = item->next) {
-        if (self->data.compare(item->data, data, 0)) {
+        if (self->data.compare(item->data, data, nullptr)) {
             continue;
         }
         if (self->length == 1) {
-            self->begin = 0;
-            self->end = 0;
+            self->begin = nullptr;
+            self->end = nullptr;
         }
         else if (item == self->begin) {
             self->begin = item->next;
-            self->begin->prev = 0;
+            self->begin->prev = nullptr;
         }
         else if (item == self->end) {
             self->end = item->prev;
-            self->end->next = 0;
+            self->end->next = nullptr;
         }
         else {
             item->next->prev = item->prev;
@@ -161,15 +162,15 @@ static void *list_remove(List *self, const void *data) {
         self->length -= 1;
         return item->data;
     }
-    return 0;
+    return nullptr;
 }
 
 static void *list_get(const List *self, long index) {
     if (self->length == 0) {
-        return 0;
+        return nullptr;
     }
     assert(-self->length <= index && index < self->length);
-    ListItem *item = 0;
+    ListItem *item = nullptr;
     index = (self->length + index) % self->length;
     if (index <= (self->length - 1) / 2) {
         item = self->begin;
@@ -189,18 +190,18 @@ static void *list_get(const List *self, long index) {
 static void *list_find(const List *self, const void *data) {
     assert(self->data.compare);
     for (ListItem *item = self->begin; item; item = item->next) {
-        if (!self->data.compare(item->data, data, 0)) {
+        if (!self->data.compare(item->data, data, nullptr)) {
             return item->data;
         }
     }
-    return 0;
+    return nullptr;
 }
 
 static long list_index(const List *self, const void *data) {
     assert(self->data.compare);
     long index = 0;
     for (ListItem *item = self->begin; item; item = item->next) {
-        if (!self->data.compare(item->data, data, 0)) {
+        if (!self->data.compare(item->data, data, nullptr)) {
             return index;
         }
         index += 1;
@@ -212,7 +213,7 @@ static long list_count(const List *self, const void *data) {
     assert(self->data.compare);
     long count = 0;
     for (ListItem *item = self->begin; item; item = item->next) {
-        if (!self->data.compare(item->data, data, 0)) {
+        if (!self->data.compare(item->data, data, nullptr)) {
             count += 1;
         }
     }
@@ -220,15 +221,16 @@ static long list_count(const List *self, const void *data) {
 }
 
 static ListItem *x__list_merge_sort_split(ListItem *first) {
-    ListItem *slow = first, *fast = first;
+    ListItem *slow = first;
+    ListItem *fast = first;
     while (fast && fast->next && fast->next->next) {
         slow = slow->next;
         fast = fast->next->next;
     }
     ListItem *second = slow->next;
-    slow->next = 0;
+    slow->next = nullptr;
     if (second) {
-        second->prev = 0;
+        second->prev = nullptr;
     }
     return second;
 }
@@ -246,14 +248,14 @@ static ListItem *x__list_merge_sort_merge(List *self, ListItem *first, ListItem 
         if (first->next) {
             first->next->prev = first;
         }
-        first->prev = 0;
+        first->prev = nullptr;
         return first;
     }
     second->next = x__list_merge_sort_merge(self, first, second->next, context);
     if (second->next) {
         second->next->prev = second;
     }
-    second->prev = 0;
+    second->prev = nullptr;
     return second;
 }
 
@@ -292,7 +294,7 @@ static List list_clone(const List *self, Arena *arena) {
     if (!arena) {
         arena = self->arena;
     }
-    List list = {0};
+    List list = {};
     list.arena = arena;
     list.data = self->data;
     for (ListItem *item = self->begin; item; item = item->next) {

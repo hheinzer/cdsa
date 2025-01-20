@@ -3,8 +3,8 @@
 #include "arena.h"
 #include "dict.h"
 
-typedef struct Dict Set;
-typedef struct DictItem SetItem;
+typedef Dict Set;
+typedef DictItem SetItem;
 
 #define set_for_each(item, self) dict_for_each(item, self)
 

@@ -29,10 +29,11 @@ struct HeapItem {
     HeapItem *next;
 };
 
-#define heap_for_each(item, self) for (HeapItem *item = (self)->begin; item; item = item->next)
+#define heap_for_each(item, self) \
+    for (HeapItem * (item) = (self)->begin; item; (item) = (item)->next)
 
 static Heap heap_create(Arena *arena, long size, HeapDataCompare *compare) {
-    Heap heap = {0};
+    Heap heap = {};
     heap.arena = arena;
     heap.data.size = size;
     heap.data.compare = compare;
@@ -136,25 +137,25 @@ static void x__heap_sift_down(const Heap *self, HeapItem *item, void *context) {
 
 static void *heap_pop(Heap *self, void *context) {
     if (self->length == 0) {
-        return 0;
+        return nullptr;
     }
     void *data = self->begin->data;
     if (self->length == 1) {
-        self->begin = 0;
-        self->end = 0;
+        self->begin = nullptr;
+        self->end = nullptr;
     }
     else {
         assert(self->end->parent);
         HeapItem *end = x__heap_find_end(self->end);
         if (self->end == self->end->parent->right) {
-            self->end->parent->right = 0;
+            self->end->parent->right = nullptr;
         }
         else {
-            self->end->parent->left = 0;
+            self->end->parent->left = nullptr;
         }
         self->begin->data = self->end->data;
         self->end = end;
-        self->end->next = 0;
+        self->end->next = nullptr;
         x__heap_sift_down(self, self->begin, context);
     }
     self->length -= 1;
@@ -163,7 +164,7 @@ static void *heap_pop(Heap *self, void *context) {
 
 static void *heap_peek(const Heap *self) {
     if (self->length == 0) {
-        return 0;
+        return nullptr;
     }
     return self->begin->data;
 }
@@ -172,7 +173,7 @@ static Heap heap_clone(const Heap *self, void *context, Arena *arena) {
     if (!arena) {
         arena = self->arena;
     }
-    Heap heap = {0};
+    Heap heap = {};
     heap.arena = arena;
     heap.data = self->data;
     for (HeapItem *item = self->begin; item; item = item->next) {

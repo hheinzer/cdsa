@@ -13,7 +13,7 @@ typedef struct {
 } Arena;
 
 static Arena arena_create(long capacity) {
-    Arena arena = {0};
+    Arena arena = {};
     arena.data = malloc(capacity);
     assert(arena.data);
     arena.begin = arena.data;
@@ -62,7 +62,7 @@ static Arena arena_scratch_create(Arena *self, long capacity) {
     long available = self->end - self->begin;
     assert(available >= capacity);
     self->end -= capacity;
-    Arena scratch = {0};
+    Arena scratch = {};
     scratch.data = self->end;
     scratch.begin = scratch.data;
     scratch.end = scratch.begin + capacity;

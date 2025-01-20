@@ -5,6 +5,8 @@
 
 #include "dump.h"
 
+static constexpr long mega_byte = 1 << 20;
+
 #define malloc(A, P, N) arena_malloc(A, N, sizeof(*(P)), alignof(typeof(*(P))))
 #define calloc(A, P, N) arena_calloc(A, N, sizeof(*(P)), alignof(typeof(*(P))))
 #define realloc(A, P, N) arena_realloc(A, P, N, sizeof(*(P)), alignof(typeof(*(P))))
@@ -16,9 +18,9 @@ void temporary(Arena arena);
 void permanent(Arena *arena, Arena scratch);
 
 int main(void) {
-    Arena arena = arena_create(1 << 20);
+    Arena arena = arena_create(mega_byte);
 
-    char *s = strdup(&arena, "arena");
+    char *string = strdup(&arena, "arena");
     dump(arena.data, arena.begin);
     printf("\n");
 
@@ -26,7 +28,7 @@ int main(void) {
     dump(arena.data, arena.begin);
     printf("\n");
 
-    Arena scratch = arena_scratch_create(&arena, 32);
+    Arena scratch = arena_scratch_create(&arena, mega_byte / 2);
 
     permanent(&arena, scratch);
     dump(arena.data, arena.begin);
@@ -34,24 +36,24 @@ int main(void) {
 
     arena_scratch_destroy(&arena, scratch);
 
-    s = strapp(&arena, s, " allocator");
+    strapp(&arena, string, " allocator");
     dump(arena.data, arena.begin);
 
     arena_destroy(&arena);
 }
 
 void temporary(Arena arena) {
-    char *s = strdup(&arena, "tempo");
+    char *string = strdup(&arena, "tempo");
     dump(arena.data, arena.begin);
     printf("\n");
 
-    strapp(&arena, s, "rary");
+    strapp(&arena, string, "rary");
     dump(arena.data, arena.begin);
     printf("\n");
 }
 
 void permanent(Arena *arena, Arena scratch) {
-    char *s = strdup(arena, "perma");
+    char *string = strdup(arena, "perma");
     dump(arena->data, arena->begin);
     printf("\n");
 
@@ -59,7 +61,7 @@ void permanent(Arena *arena, Arena scratch) {
     dump(scratch.data, scratch.begin);
     printf("\n");
 
-    strapp(arena, s, "nent");
+    strapp(arena, string, "nent");
     dump(arena->data, arena->begin);
     printf("\n");
 }

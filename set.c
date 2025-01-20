@@ -2,40 +2,43 @@
 
 #include <stdio.h>
 
+static constexpr long mega_byte = 1 << 20;
+
+#define countof(A) ((long)(sizeof(A) / sizeof(*(A))))
+
 int main(void) {
-    Arena arena = arena_create(1 << 20);
+    Arena arena = arena_create(mega_byte);
 
-    Set a = set_create(&arena);
+    Set set = set_create(&arena);
 
-    char *key[] = {
-        "zero", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine",
-    };
-    for (long i = 0; i < 10; i++) {
-        set_insert(&a, key[i], 0);
+    char *key[] = {"zero", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine"};
+    for (long i = 0; i < countof(key); i++) {
+        set_insert(&set, key[i], 0);
     }
 
-    Set b = set_clone(&a, 0);
+    Set clone = set_clone(&set, nullptr);
 
-    set_remove(&b, "six", 0);
-    set_insert(&b, "ten", 0);
+    set_remove(&clone, "six", 0);
+    set_insert(&clone, "ten", 0);
 
     printf("a = {");
-    set_for_each(item, &a) {
+    set_for_each(item, &set) {
         printf("%s, ", (char *)item->key.data);
     }
     printf("}\n");
 
     printf("b = {");
-    for (SetItem *i = set_items(&b, 0), *ii = i; i < ii + b.length; i++) {
-        printf("%s, ", (char *)i->key.data);
+    SetItem *items = set_items(&clone, nullptr);
+    for (SetItem *item = items; item < items + clone.length; item++) {
+        printf("%s, ", (char *)item->key.data);
     }
     printf("}\n");
 
-    printf("a.find(six) = %d\n", set_find(&a, "six", 0));
-    printf("b.find(six) = %d\n", set_find(&b, "six", 0));
+    printf("set.find(six) = %d\n", set_find(&set, "six", 0));
+    printf("clone.find(six) = %d\n", set_find(&clone, "six", 0));
 
-    printf("a.find(ten) = %d\n", set_find(&a, "ten", 0));
-    printf("b.find(ten) = %d\n", set_find(&b, "ten", 0));
+    printf("set.find(ten) = %d\n", set_find(&set, "ten", 0));
+    printf("clone.find(ten) = %d\n", set_find(&clone, "ten", 0));
 
     arena_destroy(&arena);
 }

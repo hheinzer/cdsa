@@ -2,56 +2,61 @@
 
 #include <stdio.h>
 
+static constexpr long mega_byte = 1 << 20;
+
 int intcmp(const void *_a, const void *_b, void *) {
-    const int *a = _a, *b = _b;
+    const int *a = _a;
+    const int *b = _b;
     return (*a > *b) - (*a < *b);
 }
 
 int main(void) {
-    Arena arena = arena_create(1 << 20);
+    Arena arena = arena_create(mega_byte);
 
-    List a = list_create(&arena, sizeof(int), intcmp);
+    List list = list_create(&arena, sizeof(int), intcmp);
+
     for (int i = 0; i < 10; i++) {
-        list_append(&a, &i);
+        list_append(&list, &i);
     }
 
-    list_insert(&a, 3, (int[]){33});
+    list_insert(&list, 3, &(int){33});
 
-    list_insert(&a, -3, (int[]){-33});
+    list_insert(&list, -3, &(int){-33});
 
-    List b = list_clone(&a, 0);
+    List clone = list_clone(&list, nullptr);
 
-    list_pop(&a, a.length / 2);
+    list_pop(&list, list.length / 2);
 
-    list_remove(&b, (int[]){33});
+    list_remove(&clone, &(int){33});
 
-    list_sort(&a, 0);
+    list_sort(&list, nullptr);
 
-    list_reverse(&b);
+    list_reverse(&clone);
 
     printf("a = [");
-    list_for_each(item, &a) {
+    list_for_each(item, &list) {
         printf("%d, ", *(int *)item->data);
     }
     printf("]\n");
 
     printf("b = [");
-    for (ListItem *i = list_items(&b, 0), *ii = i; i < ii + b.length; i++) {
-        printf("%d, ", *(int *)i->data);
+    ListItem *items = list_items(&clone, nullptr);
+    for (ListItem *item = items; item < items + clone.length; item++) {
+        printf("%d, ", *(int *)item->data);
     }
     printf("]\n");
 
-    printf("a.get(10) = %d\n", *(int *)list_get(&a, 10));
-    printf("b.get(10) = %d\n", *(int *)list_get(&b, 10));
+    printf("list.get(10) = %d\n", *(int *)list_get(&list, 10));
+    printf("clone.get(10) = %d\n", *(int *)list_get(&clone, 10));
 
-    printf("a.index(33) = %ld\n", list_index(&a, (int[]){33}));
-    printf("b.index(33) = %ld\n", list_index(&b, (int[]){33}));
+    printf("list.index(33) = %ld\n", list_index(&list, (int[]){33}));
+    printf("clone.index(33) = %ld\n", list_index(&clone, (int[]){33}));
 
-    printf("a.find(33) = %p\n", list_find(&a, (int[]){33}));
-    printf("b.find(33) = %p\n", list_find(&b, (int[]){33}));
+    printf("list.find(33) = %p\n", list_find(&list, (int[]){33}));
+    printf("clone.find(33) = %p\n", list_find(&clone, (int[]){33}));
 
-    printf("a.count(33) = %ld\n", list_count(&a, (int[]){33}));
-    printf("b.count(33) = %ld\n", list_count(&b, (int[]){33}));
+    printf("list.count(33) = %ld\n", list_count(&list, (int[]){33}));
+    printf("clone.count(33) = %ld\n", list_count(&clone, (int[]){33}));
 
     arena_destroy(&arena);
 }

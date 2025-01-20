@@ -19,9 +19,8 @@ about this type of allocator [here](https://nullprogram.com/blog/2023/09/27/) wh
 try it out for myself. If you require heap allocated objects, you might need to get your hands dirty
 again, because there is no dedicated destruction function.
 
-Some creation parameters are optional and accept a literal `0` (or null pointer). For example, if
-you want to create a list, but never need to compare list items, you don't need to pass a comparison
-function.
+Some creation parameters are optional and accept `0` or `nullptr`. For example, if you want to
+create a list, but never need to compare list items, you don't need to pass a comparison function.
 
 Even though I'm big sucker for performance, the primary focus of this project is flexibility.
 Therefore, the stored data is a `void` pointer and the user needs to provide the size of the data

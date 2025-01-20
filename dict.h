@@ -8,6 +8,9 @@ typedef struct Dict Dict;
 typedef struct DictItem DictItem;
 typedef void *DictDataCopy(Arena *, void *, const void *, long);
 
+static constexpr long x__dict_hash_shift = 2;
+static constexpr long x__dict_hash_select = (8 * sizeof(uint64_t)) - x__dict_hash_shift;
+
 struct Dict {
     Arena *arena;
     struct {
@@ -25,16 +28,16 @@ struct DictItem {
         long size;
     } key;
     void *data;
-    DictItem *child[4];
+    DictItem *child[1 << x__dict_hash_shift];
     DictItem *next;
 };
 
-#define dict_for_each(item, self)                                 \
-    for (DictItem *item = (self)->begin; item; item = item->next) \
-        if (item->key.size)
+#define dict_for_each(item, self)                                        \
+    for (DictItem * (item) = (self)->begin; item; (item) = (item)->next) \
+        if ((item)->key.size)
 
 static Dict dict_create(Arena *arena, long size) {
-    Dict dict = {0};
+    Dict dict = {};
     dict.arena = arena;
     dict.data.size = size;
     dict.data.copy = arena_memcpy;
@@ -42,10 +45,12 @@ static Dict dict_create(Arena *arena, long size) {
 }
 
 static uint64_t x__dict_hash_fnv1a(const char *key, long size) {
-    uint64_t hash = 0xcbf29ce484222325;
+    constexpr uint64_t basis = 0xcbf29ce484222325;
+    constexpr uint64_t prime = 0x00000100000001b3;
+    uint64_t hash = basis;
     for (const char *byte = key; byte < key + size; byte++) {
         hash ^= *byte;
-        hash *= 0x00000100000001b3;
+        hash *= prime;
     }
     return hash;
 }
@@ -72,14 +77,14 @@ static void *dict_insert(Dict *self, const void *key, long size, void *data) {
         size = strlen(key) + 1;
     }
     DictItem **item = &self->begin;
-    for (uint64_t hash = x__dict_hash_fnv1a(key, size); *item; hash <<= 2) {
+    for (uint64_t hash = x__dict_hash_fnv1a(key, size); *item; hash <<= x__dict_hash_shift) {
         if (!(*item)->key.size) {
             break;
         }
         if (x__dict_key_equals(*item, key, size)) {
             return (*item)->data;
         }
-        item = &(*item)->child[hash >> 62];
+        item = &(*item)->child[hash >> x__dict_hash_select];
     }
     if (!*item) {
         *item = arena_calloc(self->arena, 1, sizeof(DictItem), alignof(DictItem));
@@ -90,7 +95,7 @@ static void *dict_insert(Dict *self, const void *key, long size, void *data) {
     }
     x__dict_item_create(self, *item, key, size, data);
     self->length += 1;
-    return 0;
+    return nullptr;
 }
 
 static void *dict_remove(Dict *self, const void *key, long size) {
@@ -98,15 +103,15 @@ static void *dict_remove(Dict *self, const void *key, long size) {
         size = strlen(key) + 1;
     }
     DictItem *item = self->begin;
-    for (uint64_t hash = x__dict_hash_fnv1a(key, size); item; hash <<= 2) {
+    for (uint64_t hash = x__dict_hash_fnv1a(key, size); item; hash <<= x__dict_hash_shift) {
         if (x__dict_key_equals(item, key, size)) {
             item->key.size = 0;
             self->length -= 1;
             return item->data;
         }
-        item = item->child[hash >> 62];
+        item = item->child[hash >> x__dict_hash_select];
     }
-    return 0;
+    return nullptr;
 }
 
 static void *dict_find(const Dict *self, const void *key, long size) {
@@ -114,20 +119,20 @@ static void *dict_find(const Dict *self, const void *key, long size) {
         size = strlen(key) + 1;
     }
     DictItem *item = self->begin;
-    for (uint64_t hash = x__dict_hash_fnv1a(key, size); item; hash <<= 2) {
+    for (uint64_t hash = x__dict_hash_fnv1a(key, size); item; hash <<= x__dict_hash_shift) {
         if (x__dict_key_equals(item, key, size)) {
             return item->data;
         }
-        item = item->child[hash >> 62];
+        item = item->child[hash >> x__dict_hash_select];
     }
-    return 0;
+    return nullptr;
 }
 
 static Dict dict_clone(const Dict *self, Arena *arena) {
     if (!arena) {
         arena = self->arena;
     }
-    Dict dict = {0};
+    Dict dict = {};
     dict.arena = arena;
     dict.data = self->data;
     for (DictItem *item = self->begin; item; item = item->next) {

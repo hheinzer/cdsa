@@ -55,7 +55,7 @@ static uint64_t x__dict_hash_fnv1a(const char *key, long size) {
     return hash;
 }
 
-static int x__dict_key_equals(const DictItem *item, const void *key, long size) {
+static bool x__dict_key_equals(const DictItem *item, const void *key, long size) {
     return item->key.size == size && !memcmp(item->key.data, key, size);
 }
 

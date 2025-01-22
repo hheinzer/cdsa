@@ -21,9 +21,16 @@ static Arena arena_create(long capacity) {
     return arena;
 }
 
+static long arena_occupied(const Arena *self) {
+    return self->begin - (char *)self->data;
+}
+
+static long arena_available(const Arena *self) {
+    return self->end - self->begin;
+}
+
 static Arena arena_scratch_create(Arena *self, long capacity) {
-    long available = self->end - self->begin;
-    assert(available >= capacity);
+    assert(arena_available(self) >= capacity);
     self->end -= capacity;
     Arena scratch = {};
     scratch.data = self->end;
@@ -34,9 +41,8 @@ static Arena arena_scratch_create(Arena *self, long capacity) {
 
 [[gnu::malloc, gnu::alloc_size(2, 3), gnu::alloc_align(4)]]
 static void *arena_malloc(Arena *self, long count, long size, long align) {
-    long available = self->end - self->begin;
     long padding = -(uintptr_t)self->begin & (align - 1);
-    assert(count <= (available - padding) / size);
+    assert(count <= (arena_available(self) - padding) / size);
     self->last = self->begin + padding;
     self->begin += padding + count * size;
     return self->last;

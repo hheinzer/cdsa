@@ -38,6 +38,7 @@ int main(void) {
 
     strapp(&arena, string, " allocator");
     dump(arena.data, arena.begin);
+    printf("\n");
 
     printf("occupied: %ld\n", arena_occupied(&arena));
     printf("available: %ld\n", arena_available(&arena));

@@ -4,9 +4,9 @@
 
 static constexpr long mega_byte = 1 << 20;
 
-int intcmp(const void *_lhs, const void *_rhs, void *) {
-    const int *lhs = _lhs;
-    const int *rhs = _rhs;
+int intcmp(const void *_a, const void *_b, void *) {
+    const int *lhs = _a;
+    const int *rhs = _b;
     return (*lhs > *rhs) - (*lhs < *rhs);
 }
 

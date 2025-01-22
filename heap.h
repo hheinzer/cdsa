@@ -170,11 +170,8 @@ static void *heap_peek(const Heap *self) {
 }
 
 static Heap heap_clone(const Heap *self, void *context, Arena *arena) {
-    if (!arena) {
-        arena = self->arena;
-    }
     Heap heap = {};
-    heap.arena = arena;
+    heap.arena = arena ? arena : self->arena;
     heap.data = self->data;
     for (HeapItem *item = self->begin; item; item = item->next) {
         heap_push(&heap, item->data, context);
@@ -183,9 +180,7 @@ static Heap heap_clone(const Heap *self, void *context, Arena *arena) {
 }
 
 static HeapItem *heap_items(const Heap *self, Arena *arena) {
-    if (!arena) {
-        arena = self->arena;
-    }
+    arena = arena ? arena : self->arena;
     HeapItem *items = arena_malloc(arena, self->length, sizeof(HeapItem), alignof(HeapItem));
     long index = 0;
     for (HeapItem *item = self->begin; item; item = item->next) {

@@ -129,11 +129,8 @@ static void *dict_find(const Dict *self, const void *key, long size) {
 }
 
 static Dict dict_clone(const Dict *self, Arena *arena) {
-    if (!arena) {
-        arena = self->arena;
-    }
     Dict dict = {};
-    dict.arena = arena;
+    dict.arena = arena ? arena : self->arena;
     dict.data = self->data;
     for (DictItem *item = self->begin; item; item = item->next) {
         if (item->key.size) {
@@ -144,9 +141,7 @@ static Dict dict_clone(const Dict *self, Arena *arena) {
 }
 
 static DictItem *dict_items(const Dict *self, Arena *arena) {
-    if (!arena) {
-        arena = self->arena;
-    }
+    arena = arena ? arena : self->arena;
     DictItem *items = arena_malloc(arena, self->length, sizeof(DictItem), alignof(DictItem));
     long index = 0;
     for (DictItem *item = self->begin; item; item = item->next) {

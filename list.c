@@ -4,10 +4,10 @@
 
 static constexpr long mega_byte = 1 << 20;
 
-int intcmp(const void *_a, const void *_b, void *) {
-    const int *a = _a;
-    const int *b = _b;
-    return (*a > *b) - (*a < *b);
+int intcmp(const void *_lhs, const void *_rhs, void *) {
+    const int *lhs = _lhs;
+    const int *rhs = _rhs;
+    return (*lhs > *rhs) - (*lhs < *rhs);
 }
 
 int main(void) {

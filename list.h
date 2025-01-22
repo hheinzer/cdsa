@@ -291,11 +291,8 @@ static void list_reverse(List *self) {
 }
 
 static List list_clone(const List *self, Arena *arena) {
-    if (!arena) {
-        arena = self->arena;
-    }
     List list = {};
-    list.arena = arena;
+    list.arena = arena ? arena : self->arena;
     list.data = self->data;
     for (ListItem *item = self->begin; item; item = item->next) {
         list_append(&list, item->data);
@@ -304,9 +301,7 @@ static List list_clone(const List *self, Arena *arena) {
 }
 
 static ListItem *list_items(const List *self, Arena *arena) {
-    if (!arena) {
-        arena = self->arena;
-    }
+    arena = arena ? arena : self->arena;
     ListItem *items = arena_malloc(arena, self->length, sizeof(ListItem), alignof(ListItem));
     long index = 0;
     for (ListItem *item = self->begin; item; item = item->next) {

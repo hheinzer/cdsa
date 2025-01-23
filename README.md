@@ -1,4 +1,4 @@
-# Arena Friendly Data Structures and Algorithms
+# Arena Friendly Data Structures
 
 This repository provides general purpose data structures and algorithms that are useful when
 programming in C. Each data structure is implemented as a single header that only depends on the C

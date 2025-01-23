@@ -93,7 +93,7 @@ static void *arena_realloc(Arena *self, void *ptr, long count, long size, long a
     long size_copy = total < max_old_total ? total : max_old_total;
     ASAN_UNPOISON_MEMORY_REGION(ptr, size_copy);
     memcpy(new_ptr, ptr, size_copy);
-    // we cannot poison ptr becasue we don't know its size and there is at least one valid pointer
+    // we cannot poison ptr because we don't know its size and there is at least one valid pointer
     // between ptr and new_ptr, otherwise we would be in the ptr == self->last branch
     return new_ptr;
 }

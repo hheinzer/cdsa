@@ -1,9 +1,9 @@
 # Arena Friendly Data Structures
 
-This repository provides general purpose data structures and algorithms that are useful when
-programming in C. Each data structure is implemented as a single header that only depends on the C
-standard library (and possibly other headers from this repository). Example usage is provided in the
-source files with the same names.
+This repository provides general purpose data structures that are useful when programming in C. Each
+data structure is implemented as a single header that only depends on the C standard library (and
+possibly other headers from this repository). Example usage is provided in the source files with the
+same names.
 
 Any C23 compliant C compiler should be able to handle the data structures without any special flags.
 Most of the code should also compile under C99, but for anything lower, you might need to get your

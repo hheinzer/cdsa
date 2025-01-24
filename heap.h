@@ -173,7 +173,7 @@ static Heap heap_clone(const Heap *self, void *context, Arena *arena) {
     Heap heap = {};
     heap.arena = arena ? arena : self->arena;
     heap.data = self->data;
-    for (HeapItem *item = self->begin; item; item = item->next) {
+    heap_for_each(item, self) {
         heap_push(&heap, item->data, context);
     }
     return heap;
@@ -183,7 +183,7 @@ static HeapItem *heap_items(const Heap *self, Arena *arena) {
     arena = arena ? arena : self->arena;
     HeapItem *items = arena_malloc(arena, self->length, sizeof(HeapItem), alignof(HeapItem));
     long index = 0;
-    for (HeapItem *item = self->begin; item; item = item->next) {
+    heap_for_each(item, self) {
         items[index++] = *item;
     }
     return items;

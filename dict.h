@@ -132,10 +132,8 @@ static Dict dict_clone(const Dict *self, Arena *arena) {
     Dict dict = {};
     dict.arena = arena ? arena : self->arena;
     dict.data = self->data;
-    for (DictItem *item = self->begin; item; item = item->next) {
-        if (item->key.size) {
-            dict_insert(&dict, item->key.data, item->key.size, item->data);
-        }
+    dict_for_each(item, self) {
+        dict_insert(&dict, item->key.data, item->key.size, item->data);
     }
     return dict;
 }
@@ -144,10 +142,8 @@ static DictItem *dict_items(const Dict *self, Arena *arena) {
     arena = arena ? arena : self->arena;
     DictItem *items = arena_malloc(arena, self->length, sizeof(DictItem), alignof(DictItem));
     long index = 0;
-    for (DictItem *item = self->begin; item; item = item->next) {
-        if (item->key.size) {
-            items[index++] = *item;
-        }
+    dict_for_each(item, self) {
+        items[index++] = *item;
     }
     return items;
 }

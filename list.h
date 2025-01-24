@@ -139,7 +139,7 @@ static void *list_pop(List *self, long index) {
 
 static void *list_remove(List *self, const void *data) {
     assert(self->data.compare);
-    for (ListItem *item = self->begin; item; item = item->next) {
+    list_for_each(item, self) {
         if (self->data.compare(item->data, data, nullptr)) {
             continue;
         }
@@ -189,7 +189,7 @@ static void *list_get(const List *self, long index) {
 
 static void *list_find(const List *self, const void *data) {
     assert(self->data.compare);
-    for (ListItem *item = self->begin; item; item = item->next) {
+    list_for_each(item, self) {
         if (!self->data.compare(item->data, data, nullptr)) {
             return item->data;
         }
@@ -200,7 +200,7 @@ static void *list_find(const List *self, const void *data) {
 static long list_index(const List *self, const void *data) {
     assert(self->data.compare);
     long index = 0;
-    for (ListItem *item = self->begin; item; item = item->next) {
+    list_for_each(item, self) {
         if (!self->data.compare(item->data, data, nullptr)) {
             return index;
         }
@@ -212,7 +212,7 @@ static long list_index(const List *self, const void *data) {
 static long list_count(const List *self, const void *data) {
     assert(self->data.compare);
     long count = 0;
-    for (ListItem *item = self->begin; item; item = item->next) {
+    list_for_each(item, self) {
         if (!self->data.compare(item->data, data, nullptr)) {
             count += 1;
         }
@@ -294,7 +294,7 @@ static List list_clone(const List *self, Arena *arena) {
     List list = {};
     list.arena = arena ? arena : self->arena;
     list.data = self->data;
-    for (ListItem *item = self->begin; item; item = item->next) {
+    list_for_each(item, self) {
         list_append(&list, item->data);
     }
     return list;
@@ -304,7 +304,7 @@ static ListItem *list_items(const List *self, Arena *arena) {
     arena = arena ? arena : self->arena;
     ListItem *items = arena_malloc(arena, self->length, sizeof(ListItem), alignof(ListItem));
     long index = 0;
-    for (ListItem *item = self->begin; item; item = item->next) {
+    list_for_each(item, self) {
         items[index++] = *item;
     }
     return items;

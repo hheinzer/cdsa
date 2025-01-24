@@ -7,6 +7,7 @@
 
 typedef struct List List;
 typedef struct ListItem ListItem;
+
 typedef int ListDataCompare(const void *, const void *, void *);
 typedef void *ListDataCopy(Arena *, void *, const void *, long);
 

@@ -4,7 +4,6 @@
 
 typedef struct Set Set;
 typedef struct SetItem SetItem;
-typedef void *SetDataCopy(Arena *, void *, const void *, long);
 
 static constexpr long x__set_hash_shift = 2;
 static constexpr long x__set_hash_select = (8 * sizeof(uint64_t)) - x__set_hash_shift;

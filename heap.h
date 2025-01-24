@@ -6,6 +6,7 @@
 
 typedef struct Heap Heap;
 typedef struct HeapItem HeapItem;
+
 typedef int HeapDataCompare(const void *, const void *, void *);
 typedef void *HeapDataCopy(Arena *, void *, const void *, long);
 

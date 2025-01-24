@@ -6,6 +6,7 @@
 
 typedef struct Dict Dict;
 typedef struct DictItem DictItem;
+
 typedef void *DictDataCopy(Arena *, void *, const void *, long);
 
 static constexpr long x__dict_hash_shift = 2;

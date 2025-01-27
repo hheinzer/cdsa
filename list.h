@@ -29,8 +29,10 @@ struct ListItem {
     ListItem *prev;
 };
 
-#define list_for_each(item, self) \
-    for (ListItem * (item) = (self)->begin; item; (item) = (item)->next)
+/**
+ * @brief
+ */
+#define list_for_each(item, self) for (auto(item) = (self)->begin; item; (item) = (item)->next)
 
 static List list_create(Arena *arena, long size, ListDataCompare *compare) {
     List list = {};
@@ -71,9 +73,8 @@ static void list_insert(List *self, long index, void *data) {
     }
     else {
         index = (self->length + index) % self->length;
-        ListItem *next = nullptr;
+        auto next = self->begin;
         if (index <= (self->length - 1) / 2) {
-            next = self->begin;
             for (long i = 0; i < index; i++) {
                 next = next->next;
             }
@@ -101,14 +102,12 @@ static void *list_pop(List *self, long index) {
         return nullptr;
     }
     assert(-self->length <= index && index < self->length);
-    ListItem *item = nullptr;
+    auto item = self->begin;
     if (self->length == 1) {
-        item = self->begin;
         self->begin = nullptr;
         self->end = nullptr;
     }
     else if (index == 0 || index == -self->length) {
-        item = self->begin;
         self->begin = item->next;
         self->begin->prev = nullptr;
     }
@@ -120,7 +119,6 @@ static void *list_pop(List *self, long index) {
     else {
         index = (self->length + index) % self->length;
         if (index <= (self->length - 1) / 2) {
-            item = self->begin;
             for (long i = 0; i < index; i++) {
                 item = item->next;
             }
@@ -171,10 +169,9 @@ static void *list_get(const List *self, long index) {
         return nullptr;
     }
     assert(-self->length <= index && index < self->length);
-    ListItem *item = nullptr;
+    auto item = self->begin;
     index = (self->length + index) % self->length;
     if (index <= (self->length - 1) / 2) {
-        item = self->begin;
         for (long i = 0; i < index; i++) {
             item = item->next;
         }
@@ -222,13 +219,13 @@ static long list_count(const List *self, const void *data) {
 }
 
 static ListItem *x__list_merge_sort_split(ListItem *first) {
-    ListItem *slow = first;
-    ListItem *fast = first;
+    auto slow = first;
+    auto fast = first;
     while (fast && fast->next && fast->next->next) {
         slow = slow->next;
         fast = fast->next->next;
     }
-    ListItem *second = slow->next;
+    auto second = slow->next;
     slow->next = nullptr;
     if (second) {
         second->prev = nullptr;
@@ -264,7 +261,7 @@ static ListItem *x__list_merge_sort(List *self, ListItem *first, void *context) 
     if (!first || !first->next) {
         return first;
     }
-    ListItem *second = x__list_merge_sort_split(first);
+    auto second = x__list_merge_sort_split(first);
     first = x__list_merge_sort(self, first, context);
     second = x__list_merge_sort(self, second, context);
     return x__list_merge_sort_merge(self, first, second, context);
@@ -273,7 +270,7 @@ static ListItem *x__list_merge_sort(List *self, ListItem *first, void *context) 
 static void list_sort(List *self, void *context) {
     assert(self->data.compare);
     self->begin = x__list_merge_sort(self, self->begin, context);
-    ListItem *item = self->begin;
+    auto item = self->begin;
     while (item && item->next) {
         item = item->next;
     }
@@ -281,12 +278,12 @@ static void list_sort(List *self, void *context) {
 }
 
 static void list_reverse(List *self) {
-    for (ListItem *item = self->begin; item; item = item->prev) {
-        ListItem *swap = item->next;
+    for (auto item = self->begin; item; item = item->prev) {
+        auto swap = item->next;
         item->next = item->prev;
         item->prev = swap;
     }
-    ListItem *swap = self->begin;
+    auto swap = self->begin;
     self->begin = self->end;
     self->end = swap;
 }

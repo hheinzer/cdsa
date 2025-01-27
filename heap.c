@@ -30,8 +30,8 @@ int main(void) {
     printf("]\n");
 
     printf("b = [");
-    HeapItem *items = heap_items(&clone, nullptr);
-    for (HeapItem *item = items; item < items + clone.length; item++) {
+    auto items = heap_items(&clone, nullptr);
+    for (auto item = items; item < items + clone.length; item++) {
         printf("%d, ", *(int *)item->data);
     }
     printf("]\n");

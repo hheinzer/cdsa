@@ -28,8 +28,8 @@ int main(void) {
     printf("}\n");
 
     printf("b = {");
-    DictItem *items = dict_items(&clone, nullptr);
-    for (DictItem *item = items; item < items + clone.length; item++) {
+    auto items = dict_items(&clone, nullptr);
+    for (auto item = items; item < items + clone.length; item++) {
         printf("%s: %d, ", (char *)item->key.data, *(int *)item->data);
     }
     printf("}\n");

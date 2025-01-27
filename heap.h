@@ -30,8 +30,7 @@ struct HeapItem {
     HeapItem *next;
 };
 
-#define heap_for_each(item, self) \
-    for (HeapItem * (item) = (self)->begin; item; (item) = (item)->next)
+#define heap_for_each(item, self) for (auto(item) = (self)->begin; item; (item) = (item)->next)
 
 static Heap heap_create(Arena *arena, long size, HeapDataCompare *compare) {
     Heap heap = {};
@@ -72,7 +71,7 @@ static HeapItem *x__heap_find_parent(HeapItem *item) {
 
 static void x__heap_sift_up(const Heap *self, HeapItem *item, void *context) {
     while (item->parent && self->data.compare(item->parent->data, item->data, context) > 0) {
-        void *swap = item->data;
+        auto swap = item->data;
         item->data = item->parent->data;
         item->parent->data = swap;
         item = item->parent;
@@ -87,7 +86,7 @@ static void heap_push(Heap *self, void *data, void *context) {
         self->end = item;
     }
     else {
-        HeapItem *parent = x__heap_find_parent(self->end);
+        auto parent = x__heap_find_parent(self->end);
         assert(!parent->right);
         item->parent = parent;
         if (!parent->left) {
@@ -119,7 +118,7 @@ static HeapItem *x__heap_find_end(HeapItem *item) {
 
 static void x__heap_sift_down(const Heap *self, HeapItem *item, void *context) {
     while (item) {
-        HeapItem *smallest = item;
+        auto smallest = item;
         if (item->left && self->data.compare(item->left->data, smallest->data, context) < 0) {
             smallest = item->left;
         }
@@ -129,7 +128,7 @@ static void x__heap_sift_down(const Heap *self, HeapItem *item, void *context) {
         if (smallest == item) {
             break;
         }
-        void *swap = item->data;
+        auto swap = item->data;
         item->data = smallest->data;  // cppcheck-suppress nullPointerRedundantCheck
         smallest->data = swap;        // cppcheck-suppress nullPointerRedundantCheck
         item = smallest;
@@ -147,7 +146,7 @@ static void *heap_pop(Heap *self, void *context) {
     }
     else {
         assert(self->end->parent);
-        HeapItem *end = x__heap_find_end(self->end);
+        auto end = x__heap_find_end(self->end);
         if (self->end == self->end->parent->right) {
             self->end->parent->right = nullptr;
         }

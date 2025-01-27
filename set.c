@@ -30,8 +30,8 @@ int main(void) {
     printf("}\n");
 
     printf("b = {");
-    SetItem *items = set_items(&clone, nullptr);
-    for (SetItem *item = items; item < items + clone.length; item++) {
+    auto items = set_items(&clone, nullptr);
+    for (auto item = items; item < items + clone.length; item++) {
         printf("%s, ", (char *)item->key.data);
     }
     printf("}\n");
@@ -44,10 +44,13 @@ int main(void) {
 
     Set set_or_clone = set_union(&set, &clone, nullptr);
     set_print(&set_or_clone, "set_or_clone");
+
     Set set_and_clone = set_intersection(&set, &clone, nullptr);
     set_print(&set_and_clone, "set_and_clone");
+
     Set set_minus_clone = set_difference(&set, &clone, nullptr);
     set_print(&set_minus_clone, "set_minus_clone");
+
     Set set_xor_clone = set_symmetric_difference(&set, &clone, nullptr);
     set_print(&set_xor_clone, "set_xor_clone");
 

@@ -40,8 +40,8 @@ int main(void) {
     printf("]\n");
 
     printf("b = [");
-    ListItem *items = list_items(&clone, nullptr);
-    for (ListItem *item = items; item < items + clone.length; item++) {
+    auto items = list_items(&clone, nullptr);
+    for (auto item = items; item < items + clone.length; item++) {
         printf("%d, ", *(int *)item->data);
     }
     printf("]\n");

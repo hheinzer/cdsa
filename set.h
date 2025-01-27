@@ -34,6 +34,7 @@ static Set set_create(Arena *arena) {
     return set;
 }
 
+/// @private
 static uint64_t x__set_hash_fnv1a(const char *key, long size) {
     constexpr uint64_t basis = 0xcbf29ce484222325;
     constexpr uint64_t prime = 0x00000100000001b3;
@@ -45,11 +46,13 @@ static uint64_t x__set_hash_fnv1a(const char *key, long size) {
     return hash;
 }
 
+/// @private
 static bool x__set_key_equals(const SetItem *item, const void *key, long size) {
     return item->key.size == size && !memcmp(item->key.data, key, size);
 }
 
-static void x__set_item_create(const Set *self, SetItem *item, const void *key, long size) {
+/// @private
+static void x__set_item_init(const Set *self, SetItem *item, const void *key, long size) {
     item->key.data = arena_memdup(self->arena, key, 1, size, alignof(max_align_t));
     item->key.size = size;
 }
@@ -75,7 +78,7 @@ static bool set_insert(Set *self, const void *key, long size) {
         }
         self->end = *item;
     }
-    x__set_item_create(self, *item, key, size);
+    x__set_item_init(self, *item, key, size);
     self->length += 1;
     return true;
 }

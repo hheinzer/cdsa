@@ -8,7 +8,7 @@
 #include <string.h>
 
 /**
- * @brief Represents the state of an arena
+ * @brief Represents an arena allocator
  *
  * An arena manages a fixed block of memory, enabling fast allocations without explicit cleanup.
  * Memory is allocated sequentially, allowing for recycling of previously allocated regions.
@@ -21,7 +21,7 @@ typedef struct {
 } Arena;
 
 /**
- * @brief Create a new arena with a specified capacity
+ * @brief Create a new arena
  * @param capacity Size of the base memory region in bytes
  * @return New arena instance
  * @note The arena must be destroyed using `arena_destroy()` to prevent memory leaks
@@ -70,12 +70,7 @@ static Arena arena_scratch_create(Arena *self, long capacity) {
     return scratch;
 }
 
-/**
- * @brief Calculate the padding required for the requested alignment
- * @param self Pointer to an arena
- * @param align Requested alignment in bytes
- * @return Padding in bytes
- */
+/// @private
 static long x__arena_padding(const Arena *self, long align) {
 #if __has_feature(address_sanitizer) || defined(__SANITIZE_ADDRESS__)
     constexpr long min_padding = 8;
@@ -121,13 +116,7 @@ static void *arena_calloc(Arena *self, long count, long size, long align) {
     return memset(arena_malloc(self, count, size, align), 0, count * size);
 }
 
-/**
- * @brief Grow the last allocation in the arena
- * @param self Pointer to an arena
- * @param count Number of objects
- * @param size Size of a single object in bytes
- * @return Pointer to the allocated memory
- */
+/// @private
 static void *x__arena_grow_last(Arena *self, long count, long size) {
     self->begin = self->last;
     assert(count <= arena_available(self) / size);
@@ -141,7 +130,7 @@ static void *x__arena_grow_last(Arena *self, long count, long size) {
 /**
  * @brief Reallocate memory from an arena
  * @param self Pointer to an arena
- * @param ptr Pointer to the previously allocated memory
+ * @param ptr Pointer to the previously allocated memory (optional)
  * @param count Number of objects
  * @param size Size of a single object in bytes
  * @param align Requested alignment in bytes
@@ -170,7 +159,6 @@ static void *arena_realloc(Arena *self, void *ptr, long count, long size, long a
 
 /**
  * @brief Copy memory from one location to another within an arena
- * @param self Pointer to an arena
  * @param dest Pointer to the destination
  * @param src Pointer to the source
  * @param size Number of bytes to copy

@@ -636,7 +636,7 @@ HIDE_IN_BODY_DOCS      = NO
 # will be excluded. Set it to YES to include the internal documentation.
 # The default value is: NO.
 
-INTERNAL_DOCS          = NO
+INTERNAL_DOCS          = YES
 
 # With the correct setting of option CASE_SENSE_NAMES Doxygen will better be
 # able to match the capabilities of the underlying filesystem. In case the
@@ -876,7 +876,7 @@ EXTERNAL_TOOL_PATH     =
 # messages are off.
 # The default value is: NO.
 
-QUIET                  = NO
+QUIET                  = YES
 
 # The WARNINGS tag can be used to turn on/off the warning messages that are
 # generated to standard error (stderr) by Doxygen. If WARNINGS is set to YES

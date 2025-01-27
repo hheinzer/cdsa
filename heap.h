@@ -41,7 +41,8 @@ static Heap heap_create(Arena *arena, long size, HeapDataCompare *compare) {
     return heap;
 }
 
-static void x__heap_item_create(const Heap *self, HeapItem *item, void *data) {
+/// @private
+static void x__heap_item_init(const Heap *self, HeapItem *item, void *data) {
     if (data && self->data.size) {
         item->data = arena_malloc(self->arena, 1, self->data.size, alignof(max_align_t));
         self->data.copy(self->arena, item->data, data, self->data.size);
@@ -51,6 +52,7 @@ static void x__heap_item_create(const Heap *self, HeapItem *item, void *data) {
     }
 }
 
+/// @private
 static HeapItem *x__heap_find_parent(HeapItem *item) {
     while (item->parent && item == item->parent->right) {
         item = item->parent;
@@ -69,6 +71,7 @@ static HeapItem *x__heap_find_parent(HeapItem *item) {
     return item;
 }
 
+/// @private
 static void x__heap_sift_up(const Heap *self, HeapItem *item, void *context) {
     while (item->parent && self->data.compare(item->parent->data, item->data, context) > 0) {
         auto swap = item->data;
@@ -80,7 +83,7 @@ static void x__heap_sift_up(const Heap *self, HeapItem *item, void *context) {
 
 static void heap_push(Heap *self, void *data, void *context) {
     HeapItem *item = arena_calloc(self->arena, 1, sizeof(HeapItem), alignof(HeapItem));
-    x__heap_item_create(self, item, data);
+    x__heap_item_init(self, item, data);
     if (self->length == 0) {
         self->begin = item;
         self->end = item;
@@ -102,6 +105,7 @@ static void heap_push(Heap *self, void *data, void *context) {
     self->length += 1;
 }
 
+/// @private
 static HeapItem *x__heap_find_end(HeapItem *item) {
     while (item->parent && item == item->parent->left) {
         item = item->parent;
@@ -116,6 +120,7 @@ static HeapItem *x__heap_find_end(HeapItem *item) {
     return item;
 }
 
+/// @private
 static void x__heap_sift_down(const Heap *self, HeapItem *item, void *context) {
     while (item) {
         auto smallest = item;

@@ -45,6 +45,7 @@ static Dict dict_create(Arena *arena, long size) {
     return dict;
 }
 
+/// @private
 static uint64_t x__dict_hash_fnv1a(const char *key, long size) {
     constexpr uint64_t basis = 0xcbf29ce484222325;
     constexpr uint64_t prime = 0x00000100000001b3;
@@ -56,12 +57,14 @@ static uint64_t x__dict_hash_fnv1a(const char *key, long size) {
     return hash;
 }
 
+/// @private
 static bool x__dict_key_equals(const DictItem *item, const void *key, long size) {
     return item->key.size == size && !memcmp(item->key.data, key, size);
 }
 
-static void x__dict_item_create(const Dict *self, DictItem *item, const void *key, long size,
-                                void *data) {
+/// @private
+static void x__dict_item_init(const Dict *self, DictItem *item, const void *key, long size,
+                              void *data) {
     item->key.data = arena_memdup(self->arena, key, 1, size, alignof(max_align_t));
     item->key.size = size;
     if (data && self->data.size) {
@@ -94,7 +97,7 @@ static void *dict_insert(Dict *self, const void *key, long size, void *data) {
         }
         self->end = *item;
     }
-    x__dict_item_create(self, *item, key, size, data);
+    x__dict_item_init(self, *item, key, size, data);
     self->length += 1;
     return nullptr;
 }

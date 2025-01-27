@@ -1,6 +1,5 @@
 var searchData=
 [
-  ['data_0',['data',['../structArena.html#a012ce4e3651af3acea4c90268e584713',1,'Arena']]],
-  ['dict_1',['Dict',['../structDict.html',1,'']]],
-  ['dictitem_2',['DictItem',['../structDictItem.html',1,'']]]
+  ['compare_0',['compare',['../structList.html#a297fc19bce2ca37d83eaf988edcecd71',1,'List']]],
+  ['copy_1',['copy',['../structList.html#aa5951b57aec208d1f84e69381a6b9e76',1,'List']]]
 ];

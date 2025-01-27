@@ -1,4 +1,5 @@
 var searchData=
 [
-  ['end_0',['end',['../structArena.html#a4f9680a852e9c59e41918878dd3fc9d4',1,'Arena']]]
+  ['compare_0',['compare',['../structList.html#a297fc19bce2ca37d83eaf988edcecd71',1,'List']]],
+  ['copy_1',['copy',['../structList.html#aa5951b57aec208d1f84e69381a6b9e76',1,'List']]]
 ];

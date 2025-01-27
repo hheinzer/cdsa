@@ -5,8 +5,8 @@ var annotated_dup =
     [ "DictItem", "structDictItem.html", null ],
     [ "Heap", "structHeap.html", null ],
     [ "HeapItem", "structHeapItem.html", null ],
-    [ "List", "structList.html", null ],
-    [ "ListItem", "structListItem.html", null ],
+    [ "List", "structList.html", "structList" ],
+    [ "ListItem", "structListItem.html", "structListItem" ],
     [ "Set", "structSet.html", null ],
     [ "SetItem", "structSetItem.html", null ]
 ];

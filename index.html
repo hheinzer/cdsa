@@ -93,15 +93,15 @@ $(document).ready(function(){initNavTree('index.html',''); initResizable(); });
 </div>
 
 <div><div class="header">
-  <div class="headertitle"><div class="title"><a class="el" href="structArena.html" title="Represents the state of an arena.">Arena</a> Friendly Data Structures </div></div>
+  <div class="headertitle"><div class="title"><a class="el" href="structArena.html" title="Represents an arena allocator.">Arena</a> Friendly Data Structures </div></div>
 </div><!--header-->
 <div class="contents">
 <div class="textblock"><p><a class="anchor" id="md_README"></a> This repository provides general purpose data structures that are useful when programming in C. Each data structure is implemented as a single header that only depends on the C standard library (and possibly other headers from this repository). Example usage is provided in the source files with the same names.</p>
-<p>Any C23 compliant C compiler should be able to handle the data structures without any special flags. Most of the code should also compile under C99, but for anything lower, you might need to get your hands dirty.</p>
-<p>The employed “error handling strategy” is <code>assert</code>. This might not be compatible with your project if you want to be able to recover from errors.</p>
-<p>Data structures manage their memory using <a href="https://www.rfleury.com/p/untangling-lifetimes-the-arena-allocator">arena allocators</a>, which streamline memory management by grouping allocations together and freeing them all at once. I first learned about this type of allocator <a href="https://nullprogram.com/blog/2023/09/27/">here</a> which made me want to try it out for myself. If you require heap allocated objects, you might need to get your hands dirty again, because there is no dedicated destruction function.</p>
+<p>Any C23 compliant C compiler should be able to handle the data structures without any special flags.</p>
+<p>The employed “error handling strategy” is <code>assert</code>, which might not be compatible with your project if you want to be able to recover from errors.</p>
+<p>Data structures manage their memory using <a href="https://www.rfleury.com/p/untangling-lifetimes-the-arena-allocator">arena allocators</a>, which streamline memory management by grouping allocations together and freeing them all at once. I first learned about this type of allocator <a href="https://nullprogram.com/blog/2023/09/27/">here</a> which made me want to try it out for myself.</p>
 <p>Some creation parameters are optional and accept <code>0</code> or <code>nullptr</code>. For example, if you want to create a list, but never need to compare list items, you don't need to pass a comparison function.</p>
-<p>Even though I'm big sucker for performance, the primary focus of this project is flexibility. Therefore, the stored data is a <code>void</code> pointer and the user needs to provide the size of the data and an appropriate copy function. If you are not storing anything complicated, or you are fine with shallow copies, the default copy function <code>arena_memcpy</code> is your friend.</p>
+<p>Even though I'm big sucker for performance, the primary focus of this project is flexibility. Therefore, the stored data is a <code>void *</code> pointer and the user needs to provide the size of the data and an appropriate copy function. If you are not storing anything complicated, or you are fine with shallow copies, the default copy function <code><a class="el" href="arena_8h.html#ab2d18e8d94c7b31afcc491b9f02832c4" title="Copy memory from one location to another within an arena.">arena_memcpy()</a></code> is your friend.</p>
 <h1><a class="anchor" id="autotoc_md1"></a>
 Features</h1>
 <ul>
@@ -111,7 +111,7 @@ Features</h1>
 </ul>
 </li>
 <li>Linear<ul>
-<li><code>list.h</code>: doubly linked list</li>
+<li><code><a class="el" href="list_8h.html">list.h</a></code>: doubly linked list</li>
 </ul>
 </li>
 <li>Hashing<ul>

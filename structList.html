@@ -98,37 +98,51 @@ $(document).ready(function(){initNavTree('structList.html',''); initResizable();
   <div class="headertitle"><div class="title">List Struct Reference</div></div>
 </div><!--header-->
 <div class="contents">
+
+<p>Represents a doubly linked list.  
+ <a href="structList.html#details">More...</a></p>
+
+<p><code>#include &lt;list.h&gt;</code></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-attribs" name="pub-attribs"></a>
 Data Fields</h2></td></tr>
 <tr class="memitem:a0f8fda2982cb8c4fe37e5c6e97613828"><td class="memItemLeft" align="right" valign="top"><a id="a0f8fda2982cb8c4fe37e5c6e97613828" name="a0f8fda2982cb8c4fe37e5c6e97613828"></a>
 <a class="el" href="structArena.html">Arena</a> *&#160;</td><td class="memItemRight" valign="bottom"><b>arena</b></td></tr>
+<tr class="memdesc:a0f8fda2982cb8c4fe37e5c6e97613828"><td class="mdescLeft">&#160;</td><td class="mdescRight">Pointer to an arena allocator. <br /></td></tr>
 <tr class="separator:a0f8fda2982cb8c4fe37e5c6e97613828"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a0a12cc656feb2ac62b47dd6965371da6"><td class="memItemLeft" ><a id="a0a12cc656feb2ac62b47dd6965371da6" name="a0a12cc656feb2ac62b47dd6965371da6"></a>
 struct {</td></tr>
 <tr class="memitem:a96d83d7e1c48aeb1ffbcbeb440ebc9a0"><td class="memItemLeft" >
 &#160;&#160;&#160;long&#160;&#160;&#160;<b>size</b></td></tr>
+<tr class="memdesc:a96d83d7e1c48aeb1ffbcbeb440ebc9a0"><td class="mdescLeft">&#160;</td><td class="mdescRight">Size of item data in bytes. <br /></td></tr>
 <tr class="separator:a96d83d7e1c48aeb1ffbcbeb440ebc9a0"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a7d66832789a1e8b1d66eb1e34f0b9e89"><td class="memItemLeft" >
-&#160;&#160;&#160;ListDataCompare *&#160;&#160;&#160;<b>compare</b></td></tr>
+&#160;&#160;&#160;<a class="el" href="list_8h.html#a5295ec414b43b28358d55f15d1611ae2">ListDataCompare</a> *&#160;&#160;&#160;<b>compare</b></td></tr>
+<tr class="memdesc:a7d66832789a1e8b1d66eb1e34f0b9e89"><td class="mdescLeft">&#160;</td><td class="mdescRight">Pointer to a data comparison function. <br /></td></tr>
 <tr class="separator:a7d66832789a1e8b1d66eb1e34f0b9e89"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a1d4603998fe8af36cde2fcc4705fb5c6"><td class="memItemLeft" >
-&#160;&#160;&#160;ListDataCopy *&#160;&#160;&#160;<b>copy</b></td></tr>
+&#160;&#160;&#160;<a class="el" href="list_8h.html#abe1ac51a0bd924dcaddc6460d39a8a1f">ListDataCopy</a> *&#160;&#160;&#160;<b>copy</b></td></tr>
+<tr class="memdesc:a1d4603998fe8af36cde2fcc4705fb5c6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Pointer to a data copy function. <br /></td></tr>
 <tr class="separator:a1d4603998fe8af36cde2fcc4705fb5c6"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a0a12cc656feb2ac62b47dd6965371da6"><td class="memItemLeft" valign="top">}&#160;</td><td class="memItemRight" valign="bottom"><b>data</b></td></tr>
 <tr class="separator:a0a12cc656feb2ac62b47dd6965371da6"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a69fb993c1a2e12802de0c7d5a067d4cd"><td class="memItemLeft" align="right" valign="top"><a id="a69fb993c1a2e12802de0c7d5a067d4cd" name="a69fb993c1a2e12802de0c7d5a067d4cd"></a>
 long&#160;</td><td class="memItemRight" valign="bottom"><b>length</b></td></tr>
+<tr class="memdesc:a69fb993c1a2e12802de0c7d5a067d4cd"><td class="mdescLeft">&#160;</td><td class="mdescRight">Number of items in the list. <br /></td></tr>
 <tr class="separator:a69fb993c1a2e12802de0c7d5a067d4cd"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac8da70a91b5c8652254f129830f1ccf3"><td class="memItemLeft" align="right" valign="top"><a id="ac8da70a91b5c8652254f129830f1ccf3" name="ac8da70a91b5c8652254f129830f1ccf3"></a>
 <a class="el" href="structListItem.html">ListItem</a> *&#160;</td><td class="memItemRight" valign="bottom"><b>begin</b></td></tr>
+<tr class="memdesc:ac8da70a91b5c8652254f129830f1ccf3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Pointer to first item of the list. <br /></td></tr>
 <tr class="separator:ac8da70a91b5c8652254f129830f1ccf3"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a6cd1ebc181a7dab2c89b8ee162106cb2"><td class="memItemLeft" align="right" valign="top"><a id="a6cd1ebc181a7dab2c89b8ee162106cb2" name="a6cd1ebc181a7dab2c89b8ee162106cb2"></a>
 <a class="el" href="structListItem.html">ListItem</a> *&#160;</td><td class="memItemRight" valign="bottom"><b>end</b></td></tr>
+<tr class="memdesc:a6cd1ebc181a7dab2c89b8ee162106cb2"><td class="mdescLeft">&#160;</td><td class="mdescRight">Pointer to last item of the list. <br /></td></tr>
 <tr class="separator:a6cd1ebc181a7dab2c89b8ee162106cb2"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<hr/>The documentation for this struct was generated from the following file:<ul>
-<li>list.h</li>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>Represents a doubly linked list. </p>
+</div><hr/>The documentation for this struct was generated from the following file:<ul>
+<li><a class="el" href="list_8h.html">list.h</a></li>
 </ul>
 </div><!-- contents -->
 </div><!-- doc-content -->

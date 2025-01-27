@@ -1,11 +1,13 @@
 var indexSectionsWithContent =
 {
-  0: "abdehlsx",
+  0: "abcdehlnps",
   1: "adhls",
-  2: "a",
-  3: "ax",
-  4: "bdel",
-  5: "a"
+  2: "al",
+  3: "al",
+  4: "abcdelnps",
+  5: "l",
+  6: "l",
+  7: "a"
 };
 
 var indexSectionNames =
@@ -15,7 +17,9 @@ var indexSectionNames =
   2: "files",
   3: "functions",
   4: "variables",
-  5: "pages"
+  5: "typedefs",
+  6: "defines",
+  7: "pages"
 };
 
 var indexSectionLabels =
@@ -25,6 +29,8 @@ var indexSectionLabels =
   2: "Files",
   3: "Functions",
   4: "Variables",
-  5: "Pages"
+  5: "Typedefs",
+  6: "Macros",
+  7: "Pages"
 };
 

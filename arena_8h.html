@@ -125,8 +125,7 @@ Functions</h2></td></tr>
 <tr class="memitem:a2626581dc9fcb9952d0b9445a877c6a2"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="structArena.html">Arena</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="arena_8h.html#a2626581dc9fcb9952d0b9445a877c6a2">arena_scratch_create</a> (<a class="el" href="structArena.html">Arena</a> *self, long capacity)</td></tr>
 <tr class="memdesc:a2626581dc9fcb9952d0b9445a877c6a2"><td class="mdescLeft">&#160;</td><td class="mdescRight">Create a new scratch arena at the end of the available space of the parent arena.  <br /></td></tr>
 <tr class="separator:a2626581dc9fcb9952d0b9445a877c6a2"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a4de29d77e8835d1c52813dd2d8818b79"><td class="memItemLeft" align="right" valign="top"><a id="a4de29d77e8835d1c52813dd2d8818b79" name="a4de29d77e8835d1c52813dd2d8818b79"></a>
-static long&#160;</td><td class="memItemRight" valign="bottom"><b>x__arena_padding</b> (const <a class="el" href="structArena.html">Arena</a> *self, long align)</td></tr>
+<tr class="memitem:a4de29d77e8835d1c52813dd2d8818b79"><td class="memItemLeft" align="right" valign="top">static long&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="arena_8h.html#a4de29d77e8835d1c52813dd2d8818b79">x__arena_padding</a> (const <a class="el" href="structArena.html">Arena</a> *self, long align)</td></tr>
 <tr class="separator:a4de29d77e8835d1c52813dd2d8818b79"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae6969f8edf011f9dbe0e13de8662a12a"><td class="memItemLeft" align="right" valign="top">static void *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="arena_8h.html#ae6969f8edf011f9dbe0e13de8662a12a">arena_malloc</a> (<a class="el" href="structArena.html">Arena</a> *self, long count, long size, long align)</td></tr>
 <tr class="memdesc:ae6969f8edf011f9dbe0e13de8662a12a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Allocate uninitialized memory from an arena.  <br /></td></tr>
@@ -134,8 +133,7 @@ static long&#160;</td><td class="memItemRight" valign="bottom"><b>x__arena_paddi
 <tr class="memitem:a585f44b698e80e79cf955e54a308784a"><td class="memItemLeft" align="right" valign="top">static void *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="arena_8h.html#a585f44b698e80e79cf955e54a308784a">arena_calloc</a> (<a class="el" href="structArena.html">Arena</a> *self, long count, long size, long align)</td></tr>
 <tr class="memdesc:a585f44b698e80e79cf955e54a308784a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Allocate and zero-initialize memory from an arena.  <br /></td></tr>
 <tr class="separator:a585f44b698e80e79cf955e54a308784a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ac4b0c5081ef879683c3f08bdc31af7c0"><td class="memItemLeft" align="right" valign="top"><a id="ac4b0c5081ef879683c3f08bdc31af7c0" name="ac4b0c5081ef879683c3f08bdc31af7c0"></a>
-static void *&#160;</td><td class="memItemRight" valign="bottom"><b>x__arena_grow_last</b> (<a class="el" href="structArena.html">Arena</a> *self, long count, long size)</td></tr>
+<tr class="memitem:ac4b0c5081ef879683c3f08bdc31af7c0"><td class="memItemLeft" align="right" valign="top">static void *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="arena_8h.html#ac4b0c5081ef879683c3f08bdc31af7c0">x__arena_grow_last</a> (<a class="el" href="structArena.html">Arena</a> *self, long count, long size)</td></tr>
 <tr class="separator:ac4b0c5081ef879683c3f08bdc31af7c0"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a526c73e32e76964c75757a16649b98e9"><td class="memItemLeft" align="right" valign="top">static void *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="arena_8h.html#a526c73e32e76964c75757a16649b98e9">arena_realloc</a> (<a class="el" href="structArena.html">Arena</a> *self, void *ptr, long count, long size, long align)</td></tr>
 <tr class="memdesc:a526c73e32e76964c75757a16649b98e9"><td class="mdescLeft">&#160;</td><td class="mdescRight">Reallocate memory from an arena.  <br /></td></tr>
@@ -306,6 +304,42 @@ static void *&#160;</td><td class="memItemRight" valign="bottom"><b>x__arena_gro
 
 </div>
 </div>
+<a id="a4de29d77e8835d1c52813dd2d8818b79" name="a4de29d77e8835d1c52813dd2d8818b79"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a4de29d77e8835d1c52813dd2d8818b79">&#9670;&#160;</a></span>x__arena_padding()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static long x__arena_padding </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="structArena.html">Arena</a> *&#160;</td>
+          <td class="paramname"><em>self</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">long&#160;</td>
+          <td class="paramname"><em>align</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
 <a id="ae6969f8edf011f9dbe0e13de8662a12a" name="ae6969f8edf011f9dbe0e13de8662a12a"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#ae6969f8edf011f9dbe0e13de8662a12a">&#9670;&#160;</a></span>arena_malloc()</h2>
 
@@ -424,6 +458,48 @@ static void *&#160;</td><td class="memItemRight" valign="bottom"><b>x__arena_gro
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>Pointer to the allocated memory </dd></dl>
+
+</div>
+</div>
+<a id="ac4b0c5081ef879683c3f08bdc31af7c0" name="ac4b0c5081ef879683c3f08bdc31af7c0"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac4b0c5081ef879683c3f08bdc31af7c0">&#9670;&#160;</a></span>x__arena_grow_last()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static void * x__arena_grow_last </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structArena.html">Arena</a> *&#160;</td>
+          <td class="paramname"><em>self</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">long&#160;</td>
+          <td class="paramname"><em>count</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">long&#160;</td>
+          <td class="paramname"><em>size</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
 
 </div>
 </div>

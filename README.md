@@ -27,7 +27,6 @@ shallow copies, the default copy function `arena_memcpy()` is your friend.
 ## Features
 
 - Memory
-    - `dump.h`: inspect memory buffers
     - `arena.h`: arena allocator
 - Linear
     - `list.h`: doubly linked list

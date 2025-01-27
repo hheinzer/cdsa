@@ -1,11 +1,8 @@
 #include "arena.h"
 
+#include <ctype.h>
 #include <stddef.h>
 #include <stdio.h>
-
-#include "dump.h"
-
-static constexpr long mega_byte = 1 << 20;
 
 #define malloc(A, P, N) arena_malloc(A, N, sizeof(*(P)), alignof(typeof(*(P))))
 #define calloc(A, P, N) arena_calloc(A, N, sizeof(*(P)), alignof(typeof(*(P))))
@@ -17,7 +14,10 @@ static constexpr long mega_byte = 1 << 20;
 void temporary(Arena arena);
 void permanent(Arena *arena, Arena scratch);
 
+void dump(const void *begin, const void *end);
+
 int main(void) {
+    constexpr long mega_byte = 1 << 20;
     Arena arena = arena_create(mega_byte);
 
     char *string = strdup(&arena, "arena");
@@ -67,4 +67,28 @@ void permanent(Arena *arena, Arena scratch) {
     strapp(arena, string, "nent");
     dump(arena->data, arena->begin);
     printf("\n");
+}
+
+void dump(const void *begin, const void *end) {
+    ASAN_UNPOISON_MEMORY_REGION(begin, (char *)end - (char *)begin);
+    constexpr int offset = 16;
+    printf("%-8s  %-*s %s\n", "offset", 3 * offset, "data", "ascii");
+    for (const char *byte = begin; byte < (char *)end; byte += offset) {
+        printf("%08tx  ", byte - (char *)begin);
+        for (int i = 0; i < offset; i++) {
+            if (byte + i < (char *)end) {
+                printf("%02x ", (unsigned char)byte[i]);
+            }
+            else {
+                printf("   ");
+            }
+        }
+        printf(" ");
+        for (int i = 0; i < offset; i++) {
+            if (byte + i < (char *)end) {
+                printf("%c", isprint(byte[i]) ? byte[i] : '.');
+            }
+        }
+        printf("\n");
+    }
 }

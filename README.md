@@ -30,15 +30,15 @@ shallow copies, the default copy function `arena_memcpy` is your friend.
 ## Features
 
 - Memory
-    - [x] `dump.h`: inspect memory buffers
-    - [x] `arena.h`: arena allocator
+    - `dump.h`: inspect memory buffers
+    - `arena.h`: arena allocator
 - Linear
-    - [x] `list.h`: doubly linked list
+    - `list.h`: doubly linked list
 - Hashing
-    - [x] `dict.h`: associative array (4-ary hash trie)
-    - [x] `set.h`: set (value-less dict)
+    - `dict.h`: associative array (4-ary hash trie)
+    - `set.h`: set (value-less dict)
 - Trees
-    - [x] `heap.h`: binary heap
+    - `heap.h`: binary heap
 
 ## Contributing
 

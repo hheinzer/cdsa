@@ -256,12 +256,13 @@ Functions</h2></td></tr>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">arena</td><td>Pointer to an arena allocator </td></tr>
-    <tr><td class="paramname">size</td><td>Size of item data in bytes </td></tr>
-    <tr><td class="paramname">compare</td><td>Pointer to a data comparison function </td></tr>
+    <tr><td class="paramname">size</td><td>Size of item data in bytes (optional) </td></tr>
+    <tr><td class="paramname">compare</td><td>Pointer to a data comparison function (optional) </td></tr>
   </table>
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>New list instance </dd></dl>
+<dl class="section note"><dt>Note</dt><dd>If <code>size == 0</code> data pointers will be directly be assigned instead of copied </dd></dl>
 
 </div>
 </div>
@@ -683,7 +684,7 @@ Functions</h2></td></tr>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">self</td><td>Pointer to a list </td></tr>
-    <tr><td class="paramname">context</td><td>Pointer to a user-provided context for the comparison function </td></tr>
+    <tr><td class="paramname">context</td><td>Pointer to a user-provided context for the comparison function (optional) </td></tr>
   </table>
   </dd>
 </dl>
@@ -763,7 +764,7 @@ Functions</h2></td></tr>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">self</td><td>Pointer to a list </td></tr>
-    <tr><td class="paramname">arena</td><td>Pointer to an arena allocator </td></tr>
+    <tr><td class="paramname">arena</td><td>Pointer to an arena allocator (optional) </td></tr>
   </table>
   </dd>
 </dl>
@@ -809,7 +810,7 @@ Functions</h2></td></tr>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">self</td><td>Pointer to a list </td></tr>
-    <tr><td class="paramname">arena</td><td>Pointer to an arena allocator </td></tr>
+    <tr><td class="paramname">arena</td><td>Pointer to an arena allocator (optional) </td></tr>
   </table>
   </dd>
 </dl>

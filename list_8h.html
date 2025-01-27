@@ -136,8 +136,6 @@ Functions</h2></td></tr>
 <tr class="memitem:a43808917964595baea0406e848be8ef1"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="structList.html">List</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="list_8h.html#a43808917964595baea0406e848be8ef1">list_create</a> (<a class="el" href="structArena.html">Arena</a> *arena, long size, <a class="el" href="list_8h.html#a5295ec414b43b28358d55f15d1611ae2">ListDataCompare</a> *compare)</td></tr>
 <tr class="memdesc:a43808917964595baea0406e848be8ef1"><td class="mdescLeft">&#160;</td><td class="mdescRight">Create a new list.  <br /></td></tr>
 <tr class="separator:a43808917964595baea0406e848be8ef1"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ada345432e7f6d20ee19a068e3174aba0"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="list_8h.html#ada345432e7f6d20ee19a068e3174aba0">x__list_item_init</a> (const <a class="el" href="structList.html">List</a> *self, <a class="el" href="structListItem.html">ListItem</a> *item, void *data)</td></tr>
-<tr class="separator:ada345432e7f6d20ee19a068e3174aba0"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a4d7ba7bbc0f99fa38f63214457c786d1"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="list_8h.html#a4d7ba7bbc0f99fa38f63214457c786d1">list_insert</a> (<a class="el" href="structList.html">List</a> *self, long index, void *data)</td></tr>
 <tr class="memdesc:a4d7ba7bbc0f99fa38f63214457c786d1"><td class="mdescLeft">&#160;</td><td class="mdescRight">Insert a new item into a list.  <br /></td></tr>
 <tr class="separator:a4d7ba7bbc0f99fa38f63214457c786d1"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -162,12 +160,6 @@ Functions</h2></td></tr>
 <tr class="memitem:a65f9a1fd38a0b7069d7ec567335575b3"><td class="memItemLeft" align="right" valign="top">static long&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="list_8h.html#a65f9a1fd38a0b7069d7ec567335575b3">list_count</a> (const <a class="el" href="structList.html">List</a> *self, const void *data)</td></tr>
 <tr class="memdesc:a65f9a1fd38a0b7069d7ec567335575b3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Count the number of matching items of a list.  <br /></td></tr>
 <tr class="separator:a65f9a1fd38a0b7069d7ec567335575b3"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a8600c7a8cdc1e6f630b223fb263141bd"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="structListItem.html">ListItem</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="list_8h.html#a8600c7a8cdc1e6f630b223fb263141bd">x__list_merge_sort_split</a> (<a class="el" href="structListItem.html">ListItem</a> *first)</td></tr>
-<tr class="separator:a8600c7a8cdc1e6f630b223fb263141bd"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae38c17af55523a0e803f73adfafea104"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="structListItem.html">ListItem</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="list_8h.html#ae38c17af55523a0e803f73adfafea104">x__list_merge_sort_merge</a> (<a class="el" href="structList.html">List</a> *self, <a class="el" href="structListItem.html">ListItem</a> *first, <a class="el" href="structListItem.html">ListItem</a> *second, void *context)</td></tr>
-<tr class="separator:ae38c17af55523a0e803f73adfafea104"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ac79bd03862141ba2a32c5421794b4d1e"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="structListItem.html">ListItem</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="list_8h.html#ac79bd03862141ba2a32c5421794b4d1e">x__list_merge_sort</a> (<a class="el" href="structList.html">List</a> *self, <a class="el" href="structListItem.html">ListItem</a> *first, void *context)</td></tr>
-<tr class="separator:ac79bd03862141ba2a32c5421794b4d1e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a5a4a496c7d95af56b251ab052e56f918"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="list_8h.html#a5a4a496c7d95af56b251ab052e56f918">list_sort</a> (<a class="el" href="structList.html">List</a> *self, void *context)</td></tr>
 <tr class="memdesc:a5a4a496c7d95af56b251ab052e56f918"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sort the items of a list.  <br /></td></tr>
 <tr class="separator:a5a4a496c7d95af56b251ab052e56f918"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -270,48 +262,6 @@ Functions</h2></td></tr>
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>New list instance </dd></dl>
-
-</div>
-</div>
-<a id="ada345432e7f6d20ee19a068e3174aba0" name="ada345432e7f6d20ee19a068e3174aba0"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ada345432e7f6d20ee19a068e3174aba0">&#9670;&#160;</a></span>x__list_item_init()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">static void x__list_item_init </td>
-          <td>(</td>
-          <td class="paramtype">const <a class="el" href="structList.html">List</a> *&#160;</td>
-          <td class="paramname"><em>self</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype"><a class="el" href="structListItem.html">ListItem</a> *&#160;</td>
-          <td class="paramname"><em>item</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">void *&#160;</td>
-          <td class="paramname"><em>data</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">static</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
 
 </div>
 </div>
@@ -692,122 +642,6 @@ Functions</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>Number of matching items </dd></dl>
 <dl class="section note"><dt>Note</dt><dd>This function requires a data comparison function to be set </dd></dl>
-
-</div>
-</div>
-<a id="a8600c7a8cdc1e6f630b223fb263141bd" name="a8600c7a8cdc1e6f630b223fb263141bd"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a8600c7a8cdc1e6f630b223fb263141bd">&#9670;&#160;</a></span>x__list_merge_sort_split()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">static <a class="el" href="structListItem.html">ListItem</a> * x__list_merge_sort_split </td>
-          <td>(</td>
-          <td class="paramtype"><a class="el" href="structListItem.html">ListItem</a> *&#160;</td>
-          <td class="paramname"><em>first</em></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">static</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="ae38c17af55523a0e803f73adfafea104" name="ae38c17af55523a0e803f73adfafea104"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ae38c17af55523a0e803f73adfafea104">&#9670;&#160;</a></span>x__list_merge_sort_merge()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">static <a class="el" href="structListItem.html">ListItem</a> * x__list_merge_sort_merge </td>
-          <td>(</td>
-          <td class="paramtype"><a class="el" href="structList.html">List</a> *&#160;</td>
-          <td class="paramname"><em>self</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype"><a class="el" href="structListItem.html">ListItem</a> *&#160;</td>
-          <td class="paramname"><em>first</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype"><a class="el" href="structListItem.html">ListItem</a> *&#160;</td>
-          <td class="paramname"><em>second</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">void *&#160;</td>
-          <td class="paramname"><em>context</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">static</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="ac79bd03862141ba2a32c5421794b4d1e" name="ac79bd03862141ba2a32c5421794b4d1e"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ac79bd03862141ba2a32c5421794b4d1e">&#9670;&#160;</a></span>x__list_merge_sort()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">static <a class="el" href="structListItem.html">ListItem</a> * x__list_merge_sort </td>
-          <td>(</td>
-          <td class="paramtype"><a class="el" href="structList.html">List</a> *&#160;</td>
-          <td class="paramname"><em>self</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype"><a class="el" href="structListItem.html">ListItem</a> *&#160;</td>
-          <td class="paramname"><em>first</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">void *&#160;</td>
-          <td class="paramname"><em>context</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">static</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
 
 </div>
 </div>

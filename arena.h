@@ -1,3 +1,4 @@
+/// @file
 #pragma once
 
 #include <assert.h>
@@ -6,13 +7,25 @@
 #include <stdlib.h>
 #include <string.h>
 
+/**
+ * @brief Represents the state of an arena
+ *
+ * An arena manages a fixed block of memory, enabling fast allocations without explicit cleanup.
+ * Memory is allocated sequentially, allowing for recycling of previously allocated regions.
+ */
 typedef struct {
-    void *data;
-    void *last;
-    char *begin;
-    char *end;
+    void *data;   ///< Pointer to the base memory region
+    void *last;   ///< Pointer to the last allocated object
+    char *begin;  ///< Pointer to the beginning of the available memory
+    char *end;    ///< Pointer to the end of the available memory
 } Arena;
 
+/**
+ * @brief Create a new arena with a specified capacity
+ * @param capacity Size of the base memory region in bytes
+ * @return New arena instance
+ * @note The arena must be destroyed using `arena_destroy()` to prevent memory leaks
+ */
 static Arena arena_create(long capacity) {
     Arena arena = {};
     arena.data = malloc(capacity);
@@ -23,14 +36,30 @@ static Arena arena_create(long capacity) {
     return arena;
 }
 
+/**
+ * @brief Get the size of the occupied memory region
+ * @param self Pointer to an arena
+ * @return Size of occupied memory in bytes
+ */
 static long arena_occupied(const Arena *self) {
     return self->begin - (char *)self->data;
 }
 
+/**
+ * @brief Get the size of the available memory region
+ * @param self Pointer to an arena
+ * @return Size of available memory in bytes
+ */
 static long arena_available(const Arena *self) {
     return self->end - self->begin;
 }
 
+/**
+ * @brief Create a new scratch arena at the end of the available space of the parent arena
+ * @param self Pointer to the parent arena
+ * @param capacity Size of the base memory region in bytes
+ * @return New scratch arena instance
+ */
 static Arena arena_scratch_create(Arena *self, long capacity) {
     assert(arena_available(self) >= capacity);
     self->end -= capacity;
@@ -41,6 +70,12 @@ static Arena arena_scratch_create(Arena *self, long capacity) {
     return scratch;
 }
 
+/**
+ * @brief Calculate the padding required for the requested alignment
+ * @param self Pointer to an arena
+ * @param align Requested alignment in bytes
+ * @return Padding in bytes
+ */
 static long x__arena_padding(const Arena *self, long align) {
 #if __has_feature(address_sanitizer) || defined(__SANITIZE_ADDRESS__)
     constexpr long min_padding = 8;
@@ -53,6 +88,15 @@ static long x__arena_padding(const Arena *self, long align) {
 #endif
 }
 
+/**
+ * @brief Allocate uninitialized memory from an arena
+ * @param self Pointer to an arena
+ * @param count Number of objects
+ * @param size Size of a single object in bytes
+ * @param align Requested alignment in bytes
+ * @return Pointer to the allocated memory
+ * @note This function will trigger an assertion failure if the arena runs out of memory
+ */
 [[gnu::malloc, gnu::alloc_size(2, 3), gnu::alloc_align(4)]]
 static void *arena_malloc(Arena *self, long count, long size, long align) {
     long padding = x__arena_padding(self, align);
@@ -65,10 +109,25 @@ static void *arena_malloc(Arena *self, long count, long size, long align) {
     return self->last;
 }
 
+/**
+ * @brief Allocate and zero-initialize memory from an arena
+ * @param self Pointer to an arena
+ * @param count Number of objects
+ * @param size Size of a single object in bytes
+ * @param align Requested alignment in bytes
+ * @return Pointer to the allocated memory
+ */
 static void *arena_calloc(Arena *self, long count, long size, long align) {
     return memset(arena_malloc(self, count, size, align), 0, count * size);
 }
 
+/**
+ * @brief Grow the last allocation in the arena
+ * @param self Pointer to an arena
+ * @param count Number of objects
+ * @param size Size of a single object in bytes
+ * @return Pointer to the allocated memory
+ */
 static void *x__arena_grow_last(Arena *self, long count, long size) {
     self->begin = self->last;
     assert(count <= arena_available(self) / size);
@@ -79,6 +138,17 @@ static void *x__arena_grow_last(Arena *self, long count, long size) {
     return self->last;
 }
 
+/**
+ * @brief Reallocate memory from an arena
+ * @param self Pointer to an arena
+ * @param ptr Pointer to the previously allocated memory
+ * @param count Number of objects
+ * @param size Size of a single object in bytes
+ * @param align Requested alignment in bytes
+ * @return Pointer to the allocated memory
+ * @note If `ptr` is a null pointer, the function behaves like `arena_malloc()`
+ * @note If `ptr` is the last allocated object of the arena, the alignment will be unchanged
+ */
 static void *arena_realloc(Arena *self, void *ptr, long count, long size, long align) {
     if (!ptr) {
         return arena_malloc(self, count, size, align);
@@ -98,19 +168,46 @@ static void *arena_realloc(Arena *self, void *ptr, long count, long size, long a
     return new_ptr;
 }
 
-static void *arena_memcpy(Arena *, void *dest, const void *src, long size) {
+/**
+ * @brief Copy memory from one location to another within an arena
+ * @param self Pointer to an arena
+ * @param dest Pointer to the destination
+ * @param src Pointer to the source
+ * @param size Number of bytes to copy
+ * @return Pointer to the destination
+ */
+static void *arena_memcpy(Arena *, void *restrict dest, const void *restrict src, long size) {
     return memcpy(dest, src, size);
 }
 
+/**
+ * @brief Duplicate memory within the arena
+ * @param self Pointer to an arena
+ * @param src Pointer to the source
+ * @param count Number of objects
+ * @param size Size of a single object in bytes
+ * @param align Requested alignment in bytes
+ * @return Pointer to the duplicated memory
+ */
 static void *arena_memdup(Arena *self, const void *src, long count, long size, long align) {
     return memcpy(arena_malloc(self, count, size, align), src, count * size);
 }
 
+/**
+ * @brief Destroy a scratch arena and return its space to the parent arena
+ * @param self Pointer to the parent arena
+ * @param scratch Scratch arena to destroy
+ * @note Scratch arenas must be destroyed in inverse creation order
+ */
 static void arena_scratch_destroy(Arena *self, Arena scratch) {
     assert(scratch.data == self->end);
     self->end = scratch.end;
 }
 
+/**
+ * @brief Destroy an arena and free its base memory region
+ * @param self Pointer to an arena
+ */
 static void arena_destroy(Arena *self) {
     free(self->data);
 }

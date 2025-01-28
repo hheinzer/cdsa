@@ -70,7 +70,6 @@ void permanent(Arena *arena, Arena scratch) {
 }
 
 void dump(const void *begin, const void *end) {
-    ASAN_UNPOISON_MEMORY_REGION(begin, (char *)end - (char *)begin);
     constexpr int offset = 16;
     printf("%-8s  %-*s %s\n", "offset", 3 * offset, "data", "ascii");
     for (const char *byte = begin; byte < (char *)end; byte += offset) {

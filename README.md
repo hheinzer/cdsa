@@ -31,8 +31,8 @@ shallow copies, the default copy function `arena_memcpy()` is your friend.
 - Linear
     - `list.h`: doubly linked list
 - Hashing
-    - `dict.h`: associative array (4-ary hash trie)
-    - `set.h`: set (value-less dict)
+    - `dict.h`: associative array
+    - `set.h`: set
 - Trees
     - `heap.h`: binary heap
 

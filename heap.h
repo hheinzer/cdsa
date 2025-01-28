@@ -1,3 +1,4 @@
+/// @file
 #pragma once
 
 #include <stddef.h>
@@ -7,31 +8,50 @@
 typedef struct Heap Heap;
 typedef struct HeapItem HeapItem;
 
-typedef int HeapDataCompare(const void *, const void *, void *);
-typedef void *HeapDataCopy(Arena *, void *, const void *, long);
+typedef int HeapDataCompare(const void *, const void *, void *);  ///< Data comparison function
+typedef void *HeapDataCopy(Arena *, void *, const void *, long);  ///< Data copy function
 
+/**
+ * @brief Represents a binary heap (min-heap by default)
+ */
 struct Heap {
-    Arena *arena;
+    Arena *arena;  ///< Pointer to an arena allocator
     struct {
-        long size;
-        HeapDataCompare *compare;
-        HeapDataCopy *copy;
-    } data;
-    long length;
-    HeapItem *begin;
-    HeapItem *end;
+        long size;                 ///< Size of the item data in bytes
+        HeapDataCompare *compare;  ///< Pointer to a data comparison function
+        HeapDataCopy *copy;        ///< Pointer to a data copy function
+    } data;                        ///< Data properties
+    long length;                   ///< Number of items in the heap
+    HeapItem *begin;               ///< Pointer to the root item of the heap
+    HeapItem *end;                 ///< Pointer to the last item in the heap
 };
 
+/**
+ * @brief Represents a single item in the heap
+ */
 struct HeapItem {
-    void *data;
-    HeapItem *parent;
-    HeapItem *left;
-    HeapItem *right;
-    HeapItem *next;
+    void *data;        ///< Pointer to the item data
+    HeapItem *parent;  ///< Pointer to the parent item
+    HeapItem *left;    ///< Pointer to the left child item
+    HeapItem *right;   ///< Pointer to the right child item
+    HeapItem *next;    ///< Pointer to the next item in insertion order
 };
 
+/**
+ * @brief Iterate over all items of a heap
+ * @param item Current heap item
+ * @param self Pointer to a heap
+ */
 #define heap_for_each(item, self) for (auto(item) = (self)->begin; item; (item) = (item)->next)
 
+/**
+ * @brief Create a new heap
+ * @param arena Pointer to an arena allocator
+ * @param size Size of item data in bytes (optional)
+ * @param compare Pointer to a data comparison function
+ * @return New heap instance
+ * @note If `size == 0`, the data pointers will be directly assigned rather than copied
+ */
 static Heap heap_create(Arena *arena, long size, HeapDataCompare *compare) {
     Heap heap = {};
     heap.arena = arena;
@@ -81,6 +101,12 @@ static void x__heap_sift_up(const Heap *self, HeapItem *item, void *context) {
     }
 }
 
+/**
+ * @brief Insert a new item into a heap
+ * @param self Pointer to a heap
+ * @param data Pointer to the item data
+ * @param context Pointer to a user-provided context for the comparison function (optional)
+ */
 static void heap_push(Heap *self, void *data, void *context) {
     HeapItem *item = arena_calloc(self->arena, 1, sizeof(HeapItem), alignof(HeapItem));
     x__heap_item_init(self, item, data);
@@ -140,6 +166,12 @@ static void x__heap_sift_down(const Heap *self, HeapItem *item, void *context) {
     }
 }
 
+/**
+ * @brief Remove the root item from the heap
+ * @param self Pointer to a heap
+ * @param context Pointer to a user-provided context for the comparison function (optional)
+ * @return Pointer to the item data, or `nullptr` if the heap is empty
+ */
 static void *heap_pop(Heap *self, void *context) {
     if (self->length == 0) {
         return nullptr;
@@ -167,6 +199,11 @@ static void *heap_pop(Heap *self, void *context) {
     return data;
 }
 
+/**
+ * @brief Retrieve the root item of the heap
+ * @param self Pointer to a heap
+ * @return Pointer to the item data, or `nullptr` if the heap is empty
+ */
 static void *heap_peek(const Heap *self) {
     if (self->length == 0) {
         return nullptr;
@@ -174,6 +211,14 @@ static void *heap_peek(const Heap *self) {
     return self->begin->data;
 }
 
+/**
+ * @brief Create a clone of a heap
+ * @param self Pointer to a heap
+ * @param context Pointer to a user-provided context for the comparison function (optional)
+ * @param arena Pointer to an arena allocator (optional)
+ * @return Cloned heap instance
+ * @note If no arena allocator is passed, the arena allocator of the heap is used
+ */
 static Heap heap_clone(const Heap *self, void *context, Arena *arena) {
     Heap heap = {};
     heap.arena = arena ? arena : self->arena;
@@ -184,6 +229,13 @@ static Heap heap_clone(const Heap *self, void *context, Arena *arena) {
     return heap;
 }
 
+/**
+ * @brief Retrieve an array of heap items
+ * @param self Pointer to a heap
+ * @param arena Pointer to an arena allocator (optional)
+ * @return Pointer to an array of items
+ * @note If no arena allocator is passed, the arena allocator of the heap is used
+ */
 static HeapItem *heap_items(const Heap *self, Arena *arena) {
     arena = arena ? arena : self->arena;
     HeapItem *items = arena_malloc(arena, self->length, sizeof(HeapItem), alignof(HeapItem));

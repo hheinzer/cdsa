@@ -18,7 +18,7 @@ typedef void *ListDataCopy(Arena *, void *, const void *, long);  ///< Data copy
 struct List {
     Arena *arena;  ///< Pointer to an arena allocator
     struct {
-        long size;                 ///< Size of item data in bytes
+        long size;                 ///< Size of the item data in bytes
         ListDataCompare *compare;  ///< Pointer to a data comparison function
         ListDataCopy *copy;        ///< Pointer to a data copy function
     } data;                        ///< Data properties
@@ -31,7 +31,7 @@ struct List {
  * @brief Represents a single item of a list
  */
 struct ListItem {
-    void *data;      ///< Pointer to the data of the item
+    void *data;      ///< Pointer to the item data
     ListItem *next;  ///< Pointer to the next item
     ListItem *prev;  ///< Pointer to the previous item
 };
@@ -49,7 +49,7 @@ struct ListItem {
  * @param size Size of item data in bytes (optional)
  * @param compare Pointer to a data comparison function (optional)
  * @return New list instance
- * @note If `size == 0` data pointers will be directly be assigned instead of copied
+ * @note If `size == 0`, the data pointers will be directly assigned rather than copied
  */
 static List list_create(Arena *arena, long size, ListDataCompare *compare) {
     List list = {};
@@ -75,7 +75,7 @@ static void x__list_item_init(const List *self, ListItem *item, void *data) {
  * @brief Insert a new item into a list
  * @param self Pointer to a list
  * @param index Index of the new item
- * @param data Pointer to the data of the item
+ * @param data Pointer to the item data
  * @note A negative `index` is interpreted as from the back (`self->length - index`)
  */
 static void list_insert(List *self, long index, void *data) {
@@ -121,7 +121,7 @@ static void list_insert(List *self, long index, void *data) {
 /**
  * @brief Append a new item to the back of a list
  * @param self Pointer to a list
- * @param data Pointer to the data of the item
+ * @param data Pointer to the item data
  */
 static void list_append(List *self, void *data) {
     list_insert(self, self->length, data);
@@ -131,7 +131,7 @@ static void list_append(List *self, void *data) {
  * @brief Remove an item from a list
  * @param self Pointer to a list
  * @param index Index of the item to remove
- * @return Pointer to the data of the removed item, or `nullptr` if the list is empty
+ * @return Pointer to the item data, or `nullptr` if the list is empty
  * @note A negative `index` is interpreted as from the back (`self->length - index`)
  */
 static void *list_pop(List *self, long index) {
@@ -176,8 +176,8 @@ static void *list_pop(List *self, long index) {
 /**
  * @brief Remove the first occurrence of a matching item from a list
  * @param self Pointer to a list
- * @param data Pointer to the data to match
- * @return Pointer to the data of the removed item, or `nullptr` if no matching item is found
+ * @param data Pointer to the item data to match
+ * @return Pointer to the item data, or `nullptr` if no matching item is found
  * @note This function requires a data comparison function to be set
  */
 static void *list_remove(List *self, const void *data) {
@@ -212,7 +212,7 @@ static void *list_remove(List *self, const void *data) {
  * @brief Retrieve an item from a list
  * @param self Pointer to a list
  * @param index Index of the item to retrieve
- * @return Pointer to the data of the item, or `nullptr` if the list is empty
+ * @return Pointer to the item data, or `nullptr` if the list is empty
  * @note A negative `index` is interpreted as from the back (`self->length - index`)
  */
 static void *list_get(const List *self, long index) {
@@ -239,8 +239,8 @@ static void *list_get(const List *self, long index) {
 /**
  * @brief Find the first occurrence of a matching item of a list
  * @param self Pointer to a list
- * @param data Pointer to the data to match
- * @return Pointer to the data of the item, or `nullptr` if no matching item is found
+ * @param data Pointer to the item data to match
+ * @return Pointer to the item data, or `nullptr` if no matching item is found
  * @note This function requires a data comparison function to be set
  */
 static void *list_find(const List *self, const void *data) {
@@ -256,7 +256,7 @@ static void *list_find(const List *self, const void *data) {
 /**
  * @brief Retrieve the index of the first occurrence of a matching item of a list
  * @param self Pointer to a list
- * @param data Pointer to the data to match
+ * @param data Pointer to the item data to match
  * @return Index of the matching item, or `-1` if no matching item is found
  * @note This function requires a data comparison function to be set
  */
@@ -275,7 +275,7 @@ static long list_index(const List *self, const void *data) {
 /**
  * @brief Count the number of matching items of a list
  * @param self Pointer to a list
- * @param data Pointer to the data to match
+ * @param data Pointer to the item data to match
  * @return Number of matching items
  * @note This function requires a data comparison function to be set
  */
@@ -378,6 +378,7 @@ static void list_reverse(List *self) {
  * @param self Pointer to a list
  * @param arena Pointer to an arena allocator (optional)
  * @return Cloned list instance
+ * @note If no arena allocator is passed, the arena allocator of the list is used
  */
 static List list_clone(const List *self, Arena *arena) {
     List list = {};
@@ -390,10 +391,11 @@ static List list_clone(const List *self, Arena *arena) {
 }
 
 /**
- * @brief Retrieve an array of items of a list
+ * @brief Retrieve an array of list items
  * @param self Pointer to a list
  * @param arena Pointer to an arena allocator (optional)
  * @return Pointer to an array of items
+ * @note If no arena allocator is passed, the arena allocator of the list is used
  */
 static ListItem *list_items(const List *self, Arena *arena) {
     arena = arena ? arena : self->arena;

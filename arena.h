@@ -2,6 +2,7 @@
 #pragma once
 
 #include <assert.h>
+#include <stddef.h>
 #include <stdint.h>
 #include <stdlib.h>
 #include <string.h>
@@ -80,6 +81,9 @@ static Arena arena_scratch_create(Arena *self, long capacity) {
 [[gnu::malloc, gnu::alloc_size(2, 3), gnu::alloc_align(4)]]
 static void *arena_malloc(Arena *self, long count, long size, long align) {
 #if __has_feature(address_sanitizer) || defined(__SANITIZE_ADDRESS__)
+    if (align <= (long)alignof(max_align_t)) {
+        return malloc(count * size);
+    }
     return aligned_alloc(align, count * size);
 #endif
     long padding = -(uintptr_t)self->begin & (align - 1);

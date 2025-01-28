@@ -98,6 +98,11 @@ $(document).ready(function(){initNavTree('structSetItem.html',''); initResizable
   <div class="headertitle"><div class="title">SetItem Struct Reference</div></div>
 </div><!--header-->
 <div class="contents">
+
+<p>Represents a single item in a set.  
+ <a href="structSetItem.html#details">More...</a></p>
+
+<p><code>#include &lt;set.h&gt;</code></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-attribs" name="pub-attribs"></a>
 Data Fields</h2></td></tr>
@@ -105,21 +110,28 @@ Data Fields</h2></td></tr>
 struct {</td></tr>
 <tr class="memitem:a3a9fb661943eae93c597353a9f697c1a"><td class="memItemLeft" >
 &#160;&#160;&#160;void *&#160;&#160;&#160;<b>data</b></td></tr>
+<tr class="memdesc:a3a9fb661943eae93c597353a9f697c1a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Pointer to the key data. <br /></td></tr>
 <tr class="separator:a3a9fb661943eae93c597353a9f697c1a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae40a6a2ab7ef8eed1daa814c3a0942b1"><td class="memItemLeft" >
 &#160;&#160;&#160;long&#160;&#160;&#160;<b>size</b></td></tr>
+<tr class="memdesc:ae40a6a2ab7ef8eed1daa814c3a0942b1"><td class="mdescLeft">&#160;</td><td class="mdescRight">Size of the key data in bytes. <br /></td></tr>
 <tr class="separator:ae40a6a2ab7ef8eed1daa814c3a0942b1"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a703b31ab1450e281cd512879ff61a6ad"><td class="memItemLeft" valign="top">}&#160;</td><td class="memItemRight" valign="bottom"><b>key</b></td></tr>
+<tr class="memdesc:a703b31ab1450e281cd512879ff61a6ad"><td class="mdescLeft">&#160;</td><td class="mdescRight">Key properties. <br /></td></tr>
 <tr class="separator:a703b31ab1450e281cd512879ff61a6ad"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ad92610d210c1b745e494eddf74fb9c32"><td class="memItemLeft" align="right" valign="top"><a id="ad92610d210c1b745e494eddf74fb9c32" name="ad92610d210c1b745e494eddf74fb9c32"></a>
-<a class="el" href="structSetItem.html">SetItem</a> *&#160;</td><td class="memItemRight" valign="bottom"><b>child</b> [1&lt;&lt; x__set_hash_shift]</td></tr>
-<tr class="separator:ad92610d210c1b745e494eddf74fb9c32"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a65015972722304cfe1dd99d56e41acf1"><td class="memItemLeft" align="right" valign="top"><a id="a65015972722304cfe1dd99d56e41acf1" name="a65015972722304cfe1dd99d56e41acf1"></a>
+<a class="el" href="structSetItem.html">SetItem</a> *&#160;</td><td class="memItemRight" valign="bottom"><b>child</b> [1&lt;&lt; <a class="el" href="set_8h.html#ae98ca5bb8834f949b0b262c8eba70ba3">set_hash_shift</a>]</td></tr>
+<tr class="memdesc:a65015972722304cfe1dd99d56e41acf1"><td class="mdescLeft">&#160;</td><td class="mdescRight">Array of child items for hash traversal. <br /></td></tr>
+<tr class="separator:a65015972722304cfe1dd99d56e41acf1"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aaa640b52e7947f8f39746d59d7a847ae"><td class="memItemLeft" align="right" valign="top"><a id="aaa640b52e7947f8f39746d59d7a847ae" name="aaa640b52e7947f8f39746d59d7a847ae"></a>
 <a class="el" href="structSetItem.html">SetItem</a> *&#160;</td><td class="memItemRight" valign="bottom"><b>next</b></td></tr>
+<tr class="memdesc:aaa640b52e7947f8f39746d59d7a847ae"><td class="mdescLeft">&#160;</td><td class="mdescRight">Pointer to the next item. <br /></td></tr>
 <tr class="separator:aaa640b52e7947f8f39746d59d7a847ae"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<hr/>The documentation for this struct was generated from the following file:<ul>
-<li>set.h</li>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>Represents a single item in a set. </p>
+</div><hr/>The documentation for this struct was generated from the following file:<ul>
+<li><a class="el" href="set_8h.html">set.h</a></li>
 </ul>
 </div><!-- contents -->
 </div><!-- doc-content -->

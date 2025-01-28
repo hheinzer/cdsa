@@ -98,34 +98,48 @@ $(document).ready(function(){initNavTree('structDict.html',''); initResizable();
   <div class="headertitle"><div class="title">Dict Struct Reference</div></div>
 </div><!--header-->
 <div class="contents">
+
+<p>Represents a dictionary of key-data pairs.  
+ <a href="structDict.html#details">More...</a></p>
+
+<p><code>#include &lt;dict.h&gt;</code></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-attribs" name="pub-attribs"></a>
 Data Fields</h2></td></tr>
 <tr class="memitem:a6490cd7edd2766549b7d0a9054a5fd6d"><td class="memItemLeft" align="right" valign="top"><a id="a6490cd7edd2766549b7d0a9054a5fd6d" name="a6490cd7edd2766549b7d0a9054a5fd6d"></a>
 <a class="el" href="structArena.html">Arena</a> *&#160;</td><td class="memItemRight" valign="bottom"><b>arena</b></td></tr>
+<tr class="memdesc:a6490cd7edd2766549b7d0a9054a5fd6d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Pointer to an arena allocator. <br /></td></tr>
 <tr class="separator:a6490cd7edd2766549b7d0a9054a5fd6d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af37da0c4409b241b13db3660918a2628"><td class="memItemLeft" ><a id="af37da0c4409b241b13db3660918a2628" name="af37da0c4409b241b13db3660918a2628"></a>
 struct {</td></tr>
 <tr class="memitem:a971d6a17a5efde48a23d897452e927d1"><td class="memItemLeft" >
 &#160;&#160;&#160;long&#160;&#160;&#160;<b>size</b></td></tr>
+<tr class="memdesc:a971d6a17a5efde48a23d897452e927d1"><td class="mdescLeft">&#160;</td><td class="mdescRight">Size of the item data in bytes. <br /></td></tr>
 <tr class="separator:a971d6a17a5efde48a23d897452e927d1"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:adda947aae3e2e13bce3f9ef468d112ef"><td class="memItemLeft" >
-&#160;&#160;&#160;DictDataCopy *&#160;&#160;&#160;<b>copy</b></td></tr>
+&#160;&#160;&#160;<a class="el" href="dict_8h.html#ace7cda036da760dedc620cffb33eb006">DictDataCopy</a> *&#160;&#160;&#160;<b>copy</b></td></tr>
+<tr class="memdesc:adda947aae3e2e13bce3f9ef468d112ef"><td class="mdescLeft">&#160;</td><td class="mdescRight">Pointer to a data copy function. <br /></td></tr>
 <tr class="separator:adda947aae3e2e13bce3f9ef468d112ef"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af37da0c4409b241b13db3660918a2628"><td class="memItemLeft" valign="top">}&#160;</td><td class="memItemRight" valign="bottom"><b>data</b></td></tr>
+<tr class="memdesc:af37da0c4409b241b13db3660918a2628"><td class="mdescLeft">&#160;</td><td class="mdescRight">Data properties. <br /></td></tr>
 <tr class="separator:af37da0c4409b241b13db3660918a2628"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a811e7befc5dcd26a5d356253103d307a"><td class="memItemLeft" align="right" valign="top"><a id="a811e7befc5dcd26a5d356253103d307a" name="a811e7befc5dcd26a5d356253103d307a"></a>
 long&#160;</td><td class="memItemRight" valign="bottom"><b>length</b></td></tr>
+<tr class="memdesc:a811e7befc5dcd26a5d356253103d307a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Number of items in the dict. <br /></td></tr>
 <tr class="separator:a811e7befc5dcd26a5d356253103d307a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab66f6b43dc3f6c8b26d92a4f3715f490"><td class="memItemLeft" align="right" valign="top"><a id="ab66f6b43dc3f6c8b26d92a4f3715f490" name="ab66f6b43dc3f6c8b26d92a4f3715f490"></a>
 <a class="el" href="structDictItem.html">DictItem</a> *&#160;</td><td class="memItemRight" valign="bottom"><b>begin</b></td></tr>
+<tr class="memdesc:ab66f6b43dc3f6c8b26d92a4f3715f490"><td class="mdescLeft">&#160;</td><td class="mdescRight">Pointer to root item of the dict. <br /></td></tr>
 <tr class="separator:ab66f6b43dc3f6c8b26d92a4f3715f490"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af03a9f21b2e79a90d95f261a4e829be9"><td class="memItemLeft" align="right" valign="top"><a id="af03a9f21b2e79a90d95f261a4e829be9" name="af03a9f21b2e79a90d95f261a4e829be9"></a>
 <a class="el" href="structDictItem.html">DictItem</a> *&#160;</td><td class="memItemRight" valign="bottom"><b>end</b></td></tr>
+<tr class="memdesc:af03a9f21b2e79a90d95f261a4e829be9"><td class="mdescLeft">&#160;</td><td class="mdescRight">Pointer to last item of the dict. <br /></td></tr>
 <tr class="separator:af03a9f21b2e79a90d95f261a4e829be9"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<hr/>The documentation for this struct was generated from the following file:<ul>
-<li>dict.h</li>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>Represents a dictionary of key-data pairs. </p>
+</div><hr/>The documentation for this struct was generated from the following file:<ul>
+<li><a class="el" href="dict_8h.html">dict.h</a></li>
 </ul>
 </div><!-- contents -->
 </div><!-- doc-content -->

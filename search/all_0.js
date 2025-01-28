@@ -1,7 +1,7 @@
 var searchData=
 [
   ['arena_0',['Arena',['../structArena.html',1,'']]],
-  ['arena_1',['arena',['../structList.html#a0f8fda2982cb8c4fe37e5c6e97613828',1,'List']]],
+  ['arena_1',['arena',['../structDict.html#a6490cd7edd2766549b7d0a9054a5fd6d',1,'Dict::arena()'],['../structHeap.html#af7e542d4dffb673468d7d4c1760003f8',1,'Heap::arena()'],['../structList.html#a0f8fda2982cb8c4fe37e5c6e97613828',1,'List::arena()'],['../structSet.html#a784fbe305bf9d443df1f1e21fb774bcf',1,'Set::arena()']]],
   ['arena_20friendly_20data_20structures_2',['Arena Friendly Data Structures',['../index.html',1,'']]],
   ['arena_2eh_3',['arena.h',['../arena_8h.html',1,'']]],
   ['arena_5favailable_4',['arena_available',['../arena_8h.html#a55a1639018d954de553da12cf7b3c3c9',1,'arena.h']]],

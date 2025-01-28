@@ -98,37 +98,52 @@ $(document).ready(function(){initNavTree('structHeap.html',''); initResizable();
   <div class="headertitle"><div class="title">Heap Struct Reference</div></div>
 </div><!--header-->
 <div class="contents">
+
+<p>Represents a binary heap (min-heap by default)  
+ <a href="structHeap.html#details">More...</a></p>
+
+<p><code>#include &lt;heap.h&gt;</code></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-attribs" name="pub-attribs"></a>
 Data Fields</h2></td></tr>
 <tr class="memitem:af7e542d4dffb673468d7d4c1760003f8"><td class="memItemLeft" align="right" valign="top"><a id="af7e542d4dffb673468d7d4c1760003f8" name="af7e542d4dffb673468d7d4c1760003f8"></a>
 <a class="el" href="structArena.html">Arena</a> *&#160;</td><td class="memItemRight" valign="bottom"><b>arena</b></td></tr>
+<tr class="memdesc:af7e542d4dffb673468d7d4c1760003f8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Pointer to an arena allocator. <br /></td></tr>
 <tr class="separator:af7e542d4dffb673468d7d4c1760003f8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae5a5b72337909c700a9ece87fbd20983"><td class="memItemLeft" ><a id="ae5a5b72337909c700a9ece87fbd20983" name="ae5a5b72337909c700a9ece87fbd20983"></a>
 struct {</td></tr>
 <tr class="memitem:a3454a1358fc4299808b9c996d0ac2884"><td class="memItemLeft" >
 &#160;&#160;&#160;long&#160;&#160;&#160;<b>size</b></td></tr>
+<tr class="memdesc:a3454a1358fc4299808b9c996d0ac2884"><td class="mdescLeft">&#160;</td><td class="mdescRight">Size of the item data in bytes. <br /></td></tr>
 <tr class="separator:a3454a1358fc4299808b9c996d0ac2884"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a12112944c70e9e7b44616d7e8ee6937b"><td class="memItemLeft" >
-&#160;&#160;&#160;HeapDataCompare *&#160;&#160;&#160;<b>compare</b></td></tr>
+&#160;&#160;&#160;<a class="el" href="heap_8h.html#ae4fd392c2f077ce4fd2db1bc74328d85">HeapDataCompare</a> *&#160;&#160;&#160;<b>compare</b></td></tr>
+<tr class="memdesc:a12112944c70e9e7b44616d7e8ee6937b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Pointer to a data comparison function. <br /></td></tr>
 <tr class="separator:a12112944c70e9e7b44616d7e8ee6937b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a132466f7c377566cb9d7f2d3ab198d58"><td class="memItemLeft" >
-&#160;&#160;&#160;HeapDataCopy *&#160;&#160;&#160;<b>copy</b></td></tr>
+&#160;&#160;&#160;<a class="el" href="heap_8h.html#a6d708b3b4050b68e2fa4b8dd7ae15ae8">HeapDataCopy</a> *&#160;&#160;&#160;<b>copy</b></td></tr>
+<tr class="memdesc:a132466f7c377566cb9d7f2d3ab198d58"><td class="mdescLeft">&#160;</td><td class="mdescRight">Pointer to a data copy function. <br /></td></tr>
 <tr class="separator:a132466f7c377566cb9d7f2d3ab198d58"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae5a5b72337909c700a9ece87fbd20983"><td class="memItemLeft" valign="top">}&#160;</td><td class="memItemRight" valign="bottom"><b>data</b></td></tr>
+<tr class="memdesc:ae5a5b72337909c700a9ece87fbd20983"><td class="mdescLeft">&#160;</td><td class="mdescRight">Data properties. <br /></td></tr>
 <tr class="separator:ae5a5b72337909c700a9ece87fbd20983"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a6cee81ac109696a16db8e86f362008c7"><td class="memItemLeft" align="right" valign="top"><a id="a6cee81ac109696a16db8e86f362008c7" name="a6cee81ac109696a16db8e86f362008c7"></a>
 long&#160;</td><td class="memItemRight" valign="bottom"><b>length</b></td></tr>
+<tr class="memdesc:a6cee81ac109696a16db8e86f362008c7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Number of items in the heap. <br /></td></tr>
 <tr class="separator:a6cee81ac109696a16db8e86f362008c7"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af0399ff725d9bf47780de2f8bfcf1e1a"><td class="memItemLeft" align="right" valign="top"><a id="af0399ff725d9bf47780de2f8bfcf1e1a" name="af0399ff725d9bf47780de2f8bfcf1e1a"></a>
 <a class="el" href="structHeapItem.html">HeapItem</a> *&#160;</td><td class="memItemRight" valign="bottom"><b>begin</b></td></tr>
+<tr class="memdesc:af0399ff725d9bf47780de2f8bfcf1e1a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Pointer to the root item of the heap. <br /></td></tr>
 <tr class="separator:af0399ff725d9bf47780de2f8bfcf1e1a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:adf900a0f178ed0edd1b920798c517bca"><td class="memItemLeft" align="right" valign="top"><a id="adf900a0f178ed0edd1b920798c517bca" name="adf900a0f178ed0edd1b920798c517bca"></a>
 <a class="el" href="structHeapItem.html">HeapItem</a> *&#160;</td><td class="memItemRight" valign="bottom"><b>end</b></td></tr>
+<tr class="memdesc:adf900a0f178ed0edd1b920798c517bca"><td class="mdescLeft">&#160;</td><td class="mdescRight">Pointer to the last item in the heap. <br /></td></tr>
 <tr class="separator:adf900a0f178ed0edd1b920798c517bca"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<hr/>The documentation for this struct was generated from the following file:<ul>
-<li>heap.h</li>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>Represents a binary heap (min-heap by default) </p>
+</div><hr/>The documentation for this struct was generated from the following file:<ul>
+<li><a class="el" href="heap_8h.html">heap.h</a></li>
 </ul>
 </div><!-- contents -->
 </div><!-- doc-content -->

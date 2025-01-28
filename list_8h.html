@@ -170,7 +170,7 @@ Functions</h2></td></tr>
 <tr class="memdesc:a323f2326cd0c0cbe0ea0bb560c625dd1"><td class="mdescLeft">&#160;</td><td class="mdescRight">Create a clone of a list.  <br /></td></tr>
 <tr class="separator:a323f2326cd0c0cbe0ea0bb560c625dd1"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa369e9399b362ca3a3fed0c1f1023e8b"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="structListItem.html">ListItem</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="list_8h.html#aa369e9399b362ca3a3fed0c1f1023e8b">list_items</a> (const <a class="el" href="structList.html">List</a> *self, <a class="el" href="structArena.html">Arena</a> *arena)</td></tr>
-<tr class="memdesc:aa369e9399b362ca3a3fed0c1f1023e8b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Retrieve an array of items of a list.  <br /></td></tr>
+<tr class="memdesc:aa369e9399b362ca3a3fed0c1f1023e8b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Retrieve an array of list items.  <br /></td></tr>
 <tr class="separator:aa369e9399b362ca3a3fed0c1f1023e8b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Macro Definition Documentation</h2>
@@ -262,7 +262,7 @@ Functions</h2></td></tr>
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>New list instance </dd></dl>
-<dl class="section note"><dt>Note</dt><dd>If <code>size == 0</code> data pointers will be directly be assigned instead of copied </dd></dl>
+<dl class="section note"><dt>Note</dt><dd>If <code>size == 0</code>, the data pointers will be directly assigned rather than copied </dd></dl>
 
 </div>
 </div>
@@ -311,7 +311,7 @@ Functions</h2></td></tr>
   <table class="params">
     <tr><td class="paramname">self</td><td>Pointer to a list </td></tr>
     <tr><td class="paramname">index</td><td>Index of the new item </td></tr>
-    <tr><td class="paramname">data</td><td>Pointer to the data of the item </td></tr>
+    <tr><td class="paramname">data</td><td>Pointer to the item data </td></tr>
   </table>
   </dd>
 </dl>
@@ -357,7 +357,7 @@ Functions</h2></td></tr>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">self</td><td>Pointer to a list </td></tr>
-    <tr><td class="paramname">data</td><td>Pointer to the data of the item </td></tr>
+    <tr><td class="paramname">data</td><td>Pointer to the item data </td></tr>
   </table>
   </dd>
 </dl>
@@ -406,7 +406,7 @@ Functions</h2></td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>Pointer to the data of the removed item, or <code>nullptr</code> if the list is empty </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>Pointer to the item data, or <code>nullptr</code> if the list is empty </dd></dl>
 <dl class="section note"><dt>Note</dt><dd>A negative <code>index</code> is interpreted as from the back (<code>self-&gt;length - index</code>) </dd></dl>
 
 </div>
@@ -449,11 +449,11 @@ Functions</h2></td></tr>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">self</td><td>Pointer to a list </td></tr>
-    <tr><td class="paramname">data</td><td>Pointer to the data to match </td></tr>
+    <tr><td class="paramname">data</td><td>Pointer to the item data to match </td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>Pointer to the data of the removed item, or <code>nullptr</code> if no matching item is found </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>Pointer to the item data, or <code>nullptr</code> if no matching item is found </dd></dl>
 <dl class="section note"><dt>Note</dt><dd>This function requires a data comparison function to be set </dd></dl>
 
 </div>
@@ -500,7 +500,7 @@ Functions</h2></td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>Pointer to the data of the item, or <code>nullptr</code> if the list is empty </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>Pointer to the item data, or <code>nullptr</code> if the list is empty </dd></dl>
 <dl class="section note"><dt>Note</dt><dd>A negative <code>index</code> is interpreted as from the back (<code>self-&gt;length - index</code>) </dd></dl>
 
 </div>
@@ -543,11 +543,11 @@ Functions</h2></td></tr>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">self</td><td>Pointer to a list </td></tr>
-    <tr><td class="paramname">data</td><td>Pointer to the data to match </td></tr>
+    <tr><td class="paramname">data</td><td>Pointer to the item data to match </td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>Pointer to the data of the item, or <code>nullptr</code> if no matching item is found </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>Pointer to the item data, or <code>nullptr</code> if no matching item is found </dd></dl>
 <dl class="section note"><dt>Note</dt><dd>This function requires a data comparison function to be set </dd></dl>
 
 </div>
@@ -590,7 +590,7 @@ Functions</h2></td></tr>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">self</td><td>Pointer to a list </td></tr>
-    <tr><td class="paramname">data</td><td>Pointer to the data to match </td></tr>
+    <tr><td class="paramname">data</td><td>Pointer to the item data to match </td></tr>
   </table>
   </dd>
 </dl>
@@ -637,7 +637,7 @@ Functions</h2></td></tr>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">self</td><td>Pointer to a list </td></tr>
-    <tr><td class="paramname">data</td><td>Pointer to the data to match </td></tr>
+    <tr><td class="paramname">data</td><td>Pointer to the item data to match </td></tr>
   </table>
   </dd>
 </dl>
@@ -769,6 +769,7 @@ Functions</h2></td></tr>
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>Cloned list instance </dd></dl>
+<dl class="section note"><dt>Note</dt><dd>If no arena allocator is passed, the arena allocator of the list is used </dd></dl>
 
 </div>
 </div>
@@ -806,7 +807,7 @@ Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Retrieve an array of items of a list. </p>
+<p>Retrieve an array of list items. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">self</td><td>Pointer to a list </td></tr>
@@ -815,6 +816,7 @@ Functions</h2></td></tr>
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>Pointer to an array of items </dd></dl>
+<dl class="section note"><dt>Note</dt><dd>If no arena allocator is passed, the arena allocator of the list is used </dd></dl>
 
 </div>
 </div>

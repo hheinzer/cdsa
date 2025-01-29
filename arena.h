@@ -78,13 +78,9 @@ static Arena arena_scratch_create(Arena *self, long capacity) {
  * @return Pointer to the allocated memory
  * @note This function will trigger an assertion failure if the arena runs out of memory
  */
-[[gnu::malloc, gnu::alloc_size(2, 3), gnu::alloc_align(4)]]
-static void *arena_malloc(Arena *self, long count, long size, long align) {
+[[gnu::malloc]] static void *arena_malloc(Arena *self, long count, long size, long align) {
 #if __has_feature(address_sanitizer) || defined(__SANITIZE_ADDRESS__)
-    if (align <= (long)alignof(max_align_t)) {
-        return malloc(count * size);
-    }
-    return aligned_alloc(align, count * size);
+    return malloc(count * size);
 #endif
     long padding = -(uintptr_t)self->begin & (align - 1);
     assert(count <= (arena_available(self) - padding) / size);
@@ -101,8 +97,9 @@ static void *arena_malloc(Arena *self, long count, long size, long align) {
  * @param align Requested alignment in bytes
  * @return Pointer to the allocated memory
  */
-static void *arena_calloc(Arena *self, long count, long size, long align) {
-    return memset(arena_malloc(self, count, size, align), 0, count * size);
+[[gnu::malloc]] static void *arena_calloc(Arena *self, long count, long size, long align) {
+    void *ptr = arena_malloc(self, count, size, align);
+    return memset(ptr, 0, count * size);
 }
 
 /**
@@ -143,7 +140,7 @@ static void *arena_realloc(Arena *self, void *ptr, long count, long size, long a
  * @param size Number of bytes to copy
  * @return Pointer to the destination
  */
-static void *arena_memcpy(Arena *, void *restrict dest, const void *restrict src, long size) {
+static void *arena_memcpy(Arena *, void *dest, const void *src, long size) {
     return memcpy(dest, src, size);
 }
 
@@ -157,7 +154,8 @@ static void *arena_memcpy(Arena *, void *restrict dest, const void *restrict src
  * @return Pointer to the duplicated memory
  */
 static void *arena_memdup(Arena *self, const void *src, long count, long size, long align) {
-    return memcpy(arena_malloc(self, count, size, align), src, count * size);
+    void *ptr = arena_malloc(self, count, size, align);
+    return memcpy(ptr, src, count * size);
 }
 
 /**

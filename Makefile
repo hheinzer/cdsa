@@ -3,10 +3,10 @@ CC = clang
 CFLAGS = -std=c23 -g3 -Wall -Wextra -Wpedantic -Wshadow -Wno-unused-function
 
 # debug flags
-CFLAGS += -fsanitize=undefined,address
+#CFLAGS += -fsanitize=undefined,address
 
 # release flags
-#CFLAGS += -O3 -march=native -flto=auto
+CFLAGS += -O3 -march=native -flto=auto
 
 # sources, objects, and programs
 SRC = $(shell find . -type f -name '*.c')

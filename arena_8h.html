@@ -134,9 +134,9 @@ Functions</h2></td></tr>
 <tr class="memitem:a526c73e32e76964c75757a16649b98e9"><td class="memItemLeft" align="right" valign="top">static void *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="arena_8h.html#a526c73e32e76964c75757a16649b98e9">arena_realloc</a> (<a class="el" href="structArena.html">Arena</a> *self, void *ptr, long count, long size, long align)</td></tr>
 <tr class="memdesc:a526c73e32e76964c75757a16649b98e9"><td class="mdescLeft">&#160;</td><td class="mdescRight">Reallocate memory from an arena.  <br /></td></tr>
 <tr class="separator:a526c73e32e76964c75757a16649b98e9"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab2d18e8d94c7b31afcc491b9f02832c4"><td class="memItemLeft" align="right" valign="top">static void *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="arena_8h.html#ab2d18e8d94c7b31afcc491b9f02832c4">arena_memcpy</a> (<a class="el" href="structArena.html">Arena</a> *, void *restrict dest, const void *restrict src, long size)</td></tr>
-<tr class="memdesc:ab2d18e8d94c7b31afcc491b9f02832c4"><td class="mdescLeft">&#160;</td><td class="mdescRight">Copy memory from one location to another within an arena.  <br /></td></tr>
-<tr class="separator:ab2d18e8d94c7b31afcc491b9f02832c4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac758179e6ed9d965c216714411436a97"><td class="memItemLeft" align="right" valign="top">static void *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="arena_8h.html#ac758179e6ed9d965c216714411436a97">arena_memcpy</a> (<a class="el" href="structArena.html">Arena</a> *, void *dest, const void *src, long size)</td></tr>
+<tr class="memdesc:ac758179e6ed9d965c216714411436a97"><td class="mdescLeft">&#160;</td><td class="mdescRight">Copy memory from one location to another within an arena.  <br /></td></tr>
+<tr class="separator:ac758179e6ed9d965c216714411436a97"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a736f77e9556ba4815a3efe0114a0906a"><td class="memItemLeft" align="right" valign="top">static void *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="arena_8h.html#a736f77e9556ba4815a3efe0114a0906a">arena_memdup</a> (<a class="el" href="structArena.html">Arena</a> *self, const void *src, long count, long size, long align)</td></tr>
 <tr class="memdesc:a736f77e9556ba4815a3efe0114a0906a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Duplicate memory within the arena.  <br /></td></tr>
 <tr class="separator:a736f77e9556ba4815a3efe0114a0906a"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -491,8 +491,8 @@ If <code>ptr</code> is the last allocated object of the arena, the alignment wil
 
 </div>
 </div>
-<a id="ab2d18e8d94c7b31afcc491b9f02832c4" name="ab2d18e8d94c7b31afcc491b9f02832c4"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ab2d18e8d94c7b31afcc491b9f02832c4">&#9670;&#160;</a></span>arena_memcpy()</h2>
+<a id="ac758179e6ed9d965c216714411436a97" name="ac758179e6ed9d965c216714411436a97"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac758179e6ed9d965c216714411436a97">&#9670;&#160;</a></span>arena_memcpy()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -509,13 +509,13 @@ If <code>ptr</code> is the last allocated object of the arena, the alignment wil
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">void *restrict&#160;</td>
+          <td class="paramtype">void *&#160;</td>
           <td class="paramname"><em>dest</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">const void *restrict&#160;</td>
+          <td class="paramtype">const void *&#160;</td>
           <td class="paramname"><em>src</em>, </td>
         </tr>
         <tr>
